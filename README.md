@@ -1,7 +1,5 @@
 # Oktavian
 
-[![CircleCI](https://circleci.com/gh/TritonSE/oktavian.svg?style=svg&circle-token=92427f41d2355e80d8462f34c83ac97ba93228f7)](https://github.com/TritonSE/oktavian)
-
 Oktavian is our planned, one-stop shop HR application, intended to handle everything from 
 recruitment to roster management to project logistics. Oktavian supersedes our previous
 recruitment tool project, which only focused on the immediate recruitment pipeline
