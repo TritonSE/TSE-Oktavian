@@ -273,9 +273,11 @@ export default function Application({ match }) {
         ) : (
           <div>
             <h2 id="application">
-              {state.application.name}'s{" "}
-              {state.application.created_at.getFullYear()}{" "}
-              {toTitleCase(state.application.role)} Application
+              {`${
+                state.application.name
+              }'s ${state.application.created_at.getFullYear()} ${toTitleCase(
+                state.application.role
+              )} Application`}
             </h2>
             {state.application.completed ? (
               state.application.accepted ? (

@@ -8,7 +8,7 @@ import { isAuthenticated, getJWT, getUser, logout } from "../util/auth";
 import { BACKEND_URL } from "../util/constants";
 import { tableIcons } from "../util/icons";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   grid: {
     textAlign: "center",
   },
@@ -110,7 +110,9 @@ export default function Assignments() {
             icons={tableIcons}
             actions={[
               {
-                icon: () => <Edit />,
+                icon: function edit() {
+                  return <Edit />;
+                },
                 tooltip: "Edit Application",
                 onClick: (event, row) => {
                   let origin =

@@ -110,7 +110,7 @@ export default function Dashboard() {
           {Object.keys(state.stats[role]).map((stage) => {
             const count = state.stats[role][stage];
             return (
-              <div className={classes.counter}>
+              <div className={classes.counter} key={`${role}-${stage}`}>
                 <Typography variant="h3">{count}</Typography>
                 <Typography variant="caption">{stage}</Typography>
               </div>

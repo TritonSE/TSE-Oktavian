@@ -78,7 +78,7 @@ export default function Navbar(props) {
     setState(!state);
   };
 
-  const handleLogout = (event) => {
+  const handleLogout = () => {
     logout();
     history.push("/");
   };
