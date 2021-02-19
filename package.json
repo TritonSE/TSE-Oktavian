@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "install": "npm install --prefix backend && npm install --prefix frontend",
-    "start": "npm run build --prefix frontend && rm -rf backend/public && mv frontend/build backend/public && npm start --prefix backend"
+    "build": "npm run build --prefix frontend && rm -rf backend/public && mv frontend/build backend/public",
+    "start": "npm start --prefix backend"
   }
 }

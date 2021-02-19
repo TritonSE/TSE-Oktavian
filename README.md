@@ -48,10 +48,12 @@ Run the following commands:
 
 ```
 npm install
+npm run build
 npm start
 ```
-This will create a production build of the React frontend, move to the backend,
-and start a server at **localhost:8000**. 
+
+This will install any necessary modules, create a production build of the React frontend,
+and start a server at **localhost:8000** serving the frontend and API routes.
 
 There are several environment variables that must be set for the backend to work:
 
