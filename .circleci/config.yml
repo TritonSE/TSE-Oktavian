@@ -1,11 +1,14 @@
 version: 2.1
 orbs:
   heroku: circleci/heroku@1.2.5
-jobs: 
-  lint:
-    working_directory: ~/oktavian
+executors:
+  tmp-executor:
+    working_directory: ~/tmp
     docker: 
       - image: circleci/node:14
+jobs: 
+  lint:
+    executor: tmp-executor
     steps: 
       - checkout
       - run:
@@ -13,10 +16,12 @@ jobs:
           command: 'sudo npm install -g npm@latest'
     # TODO: Add linting commands here
   build: 
-    working_directory: ~/oktavian
-    docker: 
-      - image: circleci/node:14
+    executor: tmp-executor
     steps: 
+      - checkout
+      - run:
+          name: Installing latest version of NPM
+          command: 'sudo npm install -g npm@latest'
       - run:
           name: Installing backend dependencies
           command: npm install node-pre-gyp rebuild --prefix backend && npm install 
@@ -32,13 +37,12 @@ workflows:
             branches:
               only: main
       - build:
-          requires:
-            - lint
           filters:
             branches:
               only: main
       - heroku/deploy-via-git:
           requires:
+            - lint
             - build
           filters:
             branches:
