@@ -17,7 +17,7 @@
   "scripts": {
     "start": "node --max_old_space_size=4096 node_modules/.bin/react-scripts start",
     "build": "node --max_old_space_size=4096 node_modules/.bin/react-scripts build",
-    "lint": "eslint . && npx prettier --check .",
+    "lint": "npx eslint . && npx prettier --check .",
     "prettify": "npx prettier --write ."
   },
   "eslintConfig": {
@@ -36,8 +36,6 @@
     ]
   },
   "devDependencies": {
-    "eslint": "^7.20.0",
-    "eslint-plugin-react": "^7.22.0",
     "prettier": "2.2.1"
   }
 }
