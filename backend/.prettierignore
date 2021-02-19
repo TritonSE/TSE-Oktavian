@@ -1,0 +1,9 @@
+# Not JS related
+bin
+emails
+node_modules
+scripts
+
+# Build artifacts
+build
+public

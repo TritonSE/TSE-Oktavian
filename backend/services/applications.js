@@ -1,9 +1,7 @@
-const mongoose = require('mongoose');
-
-const config = require('../config');
-const { Application, Review, UserCategory } = require('../models');
-const { ServiceError } = require('./errors');
-const { sendEmail } = require('./email');
+const config = require("../config");
+const { Application, Review, UserCategory } = require("../models");
+const { ServiceError } = require("./errors");
+const { sendEmail } = require("./email");
 
 /**
  * Assigns the given reviewer to the application by creating a new review.
@@ -12,19 +10,19 @@ async function assignApplication(application, reviewer) {
   const review = new Review({
     application: application._id,
     reviewer: reviewer._id,
-    stage: application.current_stage
+    stage: application.current_stage,
   });
   await review.save();
-  await sendEmail('reviewer-assignment', reviewer.email, {
+  await sendEmail("reviewer-assignment", reviewer.email, {
     current_stage: application.current_stage,
     role: application.role,
     applicant: application.name,
-    reviewer: reviewer.name
+    reviewer: reviewer.name,
   });
 }
 
 /**
- * Auto-assigns a reviewer to a specific application. 
+ * Auto-assigns a reviewer to a specific application.
  * Uses a modified round-robin algorithm to ensure fairness and to make sure
  * applications preferably don't end up with the same reviewer assigned to two stages
  */
@@ -32,17 +30,24 @@ async function autoAssignApplication(application) {
   let role = application.role;
   // Special case: president(s) make the final decision
   if (application.current_stage === config.stages[config.stages.length - 1]) {
-      role = config.final_role;
+    role = config.final_role;
   }
-  const category = await UserCategory
-    .findOne({'role': role}).populate('users').exec();
+  const category = await UserCategory.findOne({ role: role })
+    .populate("users")
+    .exec();
   if (category.users.length === 0) {
-    throw ServiceError(400, 
-      "Unable to auto-assign any " + role + " reviewer to application");
+    throw ServiceError(
+      400,
+      "Unable to auto-assign any " + role + " reviewer to application"
+    );
   }
   // Find first reviewer in the round robin list not in past reviewers
-  const past_reviews = await Review.find({'application': application._id}).exec();
-  const past_reviewers = new Set(past_reviews.map(review => review.reviewer.toString()));
+  const past_reviews = await Review.find({
+    application: application._id,
+  }).exec();
+  const past_reviewers = new Set(
+    past_reviews.map((review) => review.reviewer.toString())
+  );
   // In the case where no reviewer is new, just use the first person
   let ridx = 0;
   for (let [i, reviewer] of category.users.entries()) {
@@ -71,39 +76,36 @@ async function advanceApplication(application, review_accepted) {
     if (application.current_stage === config.stages[config.stages.length - 1]) {
       application.completed = true;
       application.accepted = true;
-    }
-    else {
+    } else {
       const idx = config.stages.indexOf(application.current_stage);
       if (idx === -1) {
-        throw ServiceError(400, 
-          "Application has invalid stage '" + application.current_stage + "'");
+        throw ServiceError(
+          400,
+          "Application has invalid stage '" + application.current_stage + "'"
+        );
       }
       application.current_stage = config.stages[idx + 1];
     }
-  }
-  else {
-    application.completed = true;  
+  } else {
+    application.completed = true;
     application.accepted = false;
   }
   await application.save();
   if (application.completed) {
     if (application.accepted) {
-      await sendEmail('applicant-acceptance', application.email, {
-        name: application.name
+      await sendEmail("applicant-acceptance", application.email, {
+        name: application.name,
       });
-    } 
-    else {
-      await sendEmail('applicant-rejection', application.email, {
+    } else {
+      await sendEmail("applicant-rejection", application.email, {
         name: application.name,
         role: application.role,
       });
     }
-  }
-  else {
+  } else {
     try {
       await autoAssignApplication(application);
-    }
-    catch (err) {
+    } catch (err) {
       // Rollback application update
       application.completed = old_completed;
       application.accepted = old_accepted;
@@ -127,21 +129,21 @@ async function createApplication(raw_application) {
   let application = await Application.findOne({
     role: raw_application.role,
     email: raw_application.email,
-    completed: false
+    completed: false,
   }).exec();
   if (application != null) {
-    throw ServiceError(400, "Previous application is still in review"); 
+    throw ServiceError(400, "Previous application is still in review");
   }
   application = new Application(raw_application);
   await application.save();
   try {
-    await autoAssignApplication(application); 
+    await autoAssignApplication(application);
   } catch (err) {
     // Rollback application creation
     await Application.findByIdAndDelete(application._id);
     throw err;
   }
-  await sendEmail('applicant-confirmation', raw_application.email, {
+  await sendEmail("applicant-confirmation", raw_application.email, {
     name: raw_application.name,
     role: raw_application.role,
   });
@@ -153,16 +155,14 @@ async function createApplication(raw_application) {
  * Can be filtered using options (e.g. to fetch only open applications, etc.)
  */
 async function getAllApplications(options) {
-  return await Application
-    .find({...options}).exec();
+  return await Application.find({ ...options }).exec();
 }
 
 /**
  * Returns a JSON object representing an application given an ID.
  */
 async function getApplication(application_id) {
-  return await Application
-    .findOne({_id: application_id}).exec();
+  return await Application.findOne({ _id: application_id }).exec();
 }
 
 module.exports = {
@@ -171,5 +171,5 @@ module.exports = {
   advanceApplication,
   createApplication,
   getAllApplications,
-  getApplication
+  getApplication,
 };

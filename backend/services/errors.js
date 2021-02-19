@@ -2,8 +2,8 @@ const ServiceError = (status, message) => {
   return {
     name: "ServiceError",
     status: status,
-    message: message
-  }
+    message: message,
+  };
 };
 
 module.exports = { ServiceError };

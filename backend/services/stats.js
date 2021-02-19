@@ -1,8 +1,5 @@
-const mongoose = require('mongoose');
-
-const config = require('../config');
-const { Application, Review, UserCategory } = require('../models');
-const { ServiceError } = require('./errors')
+const config = require("../config");
+const { Application } = require("../models");
 
 /**
  * Returns statistics related to the number of applications
@@ -26,32 +23,32 @@ async function getApplicationStats(startDate, endDate) {
         current_stage: stage,
         created_at: {
           $gte: startDate,
-          $lte: endDate
-        }
+          $lte: endDate,
+        },
       }).exec();
     }
-    stats[role]['ACCEPTED'] = await Application.countDocuments({
+    stats[role]["ACCEPTED"] = await Application.countDocuments({
       role: role,
       completed: true,
       accepted: true,
       created_at: {
         $gte: startDate,
-        $lte: endDate
-      }
+        $lte: endDate,
+      },
     }).exec();
-    stats[role]['REJECTED'] = await Application.countDocuments({
+    stats[role]["REJECTED"] = await Application.countDocuments({
       role: role,
       completed: true,
       accepted: false,
       created_at: {
         $gte: startDate,
-        $lte: endDate
-      }
+        $lte: endDate,
+      },
     }).exec();
   }
   return stats;
 }
 
 module.exports = {
-  getApplicationStats
+  getApplicationStats,
 };
