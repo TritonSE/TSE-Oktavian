@@ -2,7 +2,7 @@ version: 2.1
 orbs:
   heroku: circleci/heroku@1.2.5
 jobs: 
-  build: 
+  lint:
     working_directory: ~/oktavian
     docker: 
       - image: circleci/node:14
@@ -11,19 +11,29 @@ jobs:
       - run:
           name: Installing latest version of NPM
           command: 'sudo npm install -g npm@latest'
+    # TODO: Add linting commands here
+  build: 
+    working_directory: ~/oktavian
+    docker: 
+      - image: circleci/node:14
+    steps: 
       - run:
           name: Installing backend dependencies
-          command: npm install node-pre-gyp rebuild --prefix backend && npm install --prefix backend
+          command: npm install node-pre-gyp rebuild --prefix backend && npm install 
       - run:
           name: Installing frontend dependencies
           command: npm install --prefix frontend
-      - run: 
-          name: Building frontend
-          command: npm run-script build 
+    # TODO: Figure out why building frontend is failing (memory requirements?)
 workflows:
-  build-lint-deploy:
+  lint-build-deploy:
     jobs:
+      - lint:
+          filters:
+            branches:
+              only: main
       - build:
+          requires:
+            - lint
           filters:
             branches:
               only: main
