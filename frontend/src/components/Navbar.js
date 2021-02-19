@@ -55,7 +55,7 @@ export default function Navbar(props) {
   const theme = useTheme();
   const [state, setState] = React.useState(false);
   React.useEffect(() => {
-    document.title = `TSE Recruitment — ${title}`;
+    document.title = `Oktavian — ${title}`;
   }, [title]);
 
   const handleDrawerToggle = () => {
@@ -129,7 +129,7 @@ export default function Navbar(props) {
             <Menu/>
           </IconButton>
           <Typography variant="h6" noWrap className={classes.title} component={Link} to="/">
-            TSE Recruitment
+            Oktavian 
           </Typography>
         </Toolbar>
       </AppBar>
