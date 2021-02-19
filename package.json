@@ -1,5 +1,5 @@
 {
-  "name": "tse-recruitment",
+  "name": "oktavian",
   "version": "1.0.0",
   "scripts": {
     "install": "npm install --prefix backend && npm install --prefix frontend",
