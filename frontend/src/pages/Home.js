@@ -1,11 +1,11 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
-import { isAuthenticated } from '../util/auth';
+import { isAuthenticated } from "../util/auth";
 
 export default function Home() {
   return isAuthenticated() ? (
-    <Redirect to="/dashboard"/>
+    <Redirect to="/dashboard" />
   ) : (
-    <Redirect to="/login"/>
+    <Redirect to="/login" />
   );
 }

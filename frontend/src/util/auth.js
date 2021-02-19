@@ -1,35 +1,32 @@
 function isAuthenticated() {
-  return localStorage.hasOwnProperty('tse-recruitment:token');
+  return localStorage.getItem("tse-recruitment:token") != null;
 }
 
 function getJWT() {
   if (!isAuthenticated()) {
     return null;
   }
-  return localStorage.getItem('tse-recruitment:token');
+  return localStorage.getItem("tse-recruitment:token");
 }
 
 function setJWT(token) {
-  localStorage.setItem('tse-recruitment:token', token);
+  localStorage.setItem("tse-recruitment:token", token);
 }
 
 function getUser() {
   if (!isAuthenticated()) {
     return null;
   }
-  return JSON.parse(localStorage.getItem('tse-recruitment:user'));
+  return JSON.parse(localStorage.getItem("tse-recruitment:user"));
 }
 
 function setUser(user) {
-  localStorage.setItem('tse-recruitment:user', JSON.stringify(user));
+  localStorage.setItem("tse-recruitment:user", JSON.stringify(user));
 }
 
 function logout() {
-  localStorage.removeItem('tse-recruitment:token');
-  localStorage.removeItem('tse-recruitment:user');
+  localStorage.removeItem("tse-recruitment:token");
+  localStorage.removeItem("tse-recruitment:user");
 }
 
-export {
-  isAuthenticated, getJWT, setJWT,
-  getUser, setUser, logout
-};
+export { isAuthenticated, getJWT, setJWT, getUser, setUser, logout };
