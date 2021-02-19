@@ -58,8 +58,8 @@ There are several environment variables that must be set for the backend to work
 * (required) MONGO_URI = URI pointing to a MongoDB database
 * (optional, defaults to 'tritonse') REGISTER_SECRET = used to only allow members of the executive board to sign up, must be changed in production
 * (optional, defaults to 'keyboard cat') SESSION_SECRET = used to uniquely identifying server sessions, must be changed in production
-* (optional, defaults to '') EMAIL_USER = used for automated emailing, disabled if left empty
-* (optional, defaults to '') EMAIL_PASS = used for automated emailing, disabled if left empty
+* (optional, defaults to '') EMAIL_USERNAME = used for automated emailing, disabled if left empty
+* (optional, defaults to '') EMAIL_PASSWORD = used for automated emailing, disabled if left empty
 
 The recommended way to specify this environment variables is by creating the
 file `backend/.env` and listing the variables there. The `.env` file is not
