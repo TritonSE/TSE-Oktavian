@@ -42,7 +42,7 @@ workflows:
   lint-build-deploy:
     jobs:
       # The linter can be run for every branch
-      - lint:
+      - lint
       # Before deployment, ensure that the website is building
       - build:
           filters:
