@@ -5,7 +5,7 @@ jobs:
   build: 
     working_directory: ~/oktavian
     docker: 
-      - image: circleci/node:12
+      - image: circleci/node:14
     steps: 
       - checkout
       - run:
