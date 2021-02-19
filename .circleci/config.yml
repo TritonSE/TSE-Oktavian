@@ -12,8 +12,11 @@ jobs:
           name: Installing latest version of NPM
           command: 'sudo npm install -g npm@latest'
       - run:
-          name: Installing website dependencies
-          command: npm install
+          name: Installing backend dependencies
+          command: npm install node-pre-gyp rebuild --prefix backend && npm install --prefix backend
+      - run:
+          name: Installing frontend dependencies
+          command: npm install --prefix frontend
       - run: 
           name: Building frontend
           command: npm run-script build 
