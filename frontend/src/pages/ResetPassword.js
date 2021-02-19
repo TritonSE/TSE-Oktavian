@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Redirect, useHistory } from "react-router-dom";
 import {
   TextField,
@@ -155,3 +156,7 @@ export default function ResetPassword({ match }) {
     </Grid>
   );
 }
+
+ResetPassword.propTypes = {
+  match: PropTypes.object,
+};

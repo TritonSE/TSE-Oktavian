@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import {
   AppBar,
   CssBaseline,
@@ -64,8 +65,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Navbar(props) {
-  const { window, component, title } = props;
+export default function Navbar({ window, component, title }) {
   const history = useHistory();
   const classes = useStyles();
   const theme = useTheme();
@@ -212,3 +212,9 @@ export default function Navbar(props) {
     </div>
   );
 }
+
+Navbar.propTypes = {
+  title: PropTypes.string,
+  component: PropTypes.element,
+  window: PropTypes.instanceOf(window.constructor),
+};
