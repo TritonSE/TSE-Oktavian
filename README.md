@@ -5,6 +5,12 @@ recruitment to roster management to project logistics. Oktavian supersedes our p
 recruitment tool project, which only focused on the immediate recruitment pipeline
 and did not extend past that.
 
+The frontend is written in React, which is bundled and served directly by the backend.
+The backend is written using a combination of NodeJS, Express, and MongoDB. This places
+the project in the family of MERN stack applications.
+
+## Features
+
 The ideal feature list is given as:
 
 * Manages the recruitment pipeline
@@ -31,10 +37,6 @@ The ideal feature list is given as:
     * The PM can fill out the remaining sections of the project proposal attached to the team.
     * Any member in the organization has access to public information regarding the proposal (e.g. architecture).
     * Sensitive information in the project proposal is hidden (e.g. contacts).
-
-The frontend is written in React, which is bundled and served directly by the backend.
-The backend is written using a combination of NodeJS, Express, and MongoDB. This places
-the project in the family of MERN stack applications.
 
 ## Setup
 
