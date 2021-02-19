@@ -70,7 +70,7 @@ export default function CreateApplication() {
       why: state.why
     };
     try {
-      const response = await fetch(`${BACKEND_URL}/applications`, {
+      const response = await fetch(`${BACKEND_URL}/api/applications`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(submission)

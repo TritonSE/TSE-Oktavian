@@ -36,7 +36,7 @@ export default function Dashboard() {
       return; 
     }
     if (state.loading) {
-      fetch(`${BACKEND_URL}/stats`, {
+      fetch(`${BACKEND_URL}/api/stats`, {
         headers: {
           'Authorization': `Bearer ${getJWT()}`
         }

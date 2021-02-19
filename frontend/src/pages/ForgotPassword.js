@@ -57,7 +57,7 @@ export default function ForgotPassword() {
       secret: state.secret
     };
     try {
-      const response = await fetch(`${BACKEND_URL}/auth/forgot-password`, {
+      const response = await fetch(`${BACKEND_URL}/api/auth/forgot-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(submission)

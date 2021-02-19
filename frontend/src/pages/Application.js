@@ -64,7 +64,7 @@ export default function Application({match}) {
     }
     const fetchData = async () => {
       try {
-        let response = await fetch(`${BACKEND_URL}/applications/${match.params.appid}`, {
+        let response = await fetch(`${BACKEND_URL}/api/applications/${match.params.appid}`, {
           headers: {
             'Authorization': `Bearer ${getJWT()}`
           }
@@ -80,7 +80,7 @@ export default function Application({match}) {
           return;
         }
         const application = json.application;
-        response = await fetch(`${BACKEND_URL}/reviews?application=${match.params.appid}`, {
+        response = await fetch(`${BACKEND_URL}/api/reviews?application=${match.params.appid}`, {
           headers: {
             'Authorization': `Bearer ${getJWT()}`
           }
@@ -172,7 +172,7 @@ export default function Application({match}) {
     }
     if (incomplete_review != null) {
       try {
-        let response = await fetch(`${BACKEND_URL}/reviews/${incomplete_review._id}`, {
+        let response = await fetch(`${BACKEND_URL}/api/reviews/${incomplete_review._id}`, {
           method: 'PUT',
           headers: {
             'Authorization': `Bearer ${getJWT()}`,

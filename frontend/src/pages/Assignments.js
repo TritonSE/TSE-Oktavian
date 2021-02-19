@@ -33,7 +33,7 @@ export default function Assignments() {
     }
     const fetchData = async () => {
       try {
-        let response = await fetch(`${BACKEND_URL}/reviews?user=${getUser()._id}`, {
+        let response = await fetch(`${BACKEND_URL}/api/reviews?user=${getUser()._id}`, {
           headers: {
             'Authorization': `Bearer ${getJWT()}`
           }

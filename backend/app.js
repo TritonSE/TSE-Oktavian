@@ -39,11 +39,10 @@ require('./middleware/passport')();
 app.use(passport.initialize());
 
 // Routes
-app.use('/', require('./routes/index'));
-app.use('/auth', require('./routes/auth'));
-app.use('/applications', require('./routes/applications'));
-app.use('/reviews', require('./routes/reviews'));
-app.use('/stats', require('./routes/stats'));
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api/applications', require('./routes/applications'));
+app.use('/api/reviews', require('./routes/reviews'));
+app.use('/api/stats', require('./routes/stats'));
 
 // Error handling
 app.use(function(req, res, next) {

@@ -32,7 +32,7 @@ export default function Applications() {
       return; 
     }
     if (state.loading) {
-      fetch(`${BACKEND_URL}/applications`, {
+      fetch(`${BACKEND_URL}/api/applications`, {
         headers: {
           'Authorization': `Bearer ${getJWT()}`
         }

@@ -66,7 +66,7 @@ export default function ResetPassword({match}) {
       password: state.password
     };
     try {
-      const response = await fetch(`${BACKEND_URL}/auth/reset-password`, {
+      const response = await fetch(`${BACKEND_URL}/api/auth/reset-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(submission)
