@@ -1,6 +1,7 @@
 {
   "name": "backend",
   "version": "1.0.0",
+  "author": "Triton Software Engineering <tse@ucsd.edu>",
   "private": true,
   "scripts": {
     "lint": "npx eslint . && npx prettier --check .",

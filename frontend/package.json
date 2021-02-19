@@ -1,6 +1,7 @@
 {
   "name": "frontend",
   "version": "1.0.0",
+  "author": "Triton Software Engineering <tse@ucsd.edu>",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.11.0",

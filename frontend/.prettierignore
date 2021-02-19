@@ -1,6 +1,3 @@
-# Build artifacts
 build
 public
-
-# Not related to JS
 node_modules
