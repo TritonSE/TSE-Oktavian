@@ -21,38 +21,17 @@ jobs:
           name: Installing frontend dependencies
           command: 'npm install --prefix frontend'
       - run:
-          name: Performing linting
+          name: Running ESLint & Prettier
           command: 'npm run lint'
-  build: 
-    executor: tmp-executor
-    steps: 
-      - checkout
-      - run:
-          name: Installing latest version of NPM
-          command: 'sudo npm install -g npm@latest'
-      - run:
-          name: Installing backend dependencies
-          command: 'npm install node-pre-gyp rebuild --prefix backend && npm install'
-      - run:
-          name: Installing frontend dependencies
-          command: 'npm install --prefix frontend'
-      - run:
-          name: Building frontend
-          command: 'npm run build --prefix frontend'
 workflows:
-  lint-build-deploy:
+  lint-deploy:
     jobs:
       # The linter can be run for every branch
       - lint
-      # Before deployment, ensure that the website is building
-      - build:
-          filters:
-            branches:
-              only: main
+      # Deployment only occurs for the main branch
       - heroku/deploy-via-git:
           requires:
             - lint
-            - build
           filters:
             branches:
               only: main
