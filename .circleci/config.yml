@@ -15,6 +15,9 @@ jobs:
           name: Installing latest version of NPM
           command: 'sudo npm install -g npm@latest'
       - run:
+          name: Fixing issues with Node GYP
+          command: 'sudo node-gyp rebuild'
+      - run:
           name: Installing backend dependencies
           command: 'npm install node-pre-gyp rebuild --prefix backend && npm install'
       - run:
