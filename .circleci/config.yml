@@ -16,10 +16,10 @@ jobs:
           command: 'sudo npm install -g npm@latest'
       - run:
           name: Fixing issues with Node GYP
-          command: 'sudo node-gyp rebuild'
+          command: 'npm install node-pre-gyp rebuild --prefix backend'
       - run:
           name: Installing backend dependencies
-          command: 'npm install node-pre-gyp rebuild --prefix backend && npm install'
+          command: 'npm install --prefix backend'
       - run:
           name: Installing frontend dependencies
           command: 'npm install --prefix frontend'
