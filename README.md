@@ -6,8 +6,7 @@ recruitment tool project, which only focused on the immediate recruitment pipeli
 and did not extend past that.
 
 The frontend is written in React, which is bundled and served directly by the backend.
-The backend is written using a combination of NodeJS, Express, and MongoDB. This places
-the project in the family of MERN stack applications.
+The backend is written using a combination of NodeJS, Express, and MongoDB (the MERN stack).
 
 ## Features
 

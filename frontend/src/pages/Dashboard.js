@@ -9,6 +9,8 @@ import {
   Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import DateFnsUtils from "@date-io/date-fns";
+import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import { isAuthenticated, getJWT, logout } from "../util/auth";
 import { BACKEND_URL } from "../util/constants";
 import { toTitleCase } from "../util/typography";
@@ -33,9 +35,68 @@ export default function Dashboard() {
       message: "",
       open: false,
     },
+    start_date: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth() - 9,
+      new Date().getDate()
+    ),
+    end_date: new Date(),
     loading: true,
     stats: {},
   });
+
+  const refreshStats = () => {
+    fetch(
+      `${BACKEND_URL}/api/stats?start_date=${state.start_date.getTime()}&end_date=${state.end_date.getTime()}`,
+      {
+        headers: {
+          Authorization: `Bearer ${getJWT()}`,
+        },
+      }
+    )
+      .then((response) => {
+        response
+          .json()
+          .then((json) => {
+            if (response.ok) {
+              const stats = JSON.parse(JSON.stringify(json.stats));
+              setState({ ...state, loading: false, stats: stats });
+            } else if (response.status === 401) {
+              logout();
+              history.push("/");
+            } else {
+              setState({
+                ...state,
+                loading: false,
+                snack: {
+                  message: `Could not load stats: ${json.message}`,
+                  open: true,
+                },
+              });
+            }
+          })
+          .catch((error) => {
+            setState({
+              ...state,
+              loading: false,
+              snack: {
+                message: `An error occurred: ${error.message}`,
+                open: true,
+              },
+            });
+          });
+      })
+      .catch((error) => {
+        setState({
+          ...state,
+          loading: false,
+          snack: {
+            message: `An error occurred: ${error.message}`,
+            open: true,
+          },
+        });
+      });
+  };
 
   React.useEffect(() => {
     if (!isAuthenticated()) {
@@ -43,55 +104,17 @@ export default function Dashboard() {
       return;
     }
     if (state.loading) {
-      fetch(`${BACKEND_URL}/api/stats`, {
-        headers: {
-          Authorization: `Bearer ${getJWT()}`,
-        },
-      })
-        .then((response) => {
-          response
-            .json()
-            .then((json) => {
-              if (response.ok) {
-                const stats = JSON.parse(JSON.stringify(json.stats));
-                setState({ ...state, loading: false, stats: stats });
-              } else if (response.status === 401) {
-                logout();
-                history.push("/");
-              } else {
-                setState({
-                  ...state,
-                  loading: false,
-                  snack: {
-                    message: `Could not load stats: ${json.message}`,
-                    open: true,
-                  },
-                });
-              }
-            })
-            .catch((error) => {
-              setState({
-                ...state,
-                loading: false,
-                snack: {
-                  message: `An error occurred: ${error.message}`,
-                  open: true,
-                },
-              });
-            });
-        })
-        .catch((error) => {
-          setState({
-            ...state,
-            loading: false,
-            snack: {
-              message: `An error occurred: ${error.message}`,
-              open: true,
-            },
-          });
-        });
+      refreshStats();
     }
   });
+
+  const handleStartDateChange = (new_date) => {
+    setState({ ...state, start_date: new_date, loading: true });
+  };
+
+  const handleEndDateChange = (new_date) => {
+    setState({ ...state, end_date: new_date, loading: true });
+  };
 
   const handleSnackClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -131,9 +154,31 @@ export default function Dashboard() {
     >
       <Grid item xs={12}>
         {state.loading ? (
-          <LinearProgress />
+          <div>
+            <LinearProgress />
+          </div>
         ) : (
           <div>
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <Grid container spacing={3}>
+                <Grid item md={6} xs={12}>
+                  <DatePicker
+                    label="Start Date"
+                    format="MM/dd/yyyy"
+                    value={state.start_date}
+                    onChange={handleStartDateChange}
+                  />
+                </Grid>
+                <Grid item md={6} xs={12}>
+                  <DatePicker
+                    label="End Date"
+                    format="MM/dd/yyyy"
+                    value={state.end_date}
+                    onChange={handleEndDateChange}
+                  />
+                </Grid>
+              </Grid>
+            </MuiPickersUtilsProvider>
             <Typography variant="h4" className={classes.title}>
               Dashboard
             </Typography>

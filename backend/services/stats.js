@@ -6,14 +6,8 @@ const { Application } = require("../models");
  * between two dates. The dates refer to when the application
  * was created, not necessarily updated.
  */
-async function getApplicationStats(startDate, endDate) {
+async function getApplicationStats(start_date, end_date) {
   const stats = {};
-  if (startDate == null) {
-    startDate = new Date(628021800000); // The epoch: around 1970
-  }
-  if (endDate == null) {
-    endDate = new Date();
-  }
   for (const role of config.roles) {
     stats[role] = {};
     for (const stage of config.stages) {
@@ -22,8 +16,8 @@ async function getApplicationStats(startDate, endDate) {
         completed: false,
         current_stage: stage,
         created_at: {
-          $gte: startDate,
-          $lte: endDate,
+          $gte: start_date,
+          $lte: end_date,
         },
       }).exec();
     }
@@ -32,8 +26,8 @@ async function getApplicationStats(startDate, endDate) {
       completed: true,
       accepted: true,
       created_at: {
-        $gte: startDate,
-        $lte: endDate,
+        $gte: start_date,
+        $lte: end_date,
       },
     }).exec();
     stats[role]["REJECTED"] = await Application.countDocuments({
@@ -41,8 +35,8 @@ async function getApplicationStats(startDate, endDate) {
       completed: true,
       accepted: false,
       created_at: {
-        $gte: startDate,
-        $lte: endDate,
+        $gte: start_date,
+        $lte: end_date,
       },
     }).exec();
   }

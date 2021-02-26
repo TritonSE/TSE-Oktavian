@@ -16,7 +16,7 @@ jobs:
           command: 'sudo npm install -g npm@latest'
       - run:
           name: Installing backend dependencies
-          command: 'npm install node-pre-gyp rebuild --prefix backend && npm install'
+          command: 'npm install --prefix backend'
       - run:
           name: Installing frontend dependencies
           command: 'npm install --prefix frontend'
