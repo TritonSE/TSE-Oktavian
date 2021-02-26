@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import { Grid, Snackbar, LinearProgress } from "@material-ui/core";
 import { Edit } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
-import MaterialTable from "material-table";
+import MaterialTable from "@material-table/core";
 import { isAuthenticated, getJWT, getUser, logout } from "../util/auth";
 import { BACKEND_URL } from "../util/constants";
 import { tableIcons } from "../util/icons";

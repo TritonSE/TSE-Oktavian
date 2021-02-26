@@ -9,6 +9,8 @@ import {
   Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import DayjsUtils from "dayjs";
+import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import { isAuthenticated, getJWT, logout } from "../util/auth";
 import { BACKEND_URL } from "../util/constants";
 import { toTitleCase } from "../util/typography";
@@ -33,9 +35,65 @@ export default function Dashboard() {
       message: "",
       open: false,
     },
+    start_date: new Date(),
+    end_date: new Date(),
     loading: true,
     stats: {},
   });
+
+  const refreshStats = () => {
+    setState({ ...state, loading: true });
+    fetch(
+      `${BACKEND_URL}/api/stats?start_date=${state.start_date.getTime()}&end_date=${state.end_date.getTime()}`,
+      {
+        headers: {
+          Authorization: `Bearer ${getJWT()}`,
+        },
+      }
+    )
+      .then((response) => {
+        response
+          .json()
+          .then((json) => {
+            if (response.ok) {
+              const stats = JSON.parse(JSON.stringify(json.stats));
+              setState({ ...state, loading: false, stats: stats });
+            } else if (response.status === 401) {
+              logout();
+              history.push("/");
+            } else {
+              setState({
+                ...state,
+                loading: false,
+                snack: {
+                  message: `Could not load stats: ${json.message}`,
+                  open: true,
+                },
+              });
+            }
+          })
+          .catch((error) => {
+            setState({
+              ...state,
+              loading: false,
+              snack: {
+                message: `An error occurred: ${error.message}`,
+                open: true,
+              },
+            });
+          });
+      })
+      .catch((error) => {
+        setState({
+          ...state,
+          loading: false,
+          snack: {
+            message: `An error occurred: ${error.message}`,
+            open: true,
+          },
+        });
+      });
+  };
 
   React.useEffect(() => {
     if (!isAuthenticated()) {
@@ -43,55 +101,14 @@ export default function Dashboard() {
       return;
     }
     if (state.loading) {
-      fetch(`${BACKEND_URL}/api/stats`, {
-        headers: {
-          Authorization: `Bearer ${getJWT()}`,
-        },
-      })
-        .then((response) => {
-          response
-            .json()
-            .then((json) => {
-              if (response.ok) {
-                const stats = JSON.parse(JSON.stringify(json.stats));
-                setState({ ...state, loading: false, stats: stats });
-              } else if (response.status === 401) {
-                logout();
-                history.push("/");
-              } else {
-                setState({
-                  ...state,
-                  loading: false,
-                  snack: {
-                    message: `Could not load stats: ${json.message}`,
-                    open: true,
-                  },
-                });
-              }
-            })
-            .catch((error) => {
-              setState({
-                ...state,
-                loading: false,
-                snack: {
-                  message: `An error occurred: ${error.message}`,
-                  open: true,
-                },
-              });
-            });
-        })
-        .catch((error) => {
-          setState({
-            ...state,
-            loading: false,
-            snack: {
-              message: `An error occurred: ${error.message}`,
-              open: true,
-            },
-          });
-        });
+      refreshStats();
     }
   });
+
+  const handleChange = (prop) => (event) => {
+    setState({ ...state, [prop]: event.target.value });
+    refreshStats();
+  };
 
   const handleSnackClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -134,6 +151,16 @@ export default function Dashboard() {
           <LinearProgress />
         ) : (
           <div>
+            <MuiPickersUtilsProvider utils={DayjsUtils}>
+              <DatePicker
+                value={state.start_date}
+                onChange={handleChange("start_date")}
+              />
+              <DatePicker
+                value={state.end_date}
+                onChange={handleChange("end_date")}
+              />
+            </MuiPickersUtilsProvider>
             <Typography variant="h4" className={classes.title}>
               Dashboard
             </Typography>
