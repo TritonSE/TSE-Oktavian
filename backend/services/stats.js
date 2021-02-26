@@ -8,16 +8,6 @@ const { Application } = require("../models");
  */
 async function getApplicationStats(start_date, end_date) {
   const stats = {};
-  if (start_date == null) {
-    start_date = new Date(628021800000); // The epoch: around 1970
-  } else {
-    start_date = new Date(start_date);
-  }
-  if (end_date == null) {
-    end_date = new Date();
-  } else {
-    end_date = new Date(end_date);
-  }
   for (const role of config.roles) {
     stats[role] = {};
     for (const stage of config.stages) {
