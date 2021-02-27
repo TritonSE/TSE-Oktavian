@@ -10,6 +10,7 @@ const passport = require("passport");
 
 const config = require("./config");
 const { createUserCategories } = require("./services/users");
+const { initializePassport } = require("./middleware/auth");
 
 // Database
 mongoose.set("useCreateIndex", true);
@@ -38,8 +39,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors({ methods: ["GET", "POST", "PUT", "DELETE"] }));
 
 // Authentication
-require("./middleware/passport")();
-app.use(passport.initialize());
+app.use(initializePassport());
 
 // Routes
 app.use("/api/auth", require("./routes/auth"));

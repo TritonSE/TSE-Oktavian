@@ -1,8 +1,8 @@
 const express = require("express");
 const { body } = require("express-validator");
 
-const { isAuthenticated } = require("../middleware/auth");
-const { isValidated } = require("../middleware/validation");
+const { authorizeUser } = require("../middleware/auth");
+const { validateRequest } = require("../middleware/validation");
 const {
   getApplicationReviews,
   getUserReviews,
@@ -12,7 +12,7 @@ const {
 
 const router = express.Router();
 
-router.get("/", isAuthenticated, (req, res, next) => {
+router.get("/", authorizeUser, (req, res, next) => {
   let promise = null;
   if (req.query.application != null) {
     promise = getApplicationReviews(req.query.application, {});
@@ -36,7 +36,7 @@ router.get("/", isAuthenticated, (req, res, next) => {
     });
 });
 
-router.get("/:id", isAuthenticated, (req, res, next) => {
+router.get("/:id", authorizeUser, (req, res, next) => {
   getReview(req.params.id)
     .then((review) => {
       res.status(200).json({
@@ -51,12 +51,12 @@ router.get("/:id", isAuthenticated, (req, res, next) => {
 router.put(
   "/:id",
   [
+    authorizeUser,
     body("comments").optional().isString(),
     body("rating").optional().isInt({ min: 0, max: 5 }),
     body("completed").optional().isBoolean(),
     body("accepted").optional().isBoolean(),
-    isValidated,
-    isAuthenticated,
+    validateRequest,
   ],
   (req, res, next) => {
     const review_update = { _id: req.params.id };
