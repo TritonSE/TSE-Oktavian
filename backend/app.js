@@ -6,7 +6,6 @@ const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
 const cors = require("cors");
 const mongoose = require("mongoose");
-const passport = require("passport");
 
 const config = require("./config");
 const { createUserCategories } = require("./services/users");
