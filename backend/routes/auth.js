@@ -9,7 +9,7 @@ const {
 } = require("../services/users");
 const { authenticateUser } = require("../middleware/auth");
 const { validateRequest } = require("../middleware/validation");
-const config = require("../config");
+const { JWT_SECRET } = require("../constants");
 
 const router = express.Router();
 
@@ -38,7 +38,7 @@ router.post(
           } else {
             res.status(200).json({
               user: req.user,
-              token: jwt.sign(req.user.toJSON(), config.auth.jwt_secret),
+              token: jwt.sign(req.user.toJSON(), JWT_SECRET),
             });
           }
         });
@@ -60,7 +60,7 @@ router.post(
   function (req, res) {
     res.status(200).json({
       user: req.user,
-      token: jwt.sign(req.user.toJSON(), config.auth.jwt_secret),
+      token: jwt.sign(req.user.toJSON(), JWT_SECRET),
     });
   }
 );

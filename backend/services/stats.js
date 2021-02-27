@@ -1,4 +1,4 @@
-const config = require("../config");
+const { PUBLIC_ROLES, STAGES } = require("../constants");
 const { Application } = require("../models");
 
 /**
@@ -8,9 +8,9 @@ const { Application } = require("../models");
  */
 async function getApplicationStats(start_date, end_date) {
   const stats = {};
-  for (const role of config.roles) {
+  for (const role of PUBLIC_ROLES) {
     stats[role] = {};
-    for (const stage of config.stages) {
+    for (const stage of STAGES) {
       stats[role][stage] = await Application.countDocuments({
         role: role,
         completed: false,

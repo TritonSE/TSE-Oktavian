@@ -4,7 +4,7 @@ const JwtStrategy = require("passport-jwt").Strategy,
   ExtractJwt = require("passport-jwt").ExtractJwt;
 
 const { User } = require("../models");
-const config = require("../config");
+const { JWT_SECRET } = require("../constants");
 
 /**
  * Passport initialization is responsible for setting up strategies
@@ -48,7 +48,7 @@ const initializePassport = () => {
     new JwtStrategy(
       {
         jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-        secretOrKey: config.auth.jwt_secret,
+        secretOrKey: JWT_SECRET,
       },
       function (jwt_payload, done) {
         User.findOne({ _id: jwt_payload._id }, function (err, user) {
