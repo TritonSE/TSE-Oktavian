@@ -1,13 +1,13 @@
 const { v4: uuidv4 } = require("uuid");
 
-const config = require("../config");
+const { REGISTER_SECRET } = require("../constants");
 const { User, UserCategory, PasswordReset } = require("../models");
 const { ServiceError } = require("./errors");
 const { sendEmail } = require("./email");
 
 async function createUser(raw_user) {
   let user = await User.findOne({ email: raw_user.email }).exec();
-  if (raw_user.secret !== config.auth.register_secret) {
+  if (raw_user.secret !== REGISTER_SECRET) {
     throw ServiceError(403, "Invalid secret value");
   }
   if (user) {
@@ -41,7 +41,7 @@ async function createUserCategories(roles) {
 }
 
 async function forgotPassword(data) {
-  if (data.secret !== config.auth.register_secret) {
+  if (data.secret !== REGISTER_SECRET) {
     throw ServiceError(403, "Invalid secret value");
   }
   const user = await User.findOne({ email: data.email }).exec();

@@ -2,8 +2,8 @@ const express = require("express");
 const rateLimit = require("express-rate-limit");
 const { body } = require("express-validator");
 
-const { isAuthenticated } = require("../middleware/auth");
-const { isValidated } = require("../middleware/validation");
+const { authorizeUser } = require("../middleware/auth");
+const { validateRequest } = require("../middleware/validation");
 const {
   getAllApplications,
   getApplication,
@@ -12,7 +12,7 @@ const {
 
 const router = express.Router();
 
-router.get("/", isAuthenticated, (req, res, next) => {
+router.get("/", authorizeUser, (req, res, next) => {
   getAllApplications({})
     .then((applications) => {
       res.status(200).json({
@@ -24,7 +24,7 @@ router.get("/", isAuthenticated, (req, res, next) => {
     });
 });
 
-router.get("/:id", isAuthenticated, (req, res, next) => {
+router.get("/:id", authorizeUser, (req, res, next) => {
   getApplication(req.params.id)
     .then((application) => {
       res.status(200).json({
@@ -51,7 +51,7 @@ router.post(
     body("resume").notEmpty().isURL(),
     body("about").notEmpty().isString(),
     body("why").notEmpty().isString(),
-    isValidated,
+    validateRequest,
   ],
   (req, res, next) => {
     createApplication({

@@ -1,5 +1,4 @@
 const express = require("express");
-const passport = require("passport");
 const { body } = require("express-validator");
 const jwt = require("jsonwebtoken");
 
@@ -8,8 +7,9 @@ const {
   forgotPassword,
   resetPassword,
 } = require("../services/users");
-const { isValidated } = require("../middleware/validation");
-const config = require("../config");
+const { authenticateUser } = require("../middleware/auth");
+const { validateRequest } = require("../middleware/validation");
+const { JWT_SECRET } = require("../constants");
 
 const router = express.Router();
 
@@ -21,7 +21,7 @@ router.post(
     body("password").notEmpty().isString().isLength({ min: 6 }),
     body("roles").notEmpty().isArray(),
     body("secret").notEmpty().isString(),
-    isValidated,
+    validateRequest,
   ],
   function (req, res, next) {
     createUser({
@@ -38,7 +38,7 @@ router.post(
           } else {
             res.status(200).json({
               user: req.user,
-              token: jwt.sign(req.user.toJSON(), config.auth.jwt_secret),
+              token: jwt.sign(req.user.toJSON(), JWT_SECRET),
             });
           }
         });
@@ -54,20 +54,24 @@ router.post(
   [
     body("email").isEmail(),
     body("password").isString().isLength({ min: 6 }),
-    isValidated,
-    passport.authenticate("local", { session: false }),
+    validateRequest,
+    authenticateUser,
   ],
   function (req, res) {
     res.status(200).json({
       user: req.user,
-      token: jwt.sign(req.user.toJSON(), config.auth.jwt_secret),
+      token: jwt.sign(req.user.toJSON(), JWT_SECRET),
     });
   }
 );
 
 router.post(
   "/forgot-password",
-  [body("email").isEmail(), body("secret").notEmpty().isString(), isValidated],
+  [
+    body("email").isEmail(),
+    body("secret").notEmpty().isString(),
+    validateRequest,
+  ],
   function (req, res, next) {
     forgotPassword({
       email: req.body.email,
@@ -87,7 +91,7 @@ router.post(
   [
     body("token").isUUID(4),
     body("password").isString().isLength({ min: 6 }),
-    isValidated,
+    validateRequest,
   ],
   function (req, res, next) {
     resetPassword({

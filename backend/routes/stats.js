@@ -1,8 +1,8 @@
 const express = require("express");
 
 const { query } = require("express-validator");
-const { isAuthenticated } = require("../middleware/auth");
-const { isValidated } = require("../middleware/validation");
+const { authorizeUser } = require("../middleware/auth");
+const { validateRequest } = require("../middleware/validation");
 const { getApplicationStats } = require("../services/stats");
 
 const router = express.Router();
@@ -10,10 +10,10 @@ const router = express.Router();
 router.get(
   "/",
   [
-    isAuthenticated,
+    authorizeUser,
     query("start_date").notEmpty().isNumeric().toInt(),
     query("end_date").notEmpty().isNumeric().toInt(),
-    isValidated,
+    validateRequest,
   ],
   (req, res, next) => {
     getApplicationStats(

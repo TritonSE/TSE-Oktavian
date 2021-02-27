@@ -1,4 +1,4 @@
-const config = require("../config");
+const { STAGES, PUBLIC_ROLES, FINAL_ROLE } = require("../constants");
 const { Application, Review, UserCategory } = require("../models");
 const { ServiceError } = require("./errors");
 const { sendEmail } = require("./email");
@@ -29,8 +29,8 @@ async function assignApplication(application, reviewer) {
 async function autoAssignApplication(application) {
   let role = application.role;
   // Special case: president(s) make the final decision
-  if (application.current_stage === config.stages[config.stages.length - 1]) {
-    role = config.final_role;
+  if (application.current_stage === STAGES[STAGES.length - 1]) {
+    role = FINAL_ROLE;
   }
   const category = await UserCategory.findOne({ role: role })
     .populate("users")
@@ -73,18 +73,18 @@ async function advanceApplication(application, review_accepted) {
   const old_accepted = application.accepted;
   const old_stage = application.current_stage;
   if (review_accepted) {
-    if (application.current_stage === config.stages[config.stages.length - 1]) {
+    if (application.current_stage === STAGES[STAGES.length - 1]) {
       application.completed = true;
       application.accepted = true;
     } else {
-      const idx = config.stages.indexOf(application.current_stage);
+      const idx = STAGES.indexOf(application.current_stage);
       if (idx === -1) {
         throw ServiceError(
           400,
           "Application has invalid stage '" + application.current_stage + "'"
         );
       }
-      application.current_stage = config.stages[idx + 1];
+      application.current_stage = STAGES[idx + 1];
     }
   } else {
     application.completed = true;
@@ -123,7 +123,7 @@ async function advanceApplication(application, review_accepted) {
  * raw_application = { name: ..., role: ..., year: ..., etc. }
  */
 async function createApplication(raw_application) {
-  if (!config.roles.includes(raw_application.role)) {
+  if (!PUBLIC_ROLES.includes(raw_application.role)) {
     throw ServiceError(400, "Invalid application role");
   }
   let application = await Application.findOne({

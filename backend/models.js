@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
-const config = require("./config");
+const { STAGES } = require("./constants");
 const Schema = mongoose.Schema;
 
 /*
@@ -51,7 +51,7 @@ const ApplicationSchema = new Schema(
     current_stage: {
       type: String,
       required: true,
-      default: config.stages[0],
+      default: STAGES[0],
     },
     completed: {
       type: Boolean,
