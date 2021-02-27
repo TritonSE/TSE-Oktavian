@@ -4,9 +4,9 @@ import { Grid, Snackbar, LinearProgress } from "@material-ui/core";
 import { Visibility } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import MaterialTable from "@material-table/core";
+import { TableIcons } from "../components/Icons";
 import { isAuthenticated, getJWT, logout } from "../util/auth";
 import { BACKEND_URL } from "../util/constants";
-import { tableIcons } from "../util/icons";
 
 const useStyles = makeStyles(() => ({
   grid: {
@@ -118,7 +118,7 @@ export default function Applications() {
           <LinearProgress />
         ) : (
           <MaterialTable
-            icons={tableIcons}
+            icons={TableIcons}
             actions={[
               {
                 icon: function visibility() {

@@ -16,7 +16,7 @@ import SaveAlt from "@material-ui/icons/SaveAlt";
 import Search from "@material-ui/icons/Search";
 import ViewColumn from "@material-ui/icons/ViewColumn";
 
-const tableIcons = {
+const TableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
   Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
   Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
@@ -40,22 +40,22 @@ const tableIcons = {
   ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />),
 };
 
-tableIcons.Add.displayName = "Add";
-tableIcons.Check.displayName = "Check";
-tableIcons.Clear.displayName = "Clear";
-tableIcons.Delete.displayName = "Delete";
-tableIcons.DetailPanel.displayName = "DetailPanel";
-tableIcons.Edit.displayName = "Edit";
-tableIcons.Export.displayName = "Export";
-tableIcons.Filter.displayName = "Filter";
-tableIcons.FirstPage.displayName = "FirstPage";
-tableIcons.LastPage.displayName = "LastPage";
-tableIcons.NextPage.displayName = "NextPage";
-tableIcons.PreviousPage.displayName = "PreviousPage";
-tableIcons.ResetSearch.displayName = "ResetSearch";
-tableIcons.Search.displayName = "Search";
-tableIcons.SortArrow.displayName = "SortArrow";
-tableIcons.ThirdStateCheck.displayName = "ThirdStateCheck";
-tableIcons.ViewColumn.displayName = "ViewColumn";
+TableIcons.Add.displayName = "Add";
+TableIcons.Check.displayName = "Check";
+TableIcons.Clear.displayName = "Clear";
+TableIcons.Delete.displayName = "Delete";
+TableIcons.DetailPanel.displayName = "DetailPanel";
+TableIcons.Edit.displayName = "Edit";
+TableIcons.Export.displayName = "Export";
+TableIcons.Filter.displayName = "Filter";
+TableIcons.FirstPage.displayName = "FirstPage";
+TableIcons.LastPage.displayName = "LastPage";
+TableIcons.NextPage.displayName = "NextPage";
+TableIcons.PreviousPage.displayName = "PreviousPage";
+TableIcons.ResetSearch.displayName = "ResetSearch";
+TableIcons.Search.displayName = "Search";
+TableIcons.SortArrow.displayName = "SortArrow";
+TableIcons.ThirdStateCheck.displayName = "ThirdStateCheck";
+TableIcons.ViewColumn.displayName = "ViewColumn";
 
-export { tableIcons };
+export { TableIcons };
