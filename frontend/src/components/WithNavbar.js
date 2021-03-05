@@ -25,7 +25,7 @@ import {
 } from "@material-ui/icons";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { Link, useHistory } from "react-router-dom";
-import { isAuthenticated, logout } from "../util/auth";
+import { isAuthenticated, logout } from "../services/auth";
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
@@ -211,6 +211,6 @@ export default function WithNavbar({ window, children }) {
 }
 
 WithNavbar.propTypes = {
-  children: PropTypes.element,
+  children: PropTypes.any,
   window: PropTypes.instanceOf(window.constructor),
 };

@@ -17,7 +17,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { setJWT, setUser } from "../util/auth";
+import { setJWT, setUser } from "../services/auth";
 import { BACKEND_URL } from "../util/constants";
 
 const useStyles = makeStyles((theme) => ({

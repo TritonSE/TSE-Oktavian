@@ -1,15 +1,13 @@
 import React from "react";
+import WithData from "../components/WithData";
 import WithAuthentication from "../components/WithAuthentication";
 import WithNavbar from "../components/WithNavbar";
 import { Helmet } from "react-helmet";
-import { useHistory } from "react-router-dom";
-import { Grid, Snackbar, LinearProgress } from "@material-ui/core";
+import { Grid, Snackbar } from "@material-ui/core";
 import { Visibility } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import MaterialTable from "@material-table/core";
 import { TableIcons } from "../components/Icons";
-import { getJWT, logout } from "../util/auth";
-import { BACKEND_URL } from "../util/constants";
 
 const useStyles = makeStyles(() => ({
   grid: {
@@ -19,83 +17,36 @@ const useStyles = makeStyles(() => ({
 
 export default function Applications() {
   const classes = useStyles();
-  const history = useHistory();
   const [state, setState] = React.useState({
     snack: {
       message: "",
       open: false,
     },
-    loading: true,
+    reloading: true,
     applications: [],
   });
 
-  React.useEffect(() => {
-    if (state.loading) {
-      fetch(`${BACKEND_URL}/api/applications`, {
-        headers: {
-          Authorization: `Bearer ${getJWT()}`,
-        },
-      })
-        .then((response) => {
-          response
-            .json()
-            .then((json) => {
-              if (response.ok) {
-                const applications = json.applications.map((row) => {
-                  return {
-                    _id: row._id,
-                    name: row.name,
-                    email: row.email,
-                    role: row.role,
-                    stage: row.current_stage,
-                    graduation: row.graduation,
-                    submission: new Date(row.created_at).getFullYear(),
-                    completed: row.completed,
-                    accepted: row.accepted,
-                  };
-                });
-                setState({
-                  ...state,
-                  loading: false,
-                  applications: applications,
-                });
-              } else if (response.status === 401) {
-                logout();
-                history.push("/");
-              } else {
-                setState({
-                  ...state,
-                  loading: false,
-                  snack: {
-                    message: `Could not load applications: ${json.message}`,
-                    open: true,
-                  },
-                });
-              }
-            })
-            .catch((error) => {
-              setState({
-                ...state,
-                loading: false,
-                snack: {
-                  message: `An error occurred: ${error.message}`,
-                  open: true,
-                },
-              });
-            });
-        })
-        .catch((error) => {
-          setState({
-            ...state,
-            loading: false,
-            snack: {
-              message: `An error occurred: ${error.message}`,
-              open: true,
-            },
-          });
-        });
-    }
-  });
+  const handleData = (data) => {
+    const applications = data.applications.map((app) => {
+      return { ...app, submission: new Date(app.created_at).getFullYear() };
+    });
+    setState({
+      ...state,
+      reloading: false,
+      applications: applications,
+    });
+  };
+
+  const handleError = (data) => {
+    setState({
+      ...state,
+      snack: {
+        message: `Error: ${data.message}`,
+        open: true,
+      },
+      reloading: false,
+    });
+  };
 
   const handleSnackClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -106,21 +57,25 @@ export default function Applications() {
 
   return (
     <WithAuthentication allow={true}>
-      <Helmet>
-        <title>Oktavian — All Applications</title>
-      </Helmet>
       <WithNavbar>
-        <Grid
-          container
-          spacing={0}
-          alignItems="center"
-          justify="center"
-          className={classes.grid}
+        <WithData
+          slug="api/applications"
+          authenticated={true}
+          reloading={state.reloading}
+          onSuccess={handleData}
+          onError={handleError}
         >
-          <Grid item xs={12}>
-            {state.loading ? (
-              <LinearProgress />
-            ) : (
+          <Helmet>
+            <title>Oktavian — All Applications</title>
+          </Helmet>
+          <Grid
+            container
+            spacing={0}
+            alignItems="center"
+            justify="center"
+            className={classes.grid}
+          >
+            <Grid item xs={12}>
               <MaterialTable
                 icons={TableIcons}
                 actions={[
@@ -152,7 +107,7 @@ export default function Applications() {
                   { title: "Name", field: "name" },
                   { title: "Email", field: "email" },
                   { title: "Position", field: "role" },
-                  { title: "Stage", field: "stage" },
+                  { title: "Stage", field: "current_stage" },
                   {
                     title: "Graduating In",
                     field: "graduation",
@@ -169,15 +124,15 @@ export default function Applications() {
                 data={state.applications}
                 title="All Applications"
               />
-            )}
+            </Grid>
+            <Snackbar
+              open={state.snack.open}
+              autoHideDuration={6000}
+              onClose={handleSnackClose}
+              message={state.snack.message}
+            />
           </Grid>
-          <Snackbar
-            open={state.snack.open}
-            autoHideDuration={6000}
-            onClose={handleSnackClose}
-            message={state.snack.message}
-          />
-        </Grid>
+        </WithData>
       </WithNavbar>
     </WithAuthentication>
   );

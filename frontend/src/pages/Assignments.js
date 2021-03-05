@@ -8,7 +8,7 @@ import { Edit } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import MaterialTable from "@material-table/core";
 import { TableIcons } from "../components/Icons";
-import { getJWT, getUser, logout } from "../util/auth";
+import { getJWT, getUser, logout } from "../services/auth";
 import { BACKEND_URL } from "../util/constants";
 
 const useStyles = makeStyles(() => ({

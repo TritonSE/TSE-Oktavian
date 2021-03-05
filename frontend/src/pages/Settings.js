@@ -12,7 +12,7 @@ import {
 import WithAuthentication from "../components/WithAuthentication";
 import WithNavbar from "../components/WithNavbar";
 import { makeStyles } from "@material-ui/core/styles";
-import { getUser } from "../util/auth";
+import { getUser } from "../services/auth";
 
 const useStyles = makeStyles((theme) => ({
   grid: {

@@ -23,7 +23,7 @@ import {
 } from "@material-ui/core";
 import { ExitToApp } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
-import { getJWT, logout, getUser } from "../util/auth";
+import { getJWT, logout, getUser } from "../services/auth";
 import { BACKEND_URL } from "../util/constants";
 import { toTitleCase } from "../util/typography";
 

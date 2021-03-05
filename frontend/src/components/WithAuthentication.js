@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import { Redirect } from "react-router-dom";
-import { isAuthenticated } from "../util/auth";
+import { isAuthenticated } from "../services/auth";
 
 export default function WithAuthentication({ allow, children }) {
   if ((allow && !isAuthenticated()) || (!allow && isAuthenticated())) {
@@ -13,5 +13,5 @@ export default function WithAuthentication({ allow, children }) {
 
 WithAuthentication.propTypes = {
   allow: PropTypes.bool,
-  children: PropTypes.element,
+  children: PropTypes.any,
 };
