@@ -5,7 +5,7 @@ import { Visibility } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import MaterialTable from "@material-table/core";
 import { TableIcons } from "../components/Icons";
-import { isAuthenticated, getJWT, logout } from "../util/auth";
+import { getJWT, logout } from "../util/auth";
 import { BACKEND_URL } from "../util/constants";
 
 const useStyles = makeStyles(() => ({
@@ -27,10 +27,6 @@ export default function Applications() {
   });
 
   React.useEffect(() => {
-    if (!isAuthenticated()) {
-      history.push("/");
-      return;
-    }
     if (state.loading) {
       fetch(`${BACKEND_URL}/api/applications`, {
         headers: {

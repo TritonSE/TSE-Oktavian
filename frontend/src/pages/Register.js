@@ -1,5 +1,5 @@
 import React from "react";
-import { Redirect, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import {
   TextField,
   Button,
@@ -14,7 +14,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { isAuthenticated, setJWT, setUser } from "../util/auth";
+import { setJWT, setUser } from "../util/auth";
 import { BACKEND_URL } from "../util/constants";
 
 const useStyles = makeStyles((theme) => ({
@@ -173,9 +173,7 @@ export default function Register() {
     setState({ ...state, snack: { ...state.snack, open: false } });
   };
 
-  return isAuthenticated() ? (
-    <Redirect to="/" />
-  ) : (
+  return (
     <Grid container spacing={0} alignItems="center" justify="center">
       <Grid item md={6} xs={12}>
         <Typography variant="h4" className={classes.title}>

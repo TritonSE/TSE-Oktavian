@@ -5,7 +5,7 @@ import { Edit } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import MaterialTable from "@material-table/core";
 import { TableIcons } from "../components/Icons";
-import { isAuthenticated, getJWT, getUser, logout } from "../util/auth";
+import { getJWT, getUser, logout } from "../util/auth";
 import { BACKEND_URL } from "../util/constants";
 
 const useStyles = makeStyles(() => ({
@@ -27,10 +27,6 @@ export default function Assignments() {
   });
 
   React.useEffect(() => {
-    if (!isAuthenticated()) {
-      history.push("/");
-      return;
-    }
     const fetchData = async () => {
       try {
         let response = await fetch(

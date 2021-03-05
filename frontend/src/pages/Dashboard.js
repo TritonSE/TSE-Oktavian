@@ -11,7 +11,7 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import DateFnsUtils from "@date-io/date-fns";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
-import { isAuthenticated, getJWT, logout } from "../util/auth";
+import { getJWT, logout } from "../util/auth";
 import { BACKEND_URL } from "../util/constants";
 import { toTitleCase } from "../util/typography";
 
@@ -99,10 +99,6 @@ export default function Dashboard() {
   };
 
   React.useEffect(() => {
-    if (!isAuthenticated()) {
-      history.push("/");
-      return;
-    }
     if (state.loading) {
       refreshStats();
     }

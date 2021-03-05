@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import ForceAuthentication from "./components/ForceAuthentication";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -18,53 +19,72 @@ export default function App() {
     <Router>
       <Switch>
         <Route exact={true} path="/login">
-          <Navbar component={<Login />} title="Login" />
+          <ForceAuthentication allow={false}>
+            <Navbar component={<Login />} title="Login" />
+          </ForceAuthentication>
         </Route>
         <Route exact={true} path="/register">
-          <Navbar component={<Register />} title="Register" />
-        </Route>
-        <Route exact={true} path="/create-application">
-          <Navbar
-            component={<CreateApplication />}
-            title="Create Application"
-          />
+          <ForceAuthentication allow={false}>
+            <Navbar component={<Register />} title="Register" />
+          </ForceAuthentication>
         </Route>
         <Route exact={true} path="/forgot-password">
-          <Navbar component={<ForgotPassword />} title="Forgot Password" />
+          <ForceAuthentication allow={false}>
+            <Navbar component={<ForgotPassword />} title="Forgot Password" />
+          </ForceAuthentication>
         </Route>
         <Route
           path="/reset-password/:token"
           component={({ match }) => {
             return (
-              <Navbar
-                component={<ResetPassword match={match} />}
-                title="Reset Password"
-              />
+              <ForceAuthentication allow={false}>
+                <Navbar
+                  component={<ResetPassword match={match} />}
+                  title="Reset Password"
+                />
+              </ForceAuthentication>
             );
           }}
         />
         <Route exact={true} path="/dashboard">
-          <Navbar component={<Dashboard />} title="Dashboard" />
+          <ForceAuthentication allow={true}>
+            <Navbar component={<Dashboard />} title="Dashboard" />
+          </ForceAuthentication>
         </Route>
         <Route exact={true} path="/applications">
-          <Navbar component={<Applications />} title="All Applications" />
+          <ForceAuthentication allow={true}>
+            <Navbar component={<Applications />} title="All Applications" />
+          </ForceAuthentication>
         </Route>
         <Route
           path="/application/:appid"
           component={({ match }) => {
             return (
-              <Navbar
-                component={<Application match={match} />}
-                title="Viewing Application"
-              />
+              <ForceAuthentication allow={true}>
+                <Navbar
+                  component={<Application match={match} />}
+                  title="Viewing Application"
+                />
+              </ForceAuthentication>
             );
           }}
         />
         <Route exact={true} path="/assignments">
-          <Navbar component={<Assignments />} title="Your Assignments" />
+          <ForceAuthentication allow={true}>
+            <Navbar component={<Assignments />} title="Your Assignments" />
+          </ForceAuthentication>
         </Route>
         <Route exact={true} path="/settings">
-          <Navbar component={<Settings />} title="Settings" />
+          <ForceAuthentication allow={true}>
+            <Navbar component={<Settings />} title="Settings" />
+          </ForceAuthentication>
+        </Route>
+        <Route exact={true} path="/create-application">
+          {/* Authentication does not matter here */}
+          <Navbar
+            component={<CreateApplication />}
+            title="Create Application"
+          />
         </Route>
         <Route path="/">
           <Navbar component={<Home />} title="Home" />

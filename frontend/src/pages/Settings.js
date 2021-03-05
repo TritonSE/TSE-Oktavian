@@ -1,5 +1,4 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
 import {
   TextField,
   Grid,
@@ -10,7 +9,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { isAuthenticated, getUser } from "../util/auth";
+import { getUser } from "../util/auth";
 
 const useStyles = makeStyles((theme) => ({
   grid: {
@@ -39,7 +38,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Settings() {
   const classes = useStyles();
-  const history = useHistory();
   const [state, setState] = React.useState({
     snack: {
       message: "",
@@ -49,13 +47,6 @@ export default function Settings() {
     old_password: "",
     new_password: "",
     confirm_password: "",
-  });
-
-  React.useEffect(() => {
-    if (!isAuthenticated()) {
-      history.push("/");
-      return;
-    }
   });
 
   const handleChange = (prop) => (event) => {

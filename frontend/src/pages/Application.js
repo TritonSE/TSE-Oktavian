@@ -20,7 +20,7 @@ import {
 } from "@material-ui/core";
 import { ExitToApp } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
-import { isAuthenticated, getJWT, logout, getUser } from "../util/auth";
+import { getJWT, logout, getUser } from "../util/auth";
 import { BACKEND_URL } from "../util/constants";
 import { toTitleCase } from "../util/typography";
 
@@ -68,10 +68,6 @@ export default function Application({ match }) {
   });
 
   React.useEffect(() => {
-    if (!isAuthenticated()) {
-      history.push("/");
-      return;
-    }
     const fetchData = async () => {
       try {
         let response = await fetch(
