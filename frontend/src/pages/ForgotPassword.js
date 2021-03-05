@@ -1,6 +1,7 @@
 import React from "react";
 import WithAuthentication from "../components/WithAuthentication";
 import WithNavbar from "../components/WithNavbar";
+import { Helmet } from "react-helmet";
 import {
   TextField,
   Button,
@@ -112,7 +113,10 @@ export default function ForgotPassword() {
 
   return (
     <WithAuthentication allow={false}>
-      <WithNavbar title="Forgot Password">
+      <Helmet>
+        <title>Oktavian — Forgot Password</title>
+      </Helmet>
+      <WithNavbar>
         <Grid container spacing={0} alignItems="center" justify="center">
           <Grid item md={6} xs={12}>
             <Typography variant="h4" className={classes.title}>

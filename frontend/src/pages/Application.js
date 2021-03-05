@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import WithAuthentication from "../components/WithAuthentication";
 import WithNavbar from "../components/WithNavbar";
 import { useHistory } from "react-router-dom";
+import { Helmet } from "react-helmet";
 import {
   FormLabel,
   Checkbox,
@@ -260,6 +261,13 @@ export default function Application({ match }) {
 
   return (
     <WithAuthentication allow={true}>
+      <Helmet>
+        <title>
+          {state.loading
+            ? "Oktavian — Loading Application"
+            : `Oktavian — ${state.application.name}'s Application`}
+        </title>
+      </Helmet>
       <WithNavbar title="Viewing Application">
         <Grid
           container

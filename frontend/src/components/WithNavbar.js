@@ -65,14 +65,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function WithNavbar({ window, children, title }) {
+export default function WithNavbar({ window, children }) {
   const history = useHistory();
   const classes = useStyles();
   const theme = useTheme();
   const [state, setState] = React.useState(false);
-  React.useEffect(() => {
-    document.title = `Oktavian — ${title}`;
-  }, [title]);
 
   const handleDrawerToggle = () => {
     setState(!state);
@@ -214,7 +211,6 @@ export default function WithNavbar({ window, children, title }) {
 }
 
 WithNavbar.propTypes = {
-  title: PropTypes.string,
   children: PropTypes.element,
   window: PropTypes.instanceOf(window.constructor),
 };

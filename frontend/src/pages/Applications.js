@@ -1,6 +1,7 @@
 import React from "react";
 import WithAuthentication from "../components/WithAuthentication";
 import WithNavbar from "../components/WithNavbar";
+import { Helmet } from "react-helmet";
 import { useHistory } from "react-router-dom";
 import { Grid, Snackbar, LinearProgress } from "@material-ui/core";
 import { Visibility } from "@material-ui/icons";
@@ -105,7 +106,10 @@ export default function Applications() {
 
   return (
     <WithAuthentication allow={true}>
-      <WithNavbar title="All Applications">
+      <Helmet>
+        <title>Oktavian — All Applications</title>
+      </Helmet>
+      <WithNavbar>
         <Grid
           container
           spacing={0}

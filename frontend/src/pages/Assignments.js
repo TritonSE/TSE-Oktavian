@@ -1,6 +1,7 @@
 import React from "react";
 import WithAuthentication from "../components/WithAuthentication";
 import WithNavbar from "../components/WithNavbar";
+import { Helmet } from "react-helmet";
 import { useHistory } from "react-router-dom";
 import { Grid, Snackbar, LinearProgress } from "@material-ui/core";
 import { Edit } from "@material-ui/icons";
@@ -94,7 +95,10 @@ export default function Assignments() {
 
   return (
     <WithAuthentication allow={true}>
-      <WithNavbar title="Your Assignments">
+      <Helmet>
+        <title>Oktavian — Your Assignments</title>
+      </Helmet>
+      <WithNavbar>
         <Grid
           container
           spacing={0}

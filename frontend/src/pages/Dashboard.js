@@ -1,6 +1,8 @@
 import React from "react";
+import DateFnsUtils from "@date-io/date-fns";
 import WithAuthentication from "../components/WithAuthentication";
 import WithNavbar from "../components/WithNavbar";
+import { Helmet } from "react-helmet";
 import { useHistory } from "react-router-dom";
 import {
   Card,
@@ -11,7 +13,6 @@ import {
   Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import DateFnsUtils from "@date-io/date-fns";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import { getJWT, logout } from "../util/auth";
 import { BACKEND_URL } from "../util/constants";
@@ -144,7 +145,10 @@ export default function Dashboard() {
 
   return (
     <WithAuthentication allow={true}>
-      <WithNavbar title="Dashboard">
+      <Helmet>
+        <title>Oktavian — Dashboard</title>
+      </Helmet>
+      <WithNavbar>
         <Grid
           container
           spacing={0}

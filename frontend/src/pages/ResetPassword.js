@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import WithAuthentication from "../components/WithAuthentication";
 import WithNavbar from "../components/WithNavbar";
+import { Helmet } from "react-helmet";
 import { useHistory } from "react-router-dom";
 import {
   TextField,
@@ -122,7 +123,10 @@ export default function ResetPassword({ match }) {
 
   return (
     <WithAuthentication allow={false}>
-      <WithNavbar title="Reset Password">
+      <Helmet>
+        <title>Oktavian — Reset Password</title>
+      </Helmet>
+      <WithNavbar>
         <Grid container spacing={0} alignItems="center" justify="center">
           <Grid item md={6} xs={12}>
             <Typography variant="h4" className={classes.title}>

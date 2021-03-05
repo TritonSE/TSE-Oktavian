@@ -1,4 +1,5 @@
 import React from "react";
+import { Helmet } from "react-helmet";
 import {
   TextField,
   Grid,
@@ -64,7 +65,10 @@ export default function Settings() {
 
   return (
     <WithAuthentication allow={true}>
-      <WithNavbar title="Settings">
+      <Helmet>
+        <title>Oktavian — Settings</title>
+      </Helmet>
+      <WithNavbar>
         <Grid
           container
           spacing={0}

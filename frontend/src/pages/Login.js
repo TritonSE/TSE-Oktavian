@@ -1,6 +1,7 @@
 import React from "react";
 import WithAuthentication from "../components/WithAuthentication";
 import WithNavbar from "../components/WithNavbar";
+import { Helmet } from "react-helmet";
 import { Link, useHistory } from "react-router-dom";
 import {
   TextField,
@@ -123,7 +124,10 @@ export default function Login() {
 
   return (
     <WithAuthentication allow={false}>
-      <WithNavbar title="Login">
+      <Helmet>
+        <title>Oktavian — Login</title>
+      </Helmet>
+      <WithNavbar>
         <Grid container spacing={0} alignItems="center" justify="center">
           <Grid item md={6} xs={12}>
             <Typography variant="h4" className={classes.title}>
