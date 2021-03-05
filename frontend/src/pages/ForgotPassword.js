@@ -1,4 +1,6 @@
 import React from "react";
+import WithAuthentication from "../components/WithAuthentication";
+import WithNavbar from "../components/WithNavbar";
 import {
   TextField,
   Button,
@@ -109,44 +111,48 @@ export default function ForgotPassword() {
   };
 
   return (
-    <Grid container spacing={0} alignItems="center" justify="center">
-      <Grid item md={6} xs={12}>
-        <Typography variant="h4" className={classes.title}>
-          Recover Your Password
-        </Typography>
-        <form className={classes.form} onSubmit={handleSubmit}>
-          <TextField
-            label="Email"
-            variant="outlined"
-            type="email"
-            onChange={handleChange("email")}
+    <WithAuthentication allow={false}>
+      <WithNavbar title="Forgot Password">
+        <Grid container spacing={0} alignItems="center" justify="center">
+          <Grid item md={6} xs={12}>
+            <Typography variant="h4" className={classes.title}>
+              Recover Your Password
+            </Typography>
+            <form className={classes.form} onSubmit={handleSubmit}>
+              <TextField
+                label="Email"
+                variant="outlined"
+                type="email"
+                onChange={handleChange("email")}
+              />
+              <FormHelperText className={classes.lightSpacing}>
+                You should expect an email within a few minutes. The reset token
+                will expire within 1 hour.
+              </FormHelperText>
+              <TextField
+                label="Secret"
+                variant="outlined"
+                type="password"
+                onChange={handleChange("secret")}
+              />
+              <FormHelperText className={classes.lightSpacing}>
+                This secret is only distributed internally.
+              </FormHelperText>
+              <div className={classes.centered}>
+                <Button variant="contained" color="primary" type="submit">
+                  Submit
+                </Button>
+              </div>
+            </form>
+          </Grid>
+          <Snackbar
+            open={state.snack.open}
+            autoHideDuration={6000}
+            onClose={handleSnackClose}
+            message={state.snack.message}
           />
-          <FormHelperText className={classes.lightSpacing}>
-            You should expect an email within a few minutes. The reset token
-            will expire within 1 hour.
-          </FormHelperText>
-          <TextField
-            label="Secret"
-            variant="outlined"
-            type="password"
-            onChange={handleChange("secret")}
-          />
-          <FormHelperText className={classes.lightSpacing}>
-            This secret is only distributed internally.
-          </FormHelperText>
-          <div className={classes.centered}>
-            <Button variant="contained" color="primary" type="submit">
-              Submit
-            </Button>
-          </div>
-        </form>
-      </Grid>
-      <Snackbar
-        open={state.snack.open}
-        autoHideDuration={6000}
-        onClose={handleSnackClose}
-        message={state.snack.message}
-      />
-    </Grid>
+        </Grid>
+      </WithNavbar>
+    </WithAuthentication>
   );
 }

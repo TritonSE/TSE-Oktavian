@@ -65,7 +65,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Navbar({ window, component, title }) {
+export default function WithNavbar({ window, children, title }) {
   const history = useHistory();
   const classes = useStyles();
   const theme = useTheme();
@@ -207,14 +207,14 @@ export default function Navbar({ window, component, title }) {
       </nav>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-        {component}
+        {children}
       </main>
     </div>
   );
 }
 
-Navbar.propTypes = {
+WithNavbar.propTypes = {
   title: PropTypes.string,
-  component: PropTypes.element,
+  children: PropTypes.element,
   window: PropTypes.instanceOf(window.constructor),
 };

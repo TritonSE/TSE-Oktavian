@@ -1,4 +1,6 @@
 import React from "react";
+import WithAuthentication from "../components/WithAuthentication";
+import WithNavbar from "../components/WithNavbar";
 import { useHistory } from "react-router-dom";
 import {
   Card,
@@ -141,63 +143,67 @@ export default function Dashboard() {
   };
 
   return (
-    <Grid
-      container
-      spacing={0}
-      alignItems="center"
-      justify="center"
-      className={classes.centered}
-    >
-      <Grid item xs={12}>
-        {state.loading ? (
-          <div>
-            <LinearProgress />
-          </div>
-        ) : (
-          <div>
-            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-              <Grid container spacing={3}>
-                <Grid item md={6} xs={12}>
-                  <DatePicker
-                    label="Start Date"
-                    format="MM/dd/yyyy"
-                    value={state.start_date}
-                    onChange={handleStartDateChange}
-                  />
+    <WithAuthentication allow={true}>
+      <WithNavbar title="Dashboard">
+        <Grid
+          container
+          spacing={0}
+          alignItems="center"
+          justify="center"
+          className={classes.centered}
+        >
+          <Grid item xs={12}>
+            {state.loading ? (
+              <div>
+                <LinearProgress />
+              </div>
+            ) : (
+              <div>
+                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                  <Grid container spacing={3}>
+                    <Grid item md={6} xs={12}>
+                      <DatePicker
+                        label="Start Date"
+                        format="MM/dd/yyyy"
+                        value={state.start_date}
+                        onChange={handleStartDateChange}
+                      />
+                    </Grid>
+                    <Grid item md={6} xs={12}>
+                      <DatePicker
+                        label="End Date"
+                        format="MM/dd/yyyy"
+                        value={state.end_date}
+                        onChange={handleEndDateChange}
+                      />
+                    </Grid>
+                  </Grid>
+                </MuiPickersUtilsProvider>
+                <Typography variant="h4" className={classes.title}>
+                  Dashboard
+                </Typography>
+                <Grid container spacing={3}>
+                  <Grid item md={4} xs={12}>
+                    {getPositionStats("DEVELOPER")}
+                  </Grid>
+                  <Grid item md={4} xs={12}>
+                    {getPositionStats("DESIGNER")}
+                  </Grid>
+                  <Grid item md={4} xs={12}>
+                    {getPositionStats("PROJECT_MANAGER")}
+                  </Grid>
                 </Grid>
-                <Grid item md={6} xs={12}>
-                  <DatePicker
-                    label="End Date"
-                    format="MM/dd/yyyy"
-                    value={state.end_date}
-                    onChange={handleEndDateChange}
-                  />
-                </Grid>
-              </Grid>
-            </MuiPickersUtilsProvider>
-            <Typography variant="h4" className={classes.title}>
-              Dashboard
-            </Typography>
-            <Grid container spacing={3}>
-              <Grid item md={4} xs={12}>
-                {getPositionStats("DEVELOPER")}
-              </Grid>
-              <Grid item md={4} xs={12}>
-                {getPositionStats("DESIGNER")}
-              </Grid>
-              <Grid item md={4} xs={12}>
-                {getPositionStats("PROJECT_MANAGER")}
-              </Grid>
-            </Grid>
-          </div>
-        )}
-      </Grid>
-      <Snackbar
-        open={state.snack.open}
-        autoHideDuration={6000}
-        onClose={handleSnackClose}
-        message={state.snack.message}
-      />
-    </Grid>
+              </div>
+            )}
+          </Grid>
+          <Snackbar
+            open={state.snack.open}
+            autoHideDuration={6000}
+            onClose={handleSnackClose}
+            message={state.snack.message}
+          />
+        </Grid>
+      </WithNavbar>
+    </WithAuthentication>
   );
 }

@@ -1,4 +1,6 @@
 import React from "react";
+import WithAuthentication from "../components/WithAuthentication";
+import WithNavbar from "../components/WithNavbar";
 import { useHistory } from "react-router-dom";
 import {
   TextField,
@@ -174,105 +176,109 @@ export default function Register() {
   };
 
   return (
-    <Grid container spacing={0} alignItems="center" justify="center">
-      <Grid item md={6} xs={12}>
-        <Typography variant="h4" className={classes.title}>
-          Register
-        </Typography>
-        <form className={classes.form} onSubmit={handleSubmit}>
-          <TextField
-            label="Name"
-            variant="outlined"
-            type="text"
-            onChange={handleChange("name")}
-          />
-          <TextField
-            label="Email"
-            variant="outlined"
-            type="email"
-            onChange={handleChange("email")}
-          />
-          <TextField
-            label="Password"
-            variant="outlined"
-            type="password"
-            onChange={handleChange("password")}
-          />
-          <FormControl>
-            <FormLabel component="legend">
-              What types of applications are you responsible for?
-            </FormLabel>
-            <FormGroup>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    onChange={handleChecked("role_project_manager")}
-                    name="role-project-manager"
-                  />
-                }
-                label="Project Managers"
+    <WithAuthentication allow={false}>
+      <WithNavbar title="Register">
+        <Grid container spacing={0} alignItems="center" justify="center">
+          <Grid item md={6} xs={12}>
+            <Typography variant="h4" className={classes.title}>
+              Register
+            </Typography>
+            <form className={classes.form} onSubmit={handleSubmit}>
+              <TextField
+                label="Name"
+                variant="outlined"
+                type="text"
+                onChange={handleChange("name")}
               />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    onChange={handleChecked("role_developer")}
-                    name="role-developer"
-                  />
-                }
-                label="Developers"
+              <TextField
+                label="Email"
+                variant="outlined"
+                type="email"
+                onChange={handleChange("email")}
               />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    onChange={handleChecked("role_designer")}
-                    name="role-designer"
-                  />
-                }
-                label="Designers"
+              <TextField
+                label="Password"
+                variant="outlined"
+                type="password"
+                onChange={handleChange("password")}
               />
-            </FormGroup>
-          </FormControl>
-          <FormControl>
-            <FormLabel component="legend">
-              Are you cleared to make final decisions?
-            </FormLabel>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  onChange={handleChecked("role_final")}
-                  name="role-final"
+              <FormControl>
+                <FormLabel component="legend">
+                  What types of applications are you responsible for?
+                </FormLabel>
+                <FormGroup>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        onChange={handleChecked("role_project_manager")}
+                        name="role-project-manager"
+                      />
+                    }
+                    label="Project Managers"
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        onChange={handleChecked("role_developer")}
+                        name="role-developer"
+                      />
+                    }
+                    label="Developers"
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        onChange={handleChecked("role_designer")}
+                        name="role-designer"
+                      />
+                    }
+                    label="Designers"
+                  />
+                </FormGroup>
+              </FormControl>
+              <FormControl>
+                <FormLabel component="legend">
+                  Are you cleared to make final decisions?
+                </FormLabel>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      onChange={handleChecked("role_final")}
+                      name="role-final"
+                    />
+                  }
+                  label="Yes"
                 />
-              }
-              label="Yes"
-            />
-            <FormHelperText>
-              Do not select this unless you are the president. Your registration
-              will be flagged.
-            </FormHelperText>
-          </FormControl>
-          <TextField
-            label="Secret"
-            variant="outlined"
-            type="password"
-            onChange={handleChange("secret")}
+                <FormHelperText>
+                  Do not select this unless you are the president. Your
+                  registration will be flagged.
+                </FormHelperText>
+              </FormControl>
+              <TextField
+                label="Secret"
+                variant="outlined"
+                type="password"
+                onChange={handleChange("secret")}
+              />
+              <FormHelperText className={classes.lightSpacing}>
+                This secret is required for registration and is only distributed
+                internally.
+              </FormHelperText>
+              <div className={classes.centered}>
+                <Button variant="contained" color="primary" type="submit">
+                  Submit
+                </Button>
+              </div>
+            </form>
+          </Grid>
+          <Snackbar
+            open={state.snack.open}
+            autoHideDuration={6000}
+            onClose={handleSnackClose}
+            message={state.snack.message}
           />
-          <FormHelperText className={classes.lightSpacing}>
-            This secret is required for registration and is only distributed
-            internally.
-          </FormHelperText>
-          <div className={classes.centered}>
-            <Button variant="contained" color="primary" type="submit">
-              Submit
-            </Button>
-          </div>
-        </form>
-      </Grid>
-      <Snackbar
-        open={state.snack.open}
-        autoHideDuration={6000}
-        onClose={handleSnackClose}
-        message={state.snack.message}
-      />
-    </Grid>
+        </Grid>
+      </WithNavbar>
+    </WithAuthentication>
   );
 }

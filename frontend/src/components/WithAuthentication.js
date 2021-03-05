@@ -4,14 +4,14 @@ import PropTypes from "prop-types";
 import { Redirect } from "react-router-dom";
 import { isAuthenticated } from "../util/auth";
 
-export default function ForceAuthentication({ allow, children }) {
+export default function WithAuthentication({ allow, children }) {
   if ((allow && !isAuthenticated()) || (!allow && isAuthenticated())) {
     return <Redirect to="/" />;
   }
   return <>{children}</>;
 }
 
-ForceAuthentication.propTypes = {
+WithAuthentication.propTypes = {
   allow: PropTypes.bool,
   children: PropTypes.element,
 };
