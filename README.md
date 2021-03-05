@@ -43,11 +43,29 @@ Dependencies you'll need:
 * Node 12+
 * NPM 6+
 
-Run the following commands:
+First, install all Node dependencies:
 
 ```
 npm install
+```
+
+Next, if you are in a development environment, you will need to start a "watching" service that continually
+rebuilds the frontend whenever a change is detected. In a separate terminal, run the command:
+
+```
+npm run watch
+```
+
+Alternatively, if you are in a production environment, you can perform a one-time build of the frontend.
+This will not monitor the frontend directory for changes:
+
+```
 npm run build
+```
+
+Finally, to start the server:
+
+```
 npm start
 ```
 
