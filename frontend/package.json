@@ -18,7 +18,8 @@
     "start": "node --max_old_space_size=4096 node_modules/.bin/react-scripts start",
     "build": "node --max_old_space_size=4096 node_modules/.bin/react-scripts build",
     "lint": "npx eslint . && npx prettier --check .",
-    "format": "npx prettier --write ."
+    "format": "npx prettier --write .",
+    "watch": "cra-build-watch -b ../backend/public"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -36,6 +37,7 @@
     ]
   },
   "devDependencies": {
+    "cra-build-watch": "^3.4.0",
     "prettier": "2.2.1"
   }
 }
