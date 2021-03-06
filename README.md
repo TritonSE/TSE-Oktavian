@@ -49,14 +49,16 @@ First, install all Node dependencies:
 npm install
 ```
 
-Next, if you are in a development environment, you will need to start a "watching" service that continually
-rebuilds the frontend whenever a change is detected. In a separate terminal, run the command:
+Next, if you are in a development environment, you can start a "watching" service that will continually
+rebuild the frontend whenever a change is detected. Note that this service is slightly buggy and may not 
+load some pages correctly, particularly with a dynamic URL component. It is recommended that you open
+a separate terminal to run the watcher:
 
 ```
 npm run watch
 ```
 
-Alternatively, if you are in a production environment, you can perform a one-time build of the frontend.
+However, if you are in a production environment, you can perform a one-time build of the frontend.
 This will not monitor the frontend directory for changes:
 
 ```
