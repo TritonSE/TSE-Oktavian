@@ -25,7 +25,7 @@ import {
 } from "@material-ui/icons";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { Link, useHistory } from "react-router-dom";
-import { isAuthenticated, logout } from "../util/auth";
+import { isAuthenticated, logout } from "../services/auth";
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
@@ -65,14 +65,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Navbar({ window, component, title }) {
+// Any child nodes are surrounded by a navbar and sidebar
+export default function WithNavbar({ window, children }) {
   const history = useHistory();
   const classes = useStyles();
   const theme = useTheme();
   const [state, setState] = React.useState(false);
-  React.useEffect(() => {
-    document.title = `Oktavian — ${title}`;
-  }, [title]);
 
   const handleDrawerToggle = () => {
     setState(!state);
@@ -207,14 +205,13 @@ export default function Navbar({ window, component, title }) {
       </nav>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-        {component}
+        {children}
       </main>
     </div>
   );
 }
 
-Navbar.propTypes = {
-  title: PropTypes.string,
-  component: PropTypes.element,
+WithNavbar.propTypes = {
+  children: PropTypes.any,
   window: PropTypes.instanceOf(window.constructor),
 };

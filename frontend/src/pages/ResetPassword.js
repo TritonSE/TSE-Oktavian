@@ -1,6 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Redirect, useHistory } from "react-router-dom";
+import WithAuthentication from "../components/WithAuthentication";
+import WithNavbar from "../components/WithNavbar";
+import { Helmet } from "react-helmet";
+import { useHistory } from "react-router-dom";
 import {
   TextField,
   Button,
@@ -9,8 +12,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { isAuthenticated } from "../util/auth";
-import { BACKEND_URL } from "../util/constants";
+import { sendData } from "../services/data";
 
 const useStyles = makeStyles((theme) => ({
   centered: {
@@ -43,13 +45,15 @@ export default function ResetPassword({ match }) {
   const classes = useStyles();
   const history = useHistory();
   const [state, setState] = React.useState({
-    password: "",
-    confirm_password: "",
+    // Boilerplate
     snack: {
       message: "",
       open: false,
     },
+    // User input
     form_disabled: false,
+    password: "",
+    confirm_password: "",
   });
 
   const handleChange = (prop) => (event) => {
@@ -81,33 +85,19 @@ export default function ResetPassword({ match }) {
       token: match.params.token,
       password: state.password,
     };
-    try {
-      const response = await fetch(`${BACKEND_URL}/api/auth/reset-password`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(submission),
-      });
-      if (response.ok) {
-        history.push("/");
-      } else if (response.status === 403) {
-        setState({
-          ...state,
-          form_disabled: false,
-          snack: { message: "Invalid or expired token.", open: true },
-        });
-      } else {
-        const text = await response.text();
-        setState({
-          ...state,
-          form_disabled: false,
-          snack: { message: `Could not reset password: ${text}`, open: true },
-        });
-      }
-    } catch (error) {
+    const { ok, data } = await sendData(
+      "api/auth/reset-password",
+      false,
+      "POST",
+      JSON.stringify(submission)
+    );
+    if (ok) {
+      history.push("/");
+    } else {
       setState({
         ...state,
         form_disabled: false,
-        snack: { message: `An error occurred: ${error.message}`, open: true },
+        snack: { message: `Error: ${data.message}`, open: true },
       });
     }
   };
@@ -119,41 +109,46 @@ export default function ResetPassword({ match }) {
     setState({ ...state, snack: { ...state.snack, open: false } });
   };
 
-  return isAuthenticated() ? (
-    <Redirect to="/" />
-  ) : (
-    <Grid container spacing={0} alignItems="center" justify="center">
-      <Grid item md={6} xs={12}>
-        <Typography variant="h4" className={classes.title}>
-          Reset Your Password
-        </Typography>
-        <form className={classes.form} onSubmit={handleSubmit}>
-          <TextField
-            label="Password"
-            variant="outlined"
-            type="password"
-            onChange={handleChange("password")}
+  return (
+    <WithAuthentication allow={false}>
+      <Helmet>
+        <title>Reset Password — Oktavian</title>
+      </Helmet>
+      <WithNavbar>
+        <Grid container spacing={0} alignItems="center" justify="center">
+          <Grid item md={6} xs={12}>
+            <Typography variant="h4" className={classes.title}>
+              Reset Your Password
+            </Typography>
+            <form className={classes.form} onSubmit={handleSubmit}>
+              <TextField
+                label="Password"
+                variant="outlined"
+                type="password"
+                onChange={handleChange("password")}
+              />
+              <TextField
+                label="Confirm Password"
+                variant="outlined"
+                type="password"
+                onChange={handleChange("confirm_password")}
+              />
+              <div className={classes.centered}>
+                <Button variant="contained" color="primary" type="submit">
+                  Submit
+                </Button>
+              </div>
+            </form>
+          </Grid>
+          <Snackbar
+            open={state.snack.open}
+            autoHideDuration={6000}
+            onClose={handleSnackClose}
+            message={state.snack.message}
           />
-          <TextField
-            label="Confirm Password"
-            variant="outlined"
-            type="password"
-            onChange={handleChange("confirm_password")}
-          />
-          <div className={classes.centered}>
-            <Button variant="contained" color="primary" type="submit">
-              Submit
-            </Button>
-          </div>
-        </form>
-      </Grid>
-      <Snackbar
-        open={state.snack.open}
-        autoHideDuration={6000}
-        onClose={handleSnackClose}
-        message={state.snack.message}
-      />
-    </Grid>
+        </Grid>
+      </WithNavbar>
+    </WithAuthentication>
   );
 }
 

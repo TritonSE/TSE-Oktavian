@@ -1,5 +1,8 @@
 import React from "react";
-import { Link, Redirect, useHistory } from "react-router-dom";
+import WithAuthentication from "../components/WithAuthentication";
+import WithNavbar from "../components/WithNavbar";
+import { Helmet } from "react-helmet";
+import { Link, useHistory } from "react-router-dom";
 import {
   TextField,
   Button,
@@ -8,8 +11,8 @@ import {
   Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { isAuthenticated, setJWT, setUser } from "../util/auth";
-import { BACKEND_URL } from "../util/constants";
+import { setJWT, setUser } from "../services/auth";
+import { sendData } from "../services/data";
 
 const useStyles = makeStyles((theme) => ({
   centered: {
@@ -38,13 +41,15 @@ export default function Login() {
   const classes = useStyles();
   const history = useHistory();
   const [state, setState] = React.useState({
-    email: "",
-    password: "",
+    // Boilerplate
     snack: {
       message: "",
       open: false,
     },
+    // User input
     form_disabled: false,
+    email: "",
+    password: "",
   });
 
   const handleChange = (prop) => (event) => {
@@ -69,45 +74,21 @@ export default function Login() {
       });
       return;
     }
-    try {
-      const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(submission),
-      });
-      if (response.ok) {
-        const json = await response.json();
-        setJWT(json.token);
-        setUser(json.user);
-        history.push("/");
-      } else if (response.status === 400) {
-        setState({
-          ...state,
-          form_disabled: false,
-          snack: {
-            message: "Please fill out all required fields.",
-            open: true,
-          },
-        });
-      } else if (response.status === 401) {
-        setState({
-          ...state,
-          form_disabled: false,
-          snack: { message: "Email or password not recognized.", open: true },
-        });
-      } else {
-        const text = await response.text();
-        setState({
-          ...state,
-          form_disabled: false,
-          snack: { message: `Could not log in: ${text}`, open: true },
-        });
-      }
-    } catch (error) {
+    const { ok, data } = await sendData(
+      "api/auth/login",
+      false,
+      "POST",
+      JSON.stringify(submission)
+    );
+    if (ok) {
+      setJWT(data.token);
+      setUser(data.user);
+      history.push("/");
+    } else {
       setState({
         ...state,
         form_disabled: false,
-        snack: { message: `An error occurred: ${error.message}`, open: true },
+        snack: { message: `Error: ${data.message}`, open: true },
       });
     }
   };
@@ -119,48 +100,53 @@ export default function Login() {
     setState({ ...state, snack: { ...state.snack, open: false } });
   };
 
-  return isAuthenticated() ? (
-    <Redirect to="/" />
-  ) : (
-    <Grid container spacing={0} alignItems="center" justify="center">
-      <Grid item md={6} xs={12}>
-        <Typography variant="h4" className={classes.title}>
-          Login
-        </Typography>
-        <form className={classes.form} onSubmit={handleSubmit}>
-          <TextField
-            label="Email"
-            variant="outlined"
-            type="email"
-            onChange={handleChange("email")}
+  return (
+    <WithAuthentication allow={false}>
+      <Helmet>
+        <title>Login — TSE Oktavian</title>
+      </Helmet>
+      <WithNavbar>
+        <Grid container spacing={0} alignItems="center" justify="center">
+          <Grid item md={6} xs={12}>
+            <Typography variant="h4" className={classes.title}>
+              Login
+            </Typography>
+            <form className={classes.form} onSubmit={handleSubmit}>
+              <TextField
+                label="Email"
+                variant="outlined"
+                type="email"
+                onChange={handleChange("email")}
+              />
+              <TextField
+                label="Password"
+                variant="outlined"
+                type="password"
+                onChange={handleChange("password")}
+              />
+              <Link to="forgot-password">
+                <Typography>Forgot your password?</Typography>
+              </Link>
+              <div className={classes.centered}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  type="submit"
+                  disabled={state.form_disabled}
+                >
+                  Submit
+                </Button>
+              </div>
+            </form>
+          </Grid>
+          <Snackbar
+            open={state.snack.open}
+            autoHideDuration={6000}
+            onClose={handleSnackClose}
+            message={state.snack.message}
           />
-          <TextField
-            label="Password"
-            variant="outlined"
-            type="password"
-            onChange={handleChange("password")}
-          />
-          <Link to="forgot-password">
-            <Typography>Forgot your password?</Typography>
-          </Link>
-          <div className={classes.centered}>
-            <Button
-              variant="contained"
-              color="primary"
-              type="submit"
-              disabled={state.form_disabled}
-            >
-              Submit
-            </Button>
-          </div>
-        </form>
-      </Grid>
-      <Snackbar
-        open={state.snack.open}
-        autoHideDuration={6000}
-        onClose={handleSnackClose}
-        message={state.snack.message}
-      />
-    </Grid>
+        </Grid>
+      </WithNavbar>
+    </WithAuthentication>
   );
 }

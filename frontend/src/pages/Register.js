@@ -1,5 +1,8 @@
 import React from "react";
-import { Redirect, useHistory } from "react-router-dom";
+import WithAuthentication from "../components/WithAuthentication";
+import WithNavbar from "../components/WithNavbar";
+import { Helmet } from "react-helmet";
+import { useHistory } from "react-router-dom";
 import {
   TextField,
   Button,
@@ -14,8 +17,8 @@ import {
   Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { isAuthenticated, setJWT, setUser } from "../util/auth";
-import { BACKEND_URL } from "../util/constants";
+import { setJWT, setUser } from "../services/auth";
+import { sendData } from "../services/data";
 
 const useStyles = makeStyles((theme) => ({
   centered: {
@@ -48,6 +51,13 @@ export default function Register() {
   const classes = useStyles();
   const history = useHistory();
   const [state, setState] = React.useState({
+    // Boilerplate
+    snack: {
+      message: "",
+      open: false,
+    },
+    // User input
+    form_disabled: false,
     name: "",
     email: "",
     password: "",
@@ -56,11 +66,6 @@ export default function Register() {
     role_designer: false,
     role_project_manager: false,
     role_final: false,
-    snack: {
-      message: "",
-      open: false,
-    },
-    form_disabled: false,
   });
 
   const handleChange = (prop) => (event) => {
@@ -114,54 +119,21 @@ export default function Register() {
       });
       return;
     }
-    try {
-      const response = await fetch(`${BACKEND_URL}/api/auth/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(submission),
-      });
-      if (response.ok) {
-        const json = await response.json();
-        setJWT(json.token);
-        setUser(json.user);
-        history.push("/");
-      } else if (response.status === 400) {
-        setState({
-          ...state,
-          form_disabled: false,
-          snack: {
-            message: "Please fill out all required fields.",
-            open: true,
-          },
-        });
-      } else if (response.status === 403) {
-        setState({
-          ...state,
-          form_disabled: false,
-          snack: { message: "Invalid secret value.", open: true },
-        });
-      } else if (response.status === 409) {
-        setState({
-          ...state,
-          form_disabled: false,
-          snack: {
-            message: "An account with that email already exists.",
-            open: true,
-          },
-        });
-      } else {
-        const text = await response.text();
-        setState({
-          ...state,
-          form_disabled: false,
-          snack: { message: `Could not log in: ${text}`, open: true },
-        });
-      }
-    } catch (error) {
+    const { ok, data } = await sendData(
+      "api/auth/register",
+      false,
+      "POST",
+      JSON.stringify(submission)
+    );
+    if (ok) {
+      setJWT(data.token);
+      setUser(data.user);
+      history.push("/");
+    } else {
       setState({
         ...state,
         form_disabled: false,
-        snack: { message: `An error occurred: ${error.message}`, open: true },
+        snack: { message: `Error: ${data.message}`, open: true },
       });
     }
   };
@@ -173,108 +145,113 @@ export default function Register() {
     setState({ ...state, snack: { ...state.snack, open: false } });
   };
 
-  return isAuthenticated() ? (
-    <Redirect to="/" />
-  ) : (
-    <Grid container spacing={0} alignItems="center" justify="center">
-      <Grid item md={6} xs={12}>
-        <Typography variant="h4" className={classes.title}>
-          Register
-        </Typography>
-        <form className={classes.form} onSubmit={handleSubmit}>
-          <TextField
-            label="Name"
-            variant="outlined"
-            type="text"
-            onChange={handleChange("name")}
-          />
-          <TextField
-            label="Email"
-            variant="outlined"
-            type="email"
-            onChange={handleChange("email")}
-          />
-          <TextField
-            label="Password"
-            variant="outlined"
-            type="password"
-            onChange={handleChange("password")}
-          />
-          <FormControl>
-            <FormLabel component="legend">
-              What types of applications are you responsible for?
-            </FormLabel>
-            <FormGroup>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    onChange={handleChecked("role_project_manager")}
-                    name="role-project-manager"
-                  />
-                }
-                label="Project Managers"
+  return (
+    <WithAuthentication allow={false}>
+      <Helmet>
+        <title>Register — TSE Oktavian</title>
+      </Helmet>
+      <WithNavbar>
+        <Grid container spacing={0} alignItems="center" justify="center">
+          <Grid item md={6} xs={12}>
+            <Typography variant="h4" className={classes.title}>
+              Register
+            </Typography>
+            <form className={classes.form} onSubmit={handleSubmit}>
+              <TextField
+                label="Name"
+                variant="outlined"
+                type="text"
+                onChange={handleChange("name")}
               />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    onChange={handleChecked("role_developer")}
-                    name="role-developer"
-                  />
-                }
-                label="Developers"
+              <TextField
+                label="Email"
+                variant="outlined"
+                type="email"
+                onChange={handleChange("email")}
               />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    onChange={handleChecked("role_designer")}
-                    name="role-designer"
-                  />
-                }
-                label="Designers"
+              <TextField
+                label="Password"
+                variant="outlined"
+                type="password"
+                onChange={handleChange("password")}
               />
-            </FormGroup>
-          </FormControl>
-          <FormControl>
-            <FormLabel component="legend">
-              Are you cleared to make final decisions?
-            </FormLabel>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  onChange={handleChecked("role_final")}
-                  name="role-final"
+              <FormControl>
+                <FormLabel component="legend">
+                  What types of applications are you responsible for?
+                </FormLabel>
+                <FormGroup>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        onChange={handleChecked("role_project_manager")}
+                        name="role-project-manager"
+                      />
+                    }
+                    label="Project Managers"
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        onChange={handleChecked("role_developer")}
+                        name="role-developer"
+                      />
+                    }
+                    label="Developers"
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        onChange={handleChecked("role_designer")}
+                        name="role-designer"
+                      />
+                    }
+                    label="Designers"
+                  />
+                </FormGroup>
+              </FormControl>
+              <FormControl>
+                <FormLabel component="legend">
+                  Are you cleared to make final decisions?
+                </FormLabel>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      onChange={handleChecked("role_final")}
+                      name="role-final"
+                    />
+                  }
+                  label="Yes"
                 />
-              }
-              label="Yes"
-            />
-            <FormHelperText>
-              Do not select this unless you are the president. Your registration
-              will be flagged.
-            </FormHelperText>
-          </FormControl>
-          <TextField
-            label="Secret"
-            variant="outlined"
-            type="password"
-            onChange={handleChange("secret")}
+                <FormHelperText>
+                  Do not select this unless you are the president. Your
+                  registration will be flagged.
+                </FormHelperText>
+              </FormControl>
+              <TextField
+                label="Secret"
+                variant="outlined"
+                type="password"
+                onChange={handleChange("secret")}
+              />
+              <FormHelperText className={classes.lightSpacing}>
+                This secret is required for registration and is only distributed
+                internally.
+              </FormHelperText>
+              <div className={classes.centered}>
+                <Button variant="contained" color="primary" type="submit">
+                  Submit
+                </Button>
+              </div>
+            </form>
+          </Grid>
+          <Snackbar
+            open={state.snack.open}
+            autoHideDuration={6000}
+            onClose={handleSnackClose}
+            message={state.snack.message}
           />
-          <FormHelperText className={classes.lightSpacing}>
-            This secret is required for registration and is only distributed
-            internally.
-          </FormHelperText>
-          <div className={classes.centered}>
-            <Button variant="contained" color="primary" type="submit">
-              Submit
-            </Button>
-          </div>
-        </form>
-      </Grid>
-      <Snackbar
-        open={state.snack.open}
-        autoHideDuration={6000}
-        onClose={handleSnackClose}
-        message={state.snack.message}
-      />
-    </Grid>
+        </Grid>
+      </WithNavbar>
+    </WithAuthentication>
   );
 }
