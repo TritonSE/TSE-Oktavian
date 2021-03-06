@@ -49,12 +49,9 @@ app.get(["/", "/*"], (req, res) => {
 });
 
 // Error handling
-app.use(function (req, res, next) {
-  next(createError(404));
-});
-app.use(function (err, req, res) {
-  res.status(err.status || 500);
-  res.json({ message: err.message });
+/*eslint no-unused-vars: "next"*/
+app.use(function (err, req, res, next) {
+  res.status(err.status || 500).json({ message: err.message });
 });
 
 module.exports = app;
