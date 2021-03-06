@@ -12,7 +12,7 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { setJWT, setUser } from "../services/auth";
-import { BACKEND_URL } from "../util/constants";
+import { sendData } from "../services/data";
 
 const useStyles = makeStyles((theme) => ({
   centered: {
@@ -72,45 +72,21 @@ export default function Login() {
       });
       return;
     }
-    try {
-      const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(submission),
-      });
-      if (response.ok) {
-        const json = await response.json();
-        setJWT(json.token);
-        setUser(json.user);
-        history.push("/");
-      } else if (response.status === 400) {
-        setState({
-          ...state,
-          form_disabled: false,
-          snack: {
-            message: "Please fill out all required fields.",
-            open: true,
-          },
-        });
-      } else if (response.status === 401) {
-        setState({
-          ...state,
-          form_disabled: false,
-          snack: { message: "Email or password not recognized.", open: true },
-        });
-      } else {
-        const text = await response.text();
-        setState({
-          ...state,
-          form_disabled: false,
-          snack: { message: `Could not log in: ${text}`, open: true },
-        });
-      }
-    } catch (error) {
+    const { ok, data } = await sendData(
+      "api/auth/login",
+      false,
+      "POST",
+      JSON.stringify(submission)
+    );
+    if (ok) {
+      setJWT(data.token);
+      setUser(data.user);
+      history.push("/");
+    } else {
       setState({
         ...state,
         form_disabled: false,
-        snack: { message: `An error occurred: ${error.message}`, open: true },
+        snack: { message: `Error: ${data.message}`, open: true },
       });
     }
   };

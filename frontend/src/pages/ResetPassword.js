@@ -12,7 +12,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { BACKEND_URL } from "../util/constants";
+import { sendData } from "../services/data";
 
 const useStyles = makeStyles((theme) => ({
   centered: {
@@ -83,33 +83,19 @@ export default function ResetPassword({ match }) {
       token: match.params.token,
       password: state.password,
     };
-    try {
-      const response = await fetch(`${BACKEND_URL}/api/auth/reset-password`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(submission),
-      });
-      if (response.ok) {
-        history.push("/");
-      } else if (response.status === 403) {
-        setState({
-          ...state,
-          form_disabled: false,
-          snack: { message: "Invalid or expired token.", open: true },
-        });
-      } else {
-        const text = await response.text();
-        setState({
-          ...state,
-          form_disabled: false,
-          snack: { message: `Could not reset password: ${text}`, open: true },
-        });
-      }
-    } catch (error) {
+    const { ok, data } = await sendData(
+      "api/auth/reset-password",
+      false,
+      "POST",
+      JSON.stringify(submission)
+    );
+    if (ok) {
+      history.push("/");
+    } else {
       setState({
         ...state,
         form_disabled: false,
-        snack: { message: `An error occurred: ${error.message}`, open: true },
+        snack: { message: `Error: ${data.message}`, open: true },
       });
     }
   };

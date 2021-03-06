@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import { LinearProgress } from "@material-ui/core";
-import { fetchData } from "../services/data";
+import { getData } from "../services/data";
 
 export default function WithData({
   children,
@@ -12,14 +12,17 @@ export default function WithData({
   onSuccess,
   onError,
 }) {
-  React.useEffect(async () => {
-    if (reloading) {
-      let { ok, data } = await fetchData("GET", slug, authenticated);
+  React.useEffect(() => {
+    async function doAsync() {
+      let { ok, data } = await getData(slug, authenticated);
       if (ok) {
         onSuccess(data);
       } else {
         onError(data);
       }
+    }
+    if (reloading) {
+      doAsync();
     }
   }, [slug, authenticated, reloading, onSuccess, onError]);
   if (reloading) {

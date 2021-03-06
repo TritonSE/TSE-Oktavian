@@ -15,7 +15,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { BACKEND_URL } from "../util/constants";
+import { sendData } from "../services/data";
 
 const useStyles = makeStyles((theme) => ({
   centered: {
@@ -76,43 +76,29 @@ export default function CreateApplication() {
       about: state.about,
       why: state.why,
     };
-    try {
-      const response = await fetch(`${BACKEND_URL}/api/applications`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(submission),
-      });
-      if (response.ok) {
-        setState({
-          ...state,
-          form_disabled: false,
-          snack: {
-            message: "Sample application was submitted successfully.",
-            open: true,
-          },
-        });
-      } else if (response.status === 400) {
-        setState({
-          ...state,
-          form_disabled: false,
-          snack: {
-            message: "Please fill out all required fields.",
-            open: true,
-          },
-        });
-      } else {
-        const text = await response.text();
-        setState({
-          ...state,
-          form_disabled: false,
-          snack: { message: `Could not log in: ${text}`, open: true },
-        });
-      }
-    } catch (error) {
+    const { ok, data } = await sendData(
+      "api/applications",
+      false,
+      "POST",
+      JSON.stringify(submission)
+    );
+    if (ok) {
       setState({
         ...state,
         form_disabled: false,
-        snack: { message: `An error occurred: ${error.message}`, open: true },
+        snack: {
+          message: "Sample application was submitted successfully.",
+          open: true,
+        },
+      });
+    } else {
+      setState({
+        ...state,
+        form_disabled: false,
+        snack: {
+          message: `Error: ${data.message}`,
+          open: true,
+        },
       });
     }
   };

@@ -18,7 +18,7 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { setJWT, setUser } from "../services/auth";
-import { BACKEND_URL } from "../util/constants";
+import { sendData } from "../services/data";
 
 const useStyles = makeStyles((theme) => ({
   centered: {
@@ -117,54 +117,21 @@ export default function Register() {
       });
       return;
     }
-    try {
-      const response = await fetch(`${BACKEND_URL}/api/auth/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(submission),
-      });
-      if (response.ok) {
-        const json = await response.json();
-        setJWT(json.token);
-        setUser(json.user);
-        history.push("/");
-      } else if (response.status === 400) {
-        setState({
-          ...state,
-          form_disabled: false,
-          snack: {
-            message: "Please fill out all required fields.",
-            open: true,
-          },
-        });
-      } else if (response.status === 403) {
-        setState({
-          ...state,
-          form_disabled: false,
-          snack: { message: "Invalid secret value.", open: true },
-        });
-      } else if (response.status === 409) {
-        setState({
-          ...state,
-          form_disabled: false,
-          snack: {
-            message: "An account with that email already exists.",
-            open: true,
-          },
-        });
-      } else {
-        const text = await response.text();
-        setState({
-          ...state,
-          form_disabled: false,
-          snack: { message: `Could not log in: ${text}`, open: true },
-        });
-      }
-    } catch (error) {
+    const { ok, data } = await sendData(
+      "api/auth/register",
+      false,
+      "POST",
+      JSON.stringify(submission)
+    );
+    if (ok) {
+      setJWT(data.token);
+      setUser(data.user);
+      history.push("/");
+    } else {
       setState({
         ...state,
         form_disabled: false,
-        snack: { message: `An error occurred: ${error.message}`, open: true },
+        snack: { message: `Error: ${data.message}`, open: true },
       });
     }
   };

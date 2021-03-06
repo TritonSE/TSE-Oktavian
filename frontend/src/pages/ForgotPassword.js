@@ -11,7 +11,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { BACKEND_URL } from "../util/constants";
+import { sendData } from "../services/data";
 
 const useStyles = makeStyles((theme) => ({
   centered: {
@@ -62,44 +62,27 @@ export default function ForgotPassword() {
       email: state.email,
       secret: state.secret,
     };
-    try {
-      const response = await fetch(`${BACKEND_URL}/api/auth/forgot-password`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(submission),
+    const { ok, data } = await sendData(
+      "api/auth/forgot-password",
+      false,
+      "POST",
+      JSON.stringify(submission)
+    );
+    if (ok) {
+      setState({
+        email: "",
+        secret: "",
+        form_disabled: false,
+        snack: {
+          message: "Please check your email for a password reset request.",
+          open: true,
+        },
       });
-      if (response.ok) {
-        setState({
-          email: "",
-          secret: "",
-          form_disabled: false,
-          snack: {
-            message: "Please check your email for a password reset request.",
-            open: true,
-          },
-        });
-      } else if (response.status === 403) {
-        setState({
-          ...state,
-          form_disabled: false,
-          snack: { message: "Invalid secret value.", open: true },
-        });
-      } else {
-        const text = await response.text();
-        setState({
-          ...state,
-          form_disabled: false,
-          snack: {
-            message: `Could not request password reset: ${text}`,
-            open: true,
-          },
-        });
-      }
-    } catch (error) {
+    } else {
       setState({
         ...state,
         form_disabled: false,
-        snack: { message: `An error occurred: ${error.message}`, open: true },
+        snack: { message: `Error: ${data.message}`, open: true },
       });
     }
   };
