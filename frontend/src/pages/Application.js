@@ -192,9 +192,7 @@ export default function Application({ match }) {
   return (
     <WithAuthentication allow={true}>
       <Helmet>
-        <title>
-          Loading Application — TSE Oktavian
-        </title>
+        <title>Loading Application — TSE Oktavian</title>
       </Helmet>
       <WithNavbar title="Viewing Application">
         <WithData

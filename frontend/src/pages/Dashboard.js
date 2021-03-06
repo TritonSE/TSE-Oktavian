@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Dashboard() {
   const classes = useStyles();
   const [state, setState] = React.useState({
-    // Boilerplate 
+    // Boilerplate
     snack: {
       message: "",
       open: false,
