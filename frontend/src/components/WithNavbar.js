@@ -65,6 +65,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// Any child nodes are surrounded by a navbar and sidebar
 export default function WithNavbar({ window, children }) {
   const history = useHistory();
   const classes = useStyles();

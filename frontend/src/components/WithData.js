@@ -4,6 +4,9 @@ import PropTypes from "prop-types";
 import { LinearProgress } from "@material-ui/core";
 import { getData } from "../services/data";
 
+// Any child nodes can only be viewed if the specified data from the backend has been fetched
+// Data can be reloaded by setting the `reloading` prop from false to true
+// `onSuccess` and `onError` are expected to reset `reloading` from true to false, indicating that the request has been fulfilled
 export default function WithData({
   children,
   slug,
