@@ -99,7 +99,7 @@ export default function ForgotPassword() {
   return (
     <WithAuthentication allow={false}>
       <Helmet>
-        <title>Oktavian — Forgot Password</title>
+        <title>Forgot Password — TSE Oktavian</title>
       </Helmet>
       <WithNavbar>
         <Grid container spacing={0} alignItems="center" justify="center">

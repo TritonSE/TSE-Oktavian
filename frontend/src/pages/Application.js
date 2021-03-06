@@ -191,6 +191,11 @@ export default function Application({ match }) {
 
   return (
     <WithAuthentication allow={true}>
+      <Helmet>
+        <title>
+          Loading Application — TSE Oktavian
+        </title>
+      </Helmet>
       <WithNavbar title="Viewing Application">
         <WithData
           slug={`api/applications/${match.params.appid}`}
@@ -208,9 +213,7 @@ export default function Application({ match }) {
           >
             <Helmet>
               <title>
-                {state.reloading_application || state.reloading_reviews
-                  ? "Oktavian — Loading Application"
-                  : `Oktavian — ${state.application.name}'s Application`}
+                {`${state.application.name}'s Application — TSE Oktavian`}
               </title>
             </Helmet>
             {state.reloading_application || state.reloading_reviews ? (

@@ -105,10 +105,10 @@ export default function Dashboard() {
 
   return (
     <WithAuthentication allow={true}>
+      <Helmet>
+        <title>Dashboard — TSE Oktavian</title>
+      </Helmet>
       <WithNavbar>
-        <Helmet>
-          <title>Oktavian — Dashboard</title>
-        </Helmet>
         <WithData
           slug={`api/stats?start_date=${state.start_date.getTime()}&end_date=${state.end_date.getTime()}`}
           authenticated={true}

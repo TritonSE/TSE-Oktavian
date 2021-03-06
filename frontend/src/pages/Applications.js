@@ -59,6 +59,9 @@ export default function Applications() {
 
   return (
     <WithAuthentication allow={true}>
+      <Helmet>
+        <title>All Applications — TSE Oktavian</title>
+      </Helmet>
       <WithNavbar>
         <WithData
           slug="api/applications"
@@ -67,9 +70,6 @@ export default function Applications() {
           onSuccess={handleData}
           onError={handleError}
         >
-          <Helmet>
-            <title>Oktavian — All Applications</title>
-          </Helmet>
           <Grid
             container
             spacing={0}

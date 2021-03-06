@@ -103,7 +103,7 @@ export default function Login() {
   return (
     <WithAuthentication allow={false}>
       <Helmet>
-        <title>Oktavian — Login</title>
+        <title>Login — TSE Oktavian</title>
       </Helmet>
       <WithNavbar>
         <Grid container spacing={0} alignItems="center" justify="center">

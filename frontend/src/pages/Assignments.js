@@ -66,6 +66,9 @@ export default function Assignments() {
 
   return (
     <WithAuthentication allow={true}>
+      <Helmet>
+        <title>Your Assignments — TSE Oktavian</title>
+      </Helmet>
       <WithNavbar>
         <WithData
           slug={`api/reviews?user=${getUser()._id}`}
@@ -74,9 +77,6 @@ export default function Assignments() {
           onSuccess={handleData}
           onError={handleError}
         >
-          <Helmet>
-            <title>Oktavian — Your Assignments</title>
-          </Helmet>
           <Grid
             container
             spacing={0}

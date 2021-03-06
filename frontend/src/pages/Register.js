@@ -148,7 +148,7 @@ export default function Register() {
   return (
     <WithAuthentication allow={false}>
       <Helmet>
-        <title>Oktavian — Register</title>
+        <title>Register — TSE Oktavian</title>
       </Helmet>
       <WithNavbar>
         <Grid container spacing={0} alignItems="center" justify="center">

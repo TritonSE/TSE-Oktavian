@@ -67,7 +67,7 @@ export default function Settings() {
   return (
     <WithAuthentication allow={true}>
       <Helmet>
-        <title>Oktavian — Settings</title>
+        <title>Settings — TSE Oktavian</title>
       </Helmet>
       <WithNavbar>
         <Grid

@@ -112,7 +112,7 @@ export default function ResetPassword({ match }) {
   return (
     <WithAuthentication allow={false}>
       <Helmet>
-        <title>Oktavian — Reset Password</title>
+        <title>Reset Password — Oktavian</title>
       </Helmet>
       <WithNavbar>
         <Grid container spacing={0} alignItems="center" justify="center">

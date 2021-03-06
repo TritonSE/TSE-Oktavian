@@ -116,7 +116,7 @@ export default function CreateApplication() {
   return (
     <>
       <Helmet>
-        <title>Oktavian — Create Application</title>
+        <title>Create Application — TSE Oktavian</title>
       </Helmet>
       <WithNavbar>
         <Grid container spacing={0} alignItems="center" justify="center">
