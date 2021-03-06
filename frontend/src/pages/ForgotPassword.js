@@ -43,13 +43,15 @@ const useStyles = makeStyles((theme) => ({
 export default function ForgotPassword() {
   const classes = useStyles();
   const [state, setState] = React.useState({
-    email: "",
-    secret: "",
+    // Boilerplate
     snack: {
       message: "",
       open: false,
     },
+    // User input
     form_disabled: false,
+    email: "",
+    secret: "",
   });
 
   const handleChange = (prop) => (event) => {

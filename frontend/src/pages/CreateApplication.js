@@ -47,6 +47,13 @@ const useStyles = makeStyles((theme) => ({
 export default function CreateApplication() {
   const classes = useStyles();
   const [state, setState] = React.useState({
+    // Boilerplate
+    snack: {
+      message: "",
+      open: false,
+    },
+    // User input
+    form_disabled: false,
     name: "",
     email: "",
     role: "PROJECT_MANAGER",
@@ -54,11 +61,6 @@ export default function CreateApplication() {
     resume: "",
     about: "",
     why: "",
-    snack: {
-      message: "",
-      open: false,
-    },
-    form_disabled: false,
   });
 
   const handleChange = (prop) => (event) => {

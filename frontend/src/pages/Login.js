@@ -41,13 +41,15 @@ export default function Login() {
   const classes = useStyles();
   const history = useHistory();
   const [state, setState] = React.useState({
-    email: "",
-    password: "",
+    // Boilerplate
     snack: {
       message: "",
       open: false,
     },
+    // User input
     form_disabled: false,
+    email: "",
+    password: "",
   });
 
   const handleChange = (prop) => (event) => {

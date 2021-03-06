@@ -45,13 +45,15 @@ export default function ResetPassword({ match }) {
   const classes = useStyles();
   const history = useHistory();
   const [state, setState] = React.useState({
-    password: "",
-    confirm_password: "",
+    // Boilerplate
     snack: {
       message: "",
       open: false,
     },
+    // User input
     form_disabled: false,
+    password: "",
+    confirm_password: "",
   });
 
   const handleChange = (prop) => (event) => {

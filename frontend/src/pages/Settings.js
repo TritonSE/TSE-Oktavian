@@ -42,11 +42,12 @@ const useStyles = makeStyles((theme) => ({
 export default function Settings() {
   const classes = useStyles();
   const [state, setState] = React.useState({
+    // Boilerplate
     snack: {
       message: "",
       open: false,
     },
-    user: getUser(),
+    // User input
     old_password: "",
     new_password: "",
     confirm_password: "",
@@ -85,21 +86,21 @@ export default function Settings() {
                     label="ID"
                     variant="outlined"
                     type="text"
-                    defaultValue={state.user._id}
+                    defaultValue={getUser()._id}
                     disabled
                   />
                   <TextField
                     label="Name"
                     variant="outlined"
                     type="text"
-                    defaultValue={state.user.name}
+                    defaultValue={getUser().name}
                     disabled
                   />
                   <TextField
                     label="Email"
                     variant="outlined"
                     type="email"
-                    defaultValue={state.user.email}
+                    defaultValue={getUser().email}
                     disabled
                   />
                 </form>

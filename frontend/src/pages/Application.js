@@ -60,7 +60,7 @@ export default function Application({ match }) {
       message: "",
       open: false,
     },
-    // Backend data
+    // Initial backend data
     reloading_application: true,
     reloading_reviews: true,
     application: {},

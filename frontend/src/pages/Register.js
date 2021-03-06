@@ -51,6 +51,13 @@ export default function Register() {
   const classes = useStyles();
   const history = useHistory();
   const [state, setState] = React.useState({
+    // Boilerplate
+    snack: {
+      message: "",
+      open: false,
+    },
+    // User input
+    form_disabled: false,
     name: "",
     email: "",
     password: "",
@@ -59,11 +66,6 @@ export default function Register() {
     role_designer: false,
     role_project_manager: false,
     role_final: false,
-    snack: {
-      message: "",
-      open: false,
-    },
-    form_disabled: false,
   });
 
   const handleChange = (prop) => (event) => {

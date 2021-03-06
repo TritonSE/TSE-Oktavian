@@ -19,10 +19,12 @@ const useStyles = makeStyles(() => ({
 export default function Assignments() {
   const classes = useStyles();
   const [state, setState] = React.useState({
+    // Boilerplate
     snack: {
       message: "",
       open: false,
     },
+    // Initial backend data
     reloading: true,
     applications: [],
   });

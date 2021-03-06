@@ -31,18 +31,21 @@ const useStyles = makeStyles((theme) => ({
 export default function Dashboard() {
   const classes = useStyles();
   const [state, setState] = React.useState({
+    // Boilerplate 
     snack: {
       message: "",
       open: false,
     },
+    // Initial backend data
     reloading: true,
+    stats: null,
+    // User input
     start_date: new Date(
       new Date().getFullYear(),
       new Date().getMonth() - 9,
       new Date().getDate()
     ),
     end_date: new Date(),
-    stats: null,
   });
 
   const handleData = (data) => {
