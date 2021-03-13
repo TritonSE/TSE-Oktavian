@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 /**
  * A user represents a member of TSE. Users are defined by their personal information, their latest
- * role within the organization, and whether or not they are active. 
+ * role within the organization, and whether or not they are active.
  *
  * Passports are hashed using bcrypt with a cost factor of 10.
  */

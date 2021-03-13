@@ -5,23 +5,26 @@ const Schema = mongoose.Schema;
  * Used for resetting a user's password in the event that they forget it.
  * The token is a unique, alphanumeric, auto-generated string.
  */
-module.exports = mongoose.model("PasswordReset", new Schema(
-  {
-    token: {
-      type: String,
-      required: true,
-      unique: true,
+module.exports = mongoose.model(
+  "PasswordReset",
+  new Schema(
+    {
+      token: {
+        type: String,
+        required: true,
+        unique: true,
+      },
+      user: {
+        type: mongoose.Types.ObjectId,
+        ref: "User",
+        required: true,
+      },
     },
-    user: {
-      type: mongoose.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
-  },
-  {
-    timestamps: {
-      createdAt: "created_at",
-      updatedAt: "updated_at",
-    },
-  }
-));
+    {
+      timestamps: {
+        createdAt: "created_at",
+        updatedAt: "updated_at",
+      },
+    }
+  )
+);
