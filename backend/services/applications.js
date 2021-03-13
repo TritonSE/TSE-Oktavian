@@ -1,5 +1,5 @@
-const { STAGES, PUBLIC_ROLES, FINAL_ROLE } = require("../constants");
-const { Application, Review, RoleRoundRobin } = require("../models");
+const { STAGES } = require("../constants");
+const { User, Role, Application, Review, Committee } = require("../models");
 const { ServiceError } = require("./errors");
 const { sendEmail } = require("./email");
 
@@ -27,39 +27,58 @@ async function assignApplication(application, reviewer) {
  * applications preferably don't end up with the same reviewer assigned to two stages
  */
 async function autoAssignApplication(application) {
-  let role = application.role;
-  // Special case: president(s) make the final decision
+  const role = application.role;
+  let reviewer = null;
   if (application.current_stage === STAGES[STAGES.length - 1]) {
-    role = FINAL_ROLE;
-  }
-  const rrr = await RoleRoundRobin.findOne({ role: role })
-    .populate("users")
-    .exec();
-  if (rrr == null || rrr.reviewers.length === 0) {
-    throw ServiceError(
-      400,
-      "Unable to auto-assign any reviewer to application"
-    );
-  }
-  // Find first reviewer in the round robin list not in past reviewers
-  const past_reviews = await Review.find({
-    application: application._id,
-  }).exec();
-  const past_reviewers = new Set(
-    past_reviews.map((review) => review.reviewer.toString())
-  );
-  // In the case where no reviewer is new, just use the first person
-  let ridx = 0;
-  for (let [i, reviewer] of rrr.reviewers.entries()) {
-    if (!past_reviewers.has(reviewer._id.toString())) {
-      ridx = i;
-      break;
+    // Special case: president(s) make the final decision
+    const final_reviewers = await User.find({
+      "role.permit_final_review": true,
+    }).exec();
+    if (final_reviewers == null || final_reviewers.length === 0) {
+      throw ServiceError(
+        400,
+        "Unable to auto-assign any reviewer to application"
+      );
     }
+    // Choose a final reviewer randomly: no need for round robin here
+    reviewer =
+      final_reviewers[Math.floor(Math.random() * final_reviewers.length)];
+  } else {
+    // Non-special case: find the appropriate committee and make a round-robin decision
+    const committee = await Committee.findOne({ role: role })
+      .populate({
+        path: "users",
+        populate: {
+          path: "role",
+        },
+      })
+      .exec();
+    if (committee == null || committee.reviewers.length === 0) {
+      throw ServiceError(
+        400,
+        "Unable to auto-assign any reviewer to application"
+      );
+    }
+    // Find first reviewer in the round robin list not in past reviewers
+    const past_reviews = await Review.find({
+      application: application._id,
+    }).exec();
+    const past_reviewers = new Set(
+      past_reviews.map((review) => review.reviewer.toString())
+    );
+    // In the case where no reviewer is new, just use the first person
+    let ridx = 0;
+    for (let [i, reviewer] of committee.reviewers.entries()) {
+      if (!past_reviewers.has(reviewer._id.toString())) {
+        ridx = i;
+        break;
+      }
+    }
+    const reviewer = committee.reviewers[ridx];
+    committee.reviewers.splice(ridx, 1);
+    committee.reviewers.push(reviewer);
+    await committee.save();
   }
-  const reviewer = rrr.reviewers[ridx];
-  rrr.reviewers.splice(ridx, 1);
-  rrr.reviewers.push(reviewer);
-  await rrr.save();
   await assignApplication(application, reviewer);
 }
 
@@ -121,13 +140,23 @@ async function advanceApplication(application, review_accepted) {
  * and auto-assigns it a reviewer.
  *
  * raw_application = { name: ..., role: ..., year: ..., etc. }
+ *
+ * Note that the role parameter is a string referring to the role's name. This
+ * will be resolved into an actual role by the function.
  */
 async function createApplication(raw_application) {
-  if (!PUBLIC_ROLES.includes(raw_application.role)) {
+  // Users can only apply to valid roles with a committee attached to them
+  let role = await Role.findOne({ name: raw_application.role }).exec();
+  if (role == null) {
     throw ServiceError(400, "Invalid application role");
   }
+  let committee = await Committee.findOne({ role: role._id }).exec();
+  if (committee == null) {
+    throw ServiceError(400, "Invalid application role");
+  }
+  raw_application.role = role;
   let application = await Application.findOne({
-    role: raw_application.role,
+    role: raw_application.role._id,
     email: raw_application.email,
     completed: false,
   }).exec();
@@ -155,14 +184,18 @@ async function createApplication(raw_application) {
  * Can be filtered using options (e.g. to fetch only open applications, etc.)
  */
 async function getAllApplications(options) {
-  return await Application.find({ ...options }).exec();
+  return await Application.find({ ...options })
+    .populate("role")
+    .exec();
 }
 
 /**
  * Returns a JSON object representing an application given an ID.
  */
 async function getApplication(application_id) {
-  return await Application.findOne({ _id: application_id }).exec();
+  return await Application.findOne({ _id: application_id })
+    .populate("role")
+    .exec();
 }
 
 module.exports = {

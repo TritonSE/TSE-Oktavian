@@ -122,7 +122,7 @@ export default function CreateApplication() {
         <Grid container spacing={0} alignItems="center" justify="center">
           <Grid item md={6} xs={12}>
             <Typography variant="h4" className={classes.title}>
-              Create a Sample Application
+              Create an Application
             </Typography>
             <form className={classes.form} onSubmit={handleSubmit}>
               <TextField
@@ -146,18 +146,18 @@ export default function CreateApplication() {
                   onChange={handleChange("role")}
                 >
                   <FormControlLabel
-                    value="PROJECT_MANAGER"
                     control={<Radio />}
+                    value="Project Manager"
                     label="Project Manager"
                   />
                   <FormControlLabel
-                    value="DEVELOPER"
                     control={<Radio />}
+                    value="Developer"
                     label="Developer"
                   />
                   <FormControlLabel
-                    value="DESIGNER"
                     control={<Radio />}
+                    value="Designer"
                     label="Designer"
                   />
                 </RadioGroup>

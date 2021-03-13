@@ -22,6 +22,15 @@ const UserSchema = new Schema({
     type: String,
     required: true,
   },
+  role: {
+    type: mongoose.Types.ObjectId,
+    ref: "Role",
+    required: false, // New users by default are not assigned a role; they are promoted by an admin
+  },
+  active: {
+    type: Boolean,
+    required: true,
+  },
 });
 
 UserSchema.pre("save", function (next) {
@@ -38,11 +47,8 @@ UserSchema.methods.verifyPassword = function (password) {
 
 UserSchema.set("toJSON", {
   transform: function (doc, ret) {
-    return {
-      _id: ret._id,
-      email: ret.email,
-      name: ret.name,
-    };
+    delete ret.password;
+    return ret;
   },
 });
 

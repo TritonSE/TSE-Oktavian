@@ -30,7 +30,11 @@ export default function Applications() {
 
   const handleData = (data) => {
     const applications = data.applications.map((app) => {
-      return { ...app, submission: new Date(app.created_at).getFullYear() };
+      return {
+        ...app,
+        role: app.role.name,
+        submission: new Date(app.created_at).getFullYear(),
+      };
     });
     setState({
       ...state,

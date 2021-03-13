@@ -8,7 +8,5 @@ module.exports = {
   MONGO_URI: process.env.MONGO_URI || "mongodb://127.0.0.1:27017",
   EMAIL_USERNAME: process.env.EMAIL_USERNAME || "",
   EMAIL_PASSWORD: process.env.EMAIL_PASSWORD || "",
-  PUBLIC_ROLES: ["DEVELOPER", "PROJECT_MANAGER", "DESIGNER"],
-  FINAL_ROLE: "FINAL",
-  STAGES: ["RESUME", "PHONE", "INTERVIEW", "FINAL"],
+  STAGES: ["Resume", "Phone", "Interview", "Final"],
 };

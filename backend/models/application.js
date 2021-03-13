@@ -26,7 +26,8 @@ module.exports = mongoose.model(
         required: true,
       },
       role: {
-        type: String,
+        type: mongoose.Types.ObjectId,
+        ref: "Role",
         required: true,
       },
       graduation: {

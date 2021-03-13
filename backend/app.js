@@ -6,8 +6,7 @@ const morgan = require("morgan");
 const cors = require("cors");
 const mongoose = require("mongoose");
 
-const { MONGO_URI, PUBLIC_ROLES, FINAL_ROLE } = require("./constants");
-const { createUserCategories } = require("./services/users");
+const { MONGO_URI } = require("./constants");
 const { initializePassport } = require("./middleware/auth");
 
 // Database
@@ -19,10 +18,6 @@ mongoose.set("useUnifiedTopology", true);
 mongoose.connect(MONGO_URI);
 mongoose.connection.once("open", async () => {
   console.log("A connection to MongoDB has been established.");
-  let new_roles = await createUserCategories([...PUBLIC_ROLES, FINAL_ROLE]);
-  if (new_roles.length > 0) {
-    console.log(`Default user categories for [${new_roles}] were created.`);
-  }
 });
 
 const app = express();

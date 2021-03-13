@@ -14,7 +14,12 @@ const { advanceApplication } = require("./applications");
  */
 async function updateReview(raw_review, submitter) {
   const review = await Review.findOne({ _id: raw_review._id })
-    .populate("application")
+    .populate({
+      path: "application",
+      populate: {
+        path: "role",
+      },
+    })
     .exec();
   if (review == null) {
     throw ServiceError(400, "Could not find a review matching that ID");
@@ -70,8 +75,18 @@ async function updateReview(raw_review, submitter) {
  */
 async function getUserReviews(user_id, options) {
   return await Review.find({ reviewer: user_id, ...options })
-    .populate("reviewer")
-    .populate("application")
+    .populate({
+      path: "application",
+      populate: {
+        path: "role",
+      },
+    })
+    .populate({
+      path: "reviewer",
+      populate: {
+        path: "role",
+      },
+    })
     .exec();
 }
 
@@ -81,8 +96,18 @@ async function getUserReviews(user_id, options) {
  */
 async function getApplicationReviews(application_id, options) {
   return await Review.find({ application: application_id, ...options })
-    .populate("reviewer")
-    .populate("application")
+    .populate({
+      path: "application",
+      populate: {
+        path: "role",
+      },
+    })
+    .populate({
+      path: "reviewer",
+      populate: {
+        path: "role",
+      },
+    })
     .exec();
 }
 
@@ -91,8 +116,18 @@ async function getApplicationReviews(application_id, options) {
  */
 async function getReview(review_id) {
   return await Review.findOne({ _id: review_id })
-    .populate("application")
-    .populate("reviewer")
+    .populate({
+      path: "application",
+      populate: {
+        path: "role",
+      },
+    })
+    .populate({
+      path: "reviewer",
+      populate: {
+        path: "role",
+      },
+    })
     .exec();
 }
 

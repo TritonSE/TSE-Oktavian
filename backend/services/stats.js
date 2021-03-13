@@ -1,5 +1,5 @@
-const { PUBLIC_ROLES, STAGES } = require("../constants");
-const { Application } = require("../models");
+const { STAGES } = require("../constants");
+const { Application, Committee } = require("../models");
 
 /**
  * Returns statistics related to the number of applications
@@ -7,37 +7,34 @@ const { Application } = require("../models");
  * was created, not necessarily updated.
  */
 async function getApplicationStats(start_date, end_date) {
+  const committees = await Committee.find().populate("role").exec();
+  const roles = committees.map((committee) => committee.role);
   const stats = {};
-  for (const role of PUBLIC_ROLES) {
-    stats[role] = {};
+  for (const role of roles) {
+    const criteria = {
+      role: role,
+      created_at: {
+        $gte: start_date,
+        $lte: end_date,
+      },
+    };
+    stats[role.name] = {};
     for (const stage of STAGES) {
-      stats[role][stage] = await Application.countDocuments({
-        role: role,
+      stats[role.name][stage] = await Application.countDocuments({
+        ...criteria,
         completed: false,
         current_stage: stage,
-        created_at: {
-          $gte: start_date,
-          $lte: end_date,
-        },
       }).exec();
     }
-    stats[role]["ACCEPTED"] = await Application.countDocuments({
-      role: role,
+    stats[role.name]["Accepted"] = await Application.countDocuments({
+      ...criteria,
       completed: true,
       accepted: true,
-      created_at: {
-        $gte: start_date,
-        $lte: end_date,
-      },
     }).exec();
-    stats[role]["REJECTED"] = await Application.countDocuments({
-      role: role,
+    stats[role.name]["Rejected"] = await Application.countDocuments({
+      ...criteria,
       completed: true,
       accepted: false,
-      created_at: {
-        $gte: start_date,
-        $lte: end_date,
-      },
     }).exec();
   }
   return stats;

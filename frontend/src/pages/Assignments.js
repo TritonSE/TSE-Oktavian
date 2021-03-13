@@ -37,7 +37,11 @@ export default function Assignments() {
       })
       .map((review) => {
         const app = review.application;
-        return { ...app, submission: new Date(app.created_at).getFullYear() };
+        return {
+          ...app,
+          role: app.role.name,
+          submission: new Date(app.created_at).getFullYear(),
+        };
       });
     setState({
       ...state,

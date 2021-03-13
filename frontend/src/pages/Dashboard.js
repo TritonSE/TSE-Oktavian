@@ -110,7 +110,7 @@ export default function Dashboard() {
       </Helmet>
       <WithNavbar>
         <WithData
-          slug={`api/stats?start_date=${state.start_date.getTime()}&end_date=${state.end_date.getTime()}`}
+          slug={`api/stats/applications?start_date=${state.start_date.getTime()}&end_date=${state.end_date.getTime()}`}
           authenticated={true}
           reloading={state.reloading}
           onSuccess={handleData}
@@ -149,17 +149,17 @@ export default function Dashboard() {
                     </Grid>
                   </MuiPickersUtilsProvider>
                   <Typography variant="h4" className={classes.title}>
-                    Dashboard
+                    Recruitment Dashboard
                   </Typography>
                   <Grid container spacing={3}>
                     <Grid item md={4} xs={12}>
-                      {getPositionStats("DEVELOPER")}
+                      {getPositionStats("Developer")}
                     </Grid>
                     <Grid item md={4} xs={12}>
-                      {getPositionStats("DESIGNER")}
+                      {getPositionStats("Designer")}
                     </Grid>
                     <Grid item md={4} xs={12}>
-                      {getPositionStats("PROJECT_MANAGER")}
+                      {getPositionStats("Project Manager")}
                     </Grid>
                   </Grid>
                 </div>

@@ -230,7 +230,7 @@ export default function Application({ match }) {
                       {`${
                         state.application.name
                       }'s ${state.application.created_at.getFullYear()} ${toTitleCase(
-                        state.application.role
+                        state.application.role.name
                       )} Application`}
                     </h2>
                     {state.application.completed ? (
@@ -267,7 +267,7 @@ export default function Application({ match }) {
                             label="Role"
                             variant="outlined"
                             type="text"
-                            defaultValue={state.application.role}
+                            defaultValue={state.application.role.name}
                             disabled
                           />
                         </Grid>

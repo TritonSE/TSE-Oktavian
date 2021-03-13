@@ -1,7 +1,7 @@
 const { v4: uuidv4 } = require("uuid");
 
 const { REGISTER_SECRET } = require("../constants");
-const { User, RoleRoundRobin, PasswordReset } = require("../models");
+const { User, PasswordReset } = require("../models");
 const { ServiceError } = require("./errors");
 const { sendEmail } = require("./email");
 
@@ -10,34 +10,13 @@ async function createUser(raw_user) {
   if (raw_user.secret !== REGISTER_SECRET) {
     throw ServiceError(403, "Invalid secret value");
   }
+  delete raw_user.secret;
   if (user) {
     throw ServiceError(409, "Email already taken");
   }
   user = new User(raw_user);
   await user.save();
-  for (let role of raw_user.roles) {
-    if (typeof role === "string") {
-      let rrr = await RoleRoundRobin.findOne({ role: role }).exec();
-      if (rrr != null) {
-        rrr.reviewers.push(user);
-        await rrr.save();
-      }
-    }
-  }
   return user;
-}
-
-async function createUserCategories(roles) {
-  let new_roles = [];
-  for (let role of roles) {
-    let rrr = await RoleRoundRobin.findOne({ role: role }).exec();
-    if (rrr == null) {
-      rrr = RoleRoundRobin({ role: role });
-      await rrr.save();
-      new_roles.push(role);
-    }
-  }
-  return new_roles;
 }
 
 async function forgotPassword(data) {
@@ -80,7 +59,6 @@ async function resetPassword(data) {
 
 module.exports = {
   createUser,
-  createUserCategories,
   forgotPassword,
   resetPassword,
 };

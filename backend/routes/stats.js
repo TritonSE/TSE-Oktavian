@@ -8,9 +8,9 @@ const { getApplicationStats } = require("../services/stats");
 const router = express.Router();
 
 router.get(
-  "/",
+  "/applications",
   [
-    authorizeUser,
+    authorizeUser(["permit_regular_review"]),
     query("start_date").notEmpty().isNumeric().toInt(),
     query("end_date").notEmpty().isNumeric().toInt(),
     validateRequest,
