@@ -17,9 +17,9 @@ def view_roles():
     db = client[components['database']]
 
     user_roles = defaultdict(list)
-    for category in db.usercategories.find():
-        role = category['role']
-        for uid in category['users']:
+    for rrr in db.roleroundrobin.find():
+        role = rrr['role']
+        for uid in rrr['reviewers']:
             user_roles[uid].append(role)
 
     for user in db.users.find():

@@ -20,9 +20,9 @@ def change_role(email, roles):
     if user is None:
         raise Exception('User doesn\'t exist')
 
-    # for every role in the UserCategory collection, remove the user
-    db.usercategories.update_many({},
-                                  {'$pull': {'users': ObjectId(user['_id'])}})
+    # for every role in the RoleRoundRobin collection, remove the user
+    db.roleroundrobin.update_many({},
+                                  {'$pull': {'reviewers': ObjectId(user['_id'])}})
 
     # for every role in roles, add the user to that role
     matchedCount = db.usercategories.update_many({'role': {'$in': roles}}, {

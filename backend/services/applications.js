@@ -1,5 +1,5 @@
 const { STAGES, PUBLIC_ROLES, FINAL_ROLE } = require("../constants");
-const { Application, Review, UserCategory } = require("../models");
+const { Application, Review, RoleRoundRobin } = require("../models");
 const { ServiceError } = require("./errors");
 const { sendEmail } = require("./email");
 
@@ -32,13 +32,13 @@ async function autoAssignApplication(application) {
   if (application.current_stage === STAGES[STAGES.length - 1]) {
     role = FINAL_ROLE;
   }
-  const category = await UserCategory.findOne({ role: role })
+  const rrr = await RoleRoundRobin.findOne({ role: role })
     .populate("users")
     .exec();
-  if (category.users.length === 0) {
+  if (rrr == null || rrr.reviewers.length === 0) {
     throw ServiceError(
       400,
-      "Unable to auto-assign any " + role + " reviewer to application"
+      "Unable to auto-assign any reviewer to application"
     );
   }
   // Find first reviewer in the round robin list not in past reviewers
@@ -50,16 +50,16 @@ async function autoAssignApplication(application) {
   );
   // In the case where no reviewer is new, just use the first person
   let ridx = 0;
-  for (let [i, reviewer] of category.users.entries()) {
+  for (let [i, reviewer] of rrr.reviewers.entries()) {
     if (!past_reviewers.has(reviewer._id.toString())) {
       ridx = i;
       break;
     }
   }
-  const reviewer = category.users[ridx];
-  category.users.splice(ridx, 1);
-  category.users.push(reviewer);
-  await category.save();
+  const reviewer = rrr.reviewers[ridx];
+  rrr.reviewers.splice(ridx, 1);
+  rrr.reviewers.push(reviewer);
+  await rrr.save();
   await assignApplication(application, reviewer);
 }
 
