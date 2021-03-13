@@ -31,9 +31,17 @@ async function autoAssignApplication(application) {
   let reviewer = null;
   if (application.current_stage === STAGES[STAGES.length - 1]) {
     // Special case: president(s) make the final decision
-    const final_reviewers = await User.find({
-      "role.permit_final_review": true,
-    }).exec();
+    const final_reviewers = await User.aggregate([
+      {
+        $lookup: {
+          from: "roles",
+          localField: "role",
+          foreignField: "_id",
+          as: "role",
+        },
+      },
+      { $match: { "role.permit_final_review": true } },
+    ]).exec();
     if (final_reviewers == null || final_reviewers.length === 0) {
       throw ServiceError(
         400,
@@ -47,7 +55,7 @@ async function autoAssignApplication(application) {
     // Non-special case: find the appropriate committee and make a round-robin decision
     const committee = await Committee.findOne({ role: role })
       .populate({
-        path: "users",
+        path: "reviewers",
         populate: {
           path: "role",
         },
@@ -74,7 +82,7 @@ async function autoAssignApplication(application) {
         break;
       }
     }
-    const reviewer = committee.reviewers[ridx];
+    reviewer = committee.reviewers[ridx];
     committee.reviewers.splice(ridx, 1);
     committee.reviewers.push(reviewer);
     await committee.save();
