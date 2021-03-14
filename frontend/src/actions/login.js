@@ -3,7 +3,7 @@ import {
   register as registerRequest,
   me,
 } from "../services/auth";
-import { clearJWT, hasJWT, setJWT, getJWT } from "../util/jwt";
+import { clearJWT, hasJWT, setJWT } from "../util/jwt";
 import { openAlert } from "./alert";
 
 export const ACTION_LOGIN = "login/login";
