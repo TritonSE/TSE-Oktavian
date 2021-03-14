@@ -27,8 +27,7 @@ import {
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { Link, useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { isAuthenticated, getUser, logout } from "../services/auth";
-import { closeAlert } from "../actions";
+import { logout, resolveLogin, closeAlert } from "../actions";
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
@@ -68,23 +67,49 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// The page container component wraps the main page content and
-// provides the other necessary components surrounding the page:
-// for example, the top navbar, the sidebar, the footer, etc.
+
+// The PageContainer component is extremely critical and needs
+// to be present on every page. It wraps the main components of
+// the page, performing several important tasks:
+//  1. It performs authentication resolution. This means that, given
+//  the current state of the application's JWT token, this token is
+//  either resolved into a valid user profile or the token is invalidated
+//  and the user is considered not logged in. The resolution essentially
+//  sets up the global user state for the application in Redux. If no
+//  resolution occurs, then other components cannot function.
+//  2. It adds a navbar and sidebar. The contents of both depend on
+//  the authentication resolution results.
+//  3. It sets up the layout for the page and adds some theming.
+//  4. While authentication is resolving, it prevents the rest of
+//  the page from being visible.
 export default function PageContainer({ window, children }) {
   const history = useHistory();
   const classes = useStyles();
   const theme = useTheme();
   const [state, setState] = React.useState(false);
+  const loginState = useSelector((state) => state.login);
   const alertState = useSelector((state) => state.alert);
   const dispatch = useDispatch();
+
+  // The login state is only loading when Redux is first loaded
+  React.useEffect(() => {
+    if (loginState.loading) {
+      dispatch(resolveLogin());
+    }
+  }, [loginState.loading]);
+
+  // If the login state is loading, the sidebar cannot be properly displayed
+  // Therefore, just return an empty page while the resolution progresses
+  if (loginState.loading) {
+    return <></>;
+  }
 
   const handleDrawerToggle = () => {
     setState(!state);
   };
 
   const handleLogout = () => {
-    logout();
+    dispatch(logout());
     history.push("/");
   };
 
@@ -116,9 +141,9 @@ export default function PageContainer({ window, children }) {
         },
       ],
       display:
-        isAuthenticated() &&
-        getUser().role != null &&
-        getUser().role.permit_regular_review,
+        loginState.authenticated &&
+        loginState.user.role != null &&
+        loginState.user.role.permit_regular_review,
     },
     {
       name: "Account",
@@ -132,7 +157,7 @@ export default function PageContainer({ window, children }) {
           text: "Logout",
         },
       ],
-      display: isAuthenticated(),
+      display: loginState.authenticated,
     },
     {
       name: "Account",
@@ -148,7 +173,7 @@ export default function PageContainer({ window, children }) {
           link: "/register",
         },
       ],
-      display: !isAuthenticated(),
+      display: !loginState.authenticated,
     },
   ];
 

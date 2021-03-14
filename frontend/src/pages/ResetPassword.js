@@ -55,7 +55,7 @@ export default function ResetPassword({ match }) {
     event.preventDefault();
     setState({ ...state, disabled: true });
     if (state.password !== state.confirm_password) {
-      openAlert(dispatch, "Error: Passwords do not match");
+      dispatch(openAlert("Error: Passwords do not match"));
       setState({
         ...state,
         disabled: false,
@@ -63,7 +63,7 @@ export default function ResetPassword({ match }) {
       return;
     }
     if (state.password.length < 6) {
-      openAlert(dispatch, "Error: Password must be at least 6 characters");
+      dispatch(openAlert("Error: Password must be at least 6 characters"));
       setState({
         ...state,
         disabled: false,
@@ -83,7 +83,7 @@ export default function ResetPassword({ match }) {
     if (ok) {
       history.push("/");
     } else {
-      openAlert(dispatch, `Error: ${data.message}`);
+      dispatch(openAlert(`Error: ${data.message}`));
     }
     setState({
       ...state,

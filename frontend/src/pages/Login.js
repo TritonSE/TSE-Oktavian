@@ -55,7 +55,7 @@ export default function Login() {
       password: state.password,
     };
     if (submission.password.length < 6) {
-      openAlert(dispatch, "Error: Password must be at least 6 characters");
+      dispatch(openAlert("Error: Password must be at least 6 characters"));
       setState({
         ...state,
         disabled: false,
@@ -73,7 +73,7 @@ export default function Login() {
       setUser(data.user);
       history.push("/");
     } else {
-      openAlert(dispatch, `Error: ${data.message}`);
+      dispatch(openAlert(`Error: ${data.message}`));
     }
     setState({
       ...state,

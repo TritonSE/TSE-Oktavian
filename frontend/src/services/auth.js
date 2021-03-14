@@ -1,32 +1,21 @@
-function isAuthenticated() {
-  return localStorage.getItem("tse-recruitment:token") != null;
+import { getData, sendData } from '../util/data';
+
+export async function login(body) {
+  return sendData("api/auth/login", false, "POST", JSON.stringify(body)); 
 }
 
-function getJWT() {
-  if (!isAuthenticated()) {
-    return null;
-  }
-  return localStorage.getItem("tse-recruitment:token");
+export async function register(body) {
+  return sendData("api/auth/register", false, "POST", JSON.stringify(body)); 
 }
 
-function setJWT(token) {
-  localStorage.setItem("tse-recruitment:token", token);
+export async function forgotPassword(body) {
+  return sendData("api/auth/forgot-password", false, "POST", JSON.stringify(body)); 
 }
 
-function getUser() {
-  if (!isAuthenticated()) {
-    return null;
-  }
-  return JSON.parse(localStorage.getItem("tse-recruitment:user"));
+export async function resetPassword(body) {
+  return sendData("api/auth/reset-password", false, "POST", JSON.stringify(body)); 
 }
 
-function setUser(user) {
-  localStorage.setItem("tse-recruitment:user", JSON.stringify(user));
+export async function me() {
+  return getData("api/auth/me", true);
 }
-
-function logout() {
-  localStorage.removeItem("tse-recruitment:token");
-  localStorage.removeItem("tse-recruitment:user");
-}
-
-export { isAuthenticated, getJWT, setJWT, getUser, setUser, logout };

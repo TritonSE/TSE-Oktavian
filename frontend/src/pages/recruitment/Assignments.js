@@ -48,7 +48,7 @@ export default function Assignments() {
   };
 
   const handleError = (data) => {
-    openAlert(dispatch, `Error: ${data.message}`);
+    dispatch(openAlert(`Error: ${data.message}`));
     setState({
       ...state,
       reloading: false,

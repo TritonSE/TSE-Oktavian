@@ -3,7 +3,7 @@
 const BACKEND_URL = "";
 
 // Redux action types
-const ACTION_SET_LOADING = "loading/set";
+const ACTION_LOGIN = "loading/set";
 const ACTION_OPEN_ALERT = "alert/open";
 const ACTION_CLOSE_ALERT = "alert/close";
 

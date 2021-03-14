@@ -1,8 +1,8 @@
 import React from "react";
 import DateFnsUtils from "@date-io/date-fns";
-import WithData from "../../components/WithData";
 import WithAuthentication from "../../components/WithAuthentication";
 import PageContainer from "../../components/PageContainer";
+import LoadingContainer from "../../components/LoadingContainer";
 import { Helmet } from "react-helmet";
 import {
   Card,
@@ -15,6 +15,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import { useDispatch } from "react-redux";
 import { openAlert } from "../../actions";
+import { getApplicationStats } from "../../services/stats";
 
 const useStyles = makeStyles((theme) => ({
   centered: {
@@ -32,7 +33,7 @@ export default function Overview() {
   const classes = useStyles();
   const [state, setState] = React.useState({
     // Initial backend data
-    reloading: true,
+    loading: true,
     stats: null,
     // User input
     start_date: new Date(
@@ -44,25 +45,31 @@ export default function Overview() {
   });
   const dispatch = useDispatch();
 
-  const handleData = (data) => {
-    const stats = JSON.parse(JSON.stringify(data.stats));
-    setState({ ...state, reloading: false, stats: stats });
-  };
-
-  const handleError = (data) => {
-    openAlert(dispatch, `Error: ${data.message}`);
-    setState({
-      ...state,
-      reloading: false,
-    });
-  };
+  React.useEffect(() => {
+    const loadData = async () => {
+      let { ok, data } = await getApplicationStats(state.start_date, state.end_date);  
+      if (ok) {
+        const stats = JSON.parse(JSON.stringify(data.stats));
+        setState({ ...state, loading: false, stats: stats });
+      } else {
+        dispatch(openAlert(`Error: ${data.message}`));
+        setState({
+          ...state,
+          loading: false,
+        });
+      }
+    }
+    if (state.loading) {
+      loadData();
+    }
+  }, [state.loading, state.start_date, state.end_date])
 
   const handleStartDateChange = (new_date) => {
-    setState({ ...state, start_date: new_date, reloading: true });
+    setState({ ...state, start_date: new_date, loading: true });
   };
 
   const handleEndDateChange = (new_date) => {
-    setState({ ...state, end_date: new_date, reloading: true });
+    setState({ ...state, end_date: new_date, loading: true });
   };
 
   const getPositionStats = (role) => {
@@ -95,13 +102,7 @@ export default function Overview() {
         <title>Recruitment — TSE Oktavian</title>
       </Helmet>
       <PageContainer>
-        <WithData
-          slug={`api/stats/applications?start_date=${state.start_date.getTime()}&end_date=${state.end_date.getTime()}`}
-          authenticated={true}
-          reloading={state.reloading}
-          onSuccess={handleData}
-          onError={handleError}
-        >
+        <LoadingContainer loading={state.loading}>
           <Grid
             container
             spacing={0}
@@ -152,7 +153,7 @@ export default function Overview() {
               )}
             </Grid>
           </Grid>
-        </WithData>
+        </LoadingContainer>
       </PageContainer>
     </WithAuthentication>
   );

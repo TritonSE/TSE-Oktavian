@@ -85,9 +85,9 @@ export default function NewApplication() {
       JSON.stringify(submission)
     );
     if (ok) {
-      openAlert(dispatch, "Sample application was submitted successfully.");
+      dispatch(openAlert("Sample application was submitted successfully."));
     } else {
-      openAlert(dispatch, `Error: ${data.message}`);
+      dispatch(openAlert(`Error: ${data.message}`));
     }
     setState({
       ...state,

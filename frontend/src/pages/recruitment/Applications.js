@@ -1,7 +1,7 @@
 import React from "react";
-import WithData from "../../components/WithData";
 import WithAuthentication from "../../components/WithAuthentication";
 import PageContainer from "../../components/PageContainer";
+import LoadingContainer from "../../components/LoadingContainer";
 import { Helmet } from "react-helmet";
 import { Grid } from "@material-ui/core";
 import { Visibility } from "@material-ui/icons";
@@ -10,6 +10,7 @@ import MaterialTable from "@material-table/core";
 import { TableIcons } from "../../components/Icons";
 import { useDispatch } from "react-redux";
 import { openAlert } from "../../actions";
+import { getApplications } from "../../services/applications";
 
 const useStyles = makeStyles(() => ({
   grid: {
@@ -20,33 +21,39 @@ const useStyles = makeStyles(() => ({
 export default function Applications() {
   const classes = useStyles();
   const [state, setState] = React.useState({
-    reloading: true,
+    loading: true,
     applications: [],
   });
   const dispatch = useDispatch();
 
-  const handleData = (data) => {
-    const applications = data.applications.map((app) => {
-      return {
-        ...app,
-        role: app.role.name,
-        submission: new Date(app.created_at).getFullYear(),
-      };
-    });
-    setState({
-      ...state,
-      reloading: false,
-      applications: applications,
-    });
-  };
-
-  const handleError = (data) => {
-    openAlert(dispatch, `Error: ${data.message}`);
-    setState({
-      ...state,
-      reloading: false,
-    });
-  };
+  React.useEffect(() => {
+    const loadData = async () => {
+      let { ok, data } = await getApplications();  
+      if (ok) {
+        const applications = data.applications.map((app) => {
+          return {
+            ...app,
+            role: app.role.name,
+            submission: new Date(app.created_at).getFullYear(),
+          };
+        });
+        setState({
+          ...state,
+          loading: false,
+          applications: applications,
+        });
+      } else {
+        dispatch(openAlert(`Error: ${data.message}`));
+        setState({
+          ...state,
+          loading: false,
+        });
+      }
+    }
+    if (state.loading) {
+      loadData();
+    }
+  }, [state.loading])
 
   return (
     <WithAuthentication allow={true}>
@@ -54,13 +61,7 @@ export default function Applications() {
         <title>All Applications — TSE Oktavian</title>
       </Helmet>
       <PageContainer>
-        <WithData
-          slug="api/applications"
-          authenticated={true}
-          reloading={state.reloading}
-          onSuccess={handleData}
-          onError={handleError}
-        >
+        <LoadingContainer loading={state.loading}>
           <Grid
             container
             spacing={0}
@@ -121,7 +122,7 @@ export default function Applications() {
               />
             </Grid>
           </Grid>
-        </WithData>
+        </LoadingContainer>
       </PageContainer>
     </WithAuthentication>
   );

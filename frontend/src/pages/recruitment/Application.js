@@ -103,7 +103,7 @@ export default function Application({ match }) {
   };
 
   const handleError = (data) => {
-    openAlert(dispatch, `Error: ${data.message}`);
+    dispatch(openAlert(`Error: ${data.message}`));
     setState({
       ...state,
       reloading_application: false,
@@ -163,7 +163,7 @@ export default function Application({ match }) {
           modal: false,
         });
       } else {
-        openAlert(dispatch, `Error: ${data.message}`);
+        dispatch(openAlert(`Error: ${data.message}`));
         setState({
           ...state,
           modal: false,

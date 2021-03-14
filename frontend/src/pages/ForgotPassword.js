@@ -73,7 +73,7 @@ export default function ForgotPassword() {
         "A password reset request has been sent to your email"
       );
     } else {
-      openAlert(dispatch, `Error: ${data.message}`);
+      dispatch(openAlert(`Error: ${data.message}`));
     }
     setState({
       ...state,
