@@ -4,7 +4,7 @@ import { isAuthenticated } from "../services/auth";
 
 export default function Home() {
   return isAuthenticated() ? (
-    <Redirect to="/dashboard" />
+    <Redirect to="/recruitment" />
   ) : (
     <Redirect to="/login" />
   );

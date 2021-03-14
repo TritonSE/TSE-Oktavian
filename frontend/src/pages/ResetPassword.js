@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import WithAuthentication from "../components/WithAuthentication";
-import WithNavbar from "../components/WithNavbar";
+import PageContainer from "../components/PageContainer";
 import { Helmet } from "react-helmet";
 import { useHistory } from "react-router-dom";
 import {
@@ -114,7 +114,7 @@ export default function ResetPassword({ match }) {
       <Helmet>
         <title>Reset Password — Oktavian</title>
       </Helmet>
-      <WithNavbar>
+      <PageContainer>
         <Grid container spacing={0} alignItems="center" justify="center">
           <Grid item md={6} xs={12}>
             <Typography variant="h4" className={classes.title}>
@@ -147,7 +147,7 @@ export default function ResetPassword({ match }) {
             message={state.snack.message}
           />
         </Grid>
-      </WithNavbar>
+      </PageContainer>
     </WithAuthentication>
   );
 }

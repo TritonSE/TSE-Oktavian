@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
-import WithData from "../components/WithData";
-import WithAuthentication from "../components/WithAuthentication";
-import WithNavbar from "../components/WithNavbar";
+import WithData from "../../components/WithData";
+import WithAuthentication from "../../components/WithAuthentication";
+import PageContainer from "../../components/PageContainer";
 import { Helmet } from "react-helmet";
 import {
   FormLabel,
@@ -22,9 +22,8 @@ import {
 } from "@material-ui/core";
 import { ExitToApp } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
-import { getUser } from "../services/auth";
-import { sendData } from "../services/data";
-import { toTitleCase } from "../util/typography";
+import { getUser } from "../../services/auth";
+import { sendData } from "../../services/data";
 
 const useStyles = makeStyles((theme) => ({
   grid: {
@@ -194,7 +193,7 @@ export default function Application({ match }) {
       <Helmet>
         <title>Loading Application — TSE Oktavian</title>
       </Helmet>
-      <WithNavbar title="Viewing Application">
+      <PageContainer title="Viewing Application">
         <WithData
           slug={`api/applications/${match.params.appid}`}
           authenticated={true}
@@ -229,9 +228,9 @@ export default function Application({ match }) {
                     <h2 id="application">
                       {`${
                         state.application.name
-                      }'s ${state.application.created_at.getFullYear()} ${toTitleCase(
+                      }'s ${state.application.created_at.getFullYear()} ${
                         state.application.role.name
-                      )} Application`}
+                      } Application`}
                     </h2>
                     {state.application.completed ? (
                       state.application.accepted ? (
@@ -334,7 +333,7 @@ export default function Application({ match }) {
                         return (
                           <Card className={classes.card}>
                             <CardContent>
-                              <h3>{toTitleCase(review.stage)} Stage</h3>
+                              <h3>{review.stage} Stage</h3>
                               {review.accepted ? (
                                 <Chip label="Passed" color="primary" />
                               ) : (
@@ -379,7 +378,7 @@ export default function Application({ match }) {
                         return (
                           <Card className={classes.card}>
                             <CardContent>
-                              <h3>{toTitleCase(review.stage)} Stage</h3>
+                              <h3>{review.stage} Stage</h3>
                               <Chip label="Incomplete" />
                               <form className={classes.form}>
                                 <Grid container spacing={3}>
@@ -446,7 +445,7 @@ export default function Application({ match }) {
                         return (
                           <Card className={classes.card}>
                             <CardContent>
-                              <h3>{toTitleCase(review.stage)} Stage</h3>
+                              <h3>{review.stage} Stage</h3>
                               <Chip label="Incomplete" />
                               <form className={classes.form}>
                                 <Grid container spacing={3}>
@@ -537,7 +536,7 @@ export default function Application({ match }) {
             )}
           </WithData>
         </WithData>
-      </WithNavbar>
+      </PageContainer>
     </WithAuthentication>
   );
 }

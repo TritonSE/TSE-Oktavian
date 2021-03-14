@@ -10,7 +10,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import WithAuthentication from "../components/WithAuthentication";
-import WithNavbar from "../components/WithNavbar";
+import PageContainer from "../components/PageContainer";
 import { makeStyles } from "@material-ui/core/styles";
 import { getUser } from "../services/auth";
 
@@ -69,7 +69,7 @@ export default function Settings() {
       <Helmet>
         <title>Settings — TSE Oktavian</title>
       </Helmet>
-      <WithNavbar>
+      <PageContainer>
         <Grid
           container
           spacing={0}
@@ -156,7 +156,7 @@ export default function Settings() {
             message={state.snack.message}
           />
         </Grid>
-      </WithNavbar>
+      </PageContainer>
     </WithAuthentication>
   );
 }

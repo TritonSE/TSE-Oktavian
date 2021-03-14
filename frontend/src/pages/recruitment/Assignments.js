@@ -1,13 +1,14 @@
 import React from "react";
-import WithData from "../components/WithData";
-import WithAuthentication from "../components/WithAuthentication";
-import WithNavbar from "../components/WithNavbar";
+import WithData from "../../components/WithData";
+import WithAuthentication from "../../components/WithAuthentication";
+import PageContainer from "../../components/PageContainer";
 import { Helmet } from "react-helmet";
 import { Grid, Snackbar } from "@material-ui/core";
-import { Visibility } from "@material-ui/icons";
+import { Edit } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import MaterialTable from "@material-table/core";
-import { TableIcons } from "../components/Icons";
+import { TableIcons } from "../../components/Icons";
+import { getUser } from "../../services/auth";
 
 const useStyles = makeStyles(() => ({
   grid: {
@@ -15,7 +16,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default function Applications() {
+export default function Assignments() {
   const classes = useStyles();
   const [state, setState] = React.useState({
     // Boilerplate
@@ -29,13 +30,19 @@ export default function Applications() {
   });
 
   const handleData = (data) => {
-    const applications = data.applications.map((app) => {
-      return {
-        ...app,
-        role: app.role.name,
-        submission: new Date(app.created_at).getFullYear(),
-      };
-    });
+    const reviews = data.reviews;
+    const applications = reviews
+      .filter((review) => {
+        return !review.completed;
+      })
+      .map((review) => {
+        const app = review.application;
+        return {
+          ...app,
+          role: app.role.name,
+          submission: new Date(app.created_at).getFullYear(),
+        };
+      });
     setState({
       ...state,
       reloading: false,
@@ -64,11 +71,11 @@ export default function Applications() {
   return (
     <WithAuthentication allow={true}>
       <Helmet>
-        <title>All Applications — TSE Oktavian</title>
+        <title>Your Assignments — TSE Oktavian</title>
       </Helmet>
-      <WithNavbar>
+      <PageContainer>
         <WithData
-          slug="api/applications"
+          slug={`api/reviews?user=${getUser()._id}`}
           authenticated={true}
           reloading={state.reloading}
           onSuccess={handleData}
@@ -86,10 +93,10 @@ export default function Applications() {
                 icons={TableIcons}
                 actions={[
                   {
-                    icon: function visibility() {
-                      return <Visibility />;
+                    icon: function edit() {
+                      return <Edit />;
                     },
-                    tooltip: "View Application",
+                    tooltip: "Edit Application",
                     onClick: (event, row) => {
                       let origin =
                         window.location.protocol +
@@ -98,7 +105,9 @@ export default function Applications() {
                         (window.location.port
                           ? ":" + window.location.port
                           : "");
-                      window.open(`${origin}/application/${row._id}`);
+                      window.open(
+                        `${origin}/recruitment/application/${row._id}`
+                      );
                     },
                   },
                 ]}
@@ -124,11 +133,9 @@ export default function Applications() {
                     field: "submission",
                     type: "numeric",
                   },
-                  { title: "Completed", field: "completed", type: "boolean" },
-                  { title: "Accepted", field: "accepted", type: "boolean" },
                 ]}
                 data={state.applications}
-                title="All Applications"
+                title="Your Active Assignments"
               />
             </Grid>
             <Snackbar
@@ -139,7 +146,7 @@ export default function Applications() {
             />
           </Grid>
         </WithData>
-      </WithNavbar>
+      </PageContainer>
     </WithAuthentication>
   );
 }

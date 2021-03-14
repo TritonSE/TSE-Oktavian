@@ -1,6 +1,6 @@
 import React from "react";
 import WithAuthentication from "../components/WithAuthentication";
-import WithNavbar from "../components/WithNavbar";
+import PageContainer from "../components/PageContainer";
 import { Helmet } from "react-helmet";
 import {
   TextField,
@@ -101,7 +101,7 @@ export default function ForgotPassword() {
       <Helmet>
         <title>Forgot Password — TSE Oktavian</title>
       </Helmet>
-      <WithNavbar>
+      <PageContainer>
         <Grid container spacing={0} alignItems="center" justify="center">
           <Grid item md={6} xs={12}>
             <Typography variant="h4" className={classes.title}>
@@ -141,7 +141,7 @@ export default function ForgotPassword() {
             message={state.snack.message}
           />
         </Grid>
-      </WithNavbar>
+      </PageContainer>
     </WithAuthentication>
   );
 }

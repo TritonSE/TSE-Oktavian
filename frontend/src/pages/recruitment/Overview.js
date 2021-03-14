@@ -1,8 +1,8 @@
 import React from "react";
 import DateFnsUtils from "@date-io/date-fns";
-import WithData from "../components/WithData";
-import WithAuthentication from "../components/WithAuthentication";
-import WithNavbar from "../components/WithNavbar";
+import WithData from "../../components/WithData";
+import WithAuthentication from "../../components/WithAuthentication";
+import PageContainer from "../../components/PageContainer";
 import { Helmet } from "react-helmet";
 import {
   Card,
@@ -14,7 +14,6 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
-import { toTitleCase } from "../util/typography";
 
 const useStyles = makeStyles((theme) => ({
   centered: {
@@ -28,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Dashboard() {
+export default function Overview() {
   const classes = useStyles();
   const [state, setState] = React.useState({
     // Boilerplate
@@ -87,7 +86,7 @@ export default function Dashboard() {
       <Card>
         <CardContent>
           <Typography variant="h5" className={classes.title}>
-            {toTitleCase(role)}
+            {role}
           </Typography>
           {Object.keys(state.stats[role]).map((stage) => {
             const count = state.stats[role][stage];
@@ -106,9 +105,9 @@ export default function Dashboard() {
   return (
     <WithAuthentication allow={true}>
       <Helmet>
-        <title>Dashboard — TSE Oktavian</title>
+        <title>Recruitment — TSE Oktavian</title>
       </Helmet>
-      <WithNavbar>
+      <PageContainer>
         <WithData
           slug={`api/stats/applications?start_date=${state.start_date.getTime()}&end_date=${state.end_date.getTime()}`}
           authenticated={true}
@@ -149,7 +148,7 @@ export default function Dashboard() {
                     </Grid>
                   </MuiPickersUtilsProvider>
                   <Typography variant="h4" className={classes.title}>
-                    Recruitment Dashboard
+                    Recruitment Overview
                   </Typography>
                   <Grid container spacing={3}>
                     <Grid item md={4} xs={12}>
@@ -173,7 +172,7 @@ export default function Dashboard() {
             />
           </Grid>
         </WithData>
-      </WithNavbar>
+      </PageContainer>
     </WithAuthentication>
   );
 }

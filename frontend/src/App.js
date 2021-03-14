@@ -2,14 +2,14 @@ import React from "react";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import CreateApplication from "./pages/CreateApplication";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
-import Applications from "./pages/Applications";
-import Assignments from "./pages/Assignments";
-import Application from "./pages/Application";
 import Settings from "./pages/Settings";
-import Dashboard from "./pages/Dashboard";
+import RecruitmentOverview from "./pages/recruitment/Overview.js";
+import Applications from "./pages/recruitment/Applications";
+import Assignments from "./pages/recruitment/Assignments";
+import Application from "./pages/recruitment/Application";
+import NewApplication from "./pages/recruitment/NewApplication";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { createMuiTheme } from "@material-ui/core/styles";
 import { ThemeProvider } from "@material-ui/styles";
@@ -45,26 +45,26 @@ export default function App() {
               return <ResetPassword match={match} />;
             }}
           />
-          <Route exact={true} path="/dashboard">
-            <Dashboard />
+          <Route exact={true} path="/settings">
+            <Settings />
           </Route>
-          <Route exact={true} path="/applications">
+          <Route exact={true} path="/recruitment">
+            <RecruitmentOverview />
+          </Route>
+          <Route exact={true} path="/recruitment/applications">
             <Applications />
           </Route>
           <Route
-            path="/application/:appid"
+            path="/recruitment/application/:appid"
             component={({ match }) => {
               return <Application match={match} />;
             }}
           />
-          <Route exact={true} path="/assignments">
+          <Route exact={true} path="/recruitment/assignments">
             <Assignments />
           </Route>
-          <Route exact={true} path="/settings">
-            <Settings />
-          </Route>
-          <Route exact={true} path="/create-application">
-            <CreateApplication />
+          <Route exact={true} path="/recruitment/new-application">
+            <NewApplication />
           </Route>
           <Route path="/">
             <Home />

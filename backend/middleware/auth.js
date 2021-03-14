@@ -140,7 +140,7 @@ const authorizeUser = (permissions) =>
         return;
       }
       for (const permission of permissions) {
-        if (!req.user.role[permission]) {
+        if (req.user.role == null || !req.user.role[permission]) {
           resolve(false);
           return;
         }

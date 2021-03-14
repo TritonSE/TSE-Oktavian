@@ -1,5 +1,5 @@
 import React from "react";
-import WithNavbar from "../components/WithNavbar";
+import PageContainer from "../../components/PageContainer";
 import { Helmet } from "react-helmet";
 import {
   TextField,
@@ -15,7 +15,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { sendData } from "../services/data";
+import { sendData } from "../../services/data";
 
 const useStyles = makeStyles((theme) => ({
   centered: {
@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function CreateApplication() {
+export default function NewApplication() {
   const classes = useStyles();
   const [state, setState] = React.useState({
     // Boilerplate
@@ -56,7 +56,7 @@ export default function CreateApplication() {
     form_disabled: false,
     name: "",
     email: "",
-    role: "PROJECT_MANAGER",
+    role: "Project Manager",
     graduation: "2021",
     resume: "",
     about: "",
@@ -118,11 +118,11 @@ export default function CreateApplication() {
       <Helmet>
         <title>Create Application — TSE Oktavian</title>
       </Helmet>
-      <WithNavbar>
+      <PageContainer>
         <Grid container spacing={0} alignItems="center" justify="center">
           <Grid item md={6} xs={12}>
             <Typography variant="h4" className={classes.title}>
-              Create an Application
+              New Application
             </Typography>
             <form className={classes.form} onSubmit={handleSubmit}>
               <TextField
@@ -229,7 +229,7 @@ export default function CreateApplication() {
             message={state.snack.message}
           />
         </Grid>
-      </WithNavbar>
+      </PageContainer>
     </>
   );
 }
