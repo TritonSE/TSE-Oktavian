@@ -1,5 +1,5 @@
 import React from "react";
-import WithAuthentication from "../../components/WithAuthentication";
+import AuthenticationContainer from "../../components/AuthenticationContainer";
 import PageContainer from "../../components/PageContainer";
 import LoadingContainer from "../../components/LoadingContainer";
 import { Helmet } from "react-helmet";
@@ -37,93 +37,95 @@ export default function Applications() {
             submission: new Date(app.created_at).getFullYear(),
           };
         });
-        setState({
-          ...state,
+        setState((prev_state) => ({
+          ...prev_state,
           loading: false,
           applications: applications,
-        });
+        }));
       } else {
         dispatch(openAlert(`Error: ${data.message}`));
-        setState({
-          ...state,
+        setState((prev_state) => ({
+          ...prev_state,
           loading: false,
-        });
+        }));
       }
     };
     if (state.loading) {
       loadData();
     }
-  }, [state.loading]);
+  }, [state.loading, dispatch]);
 
   return (
-    <WithAuthentication allow={true}>
+    <>
       <Helmet>
         <title>All Applications — TSE Oktavian</title>
       </Helmet>
       <PageContainer>
-        <LoadingContainer loading={state.loading}>
-          <Grid
-            container
-            spacing={0}
-            alignItems="center"
-            justify="center"
-            className={classes.grid}
-          >
-            <Grid item xs={12}>
-              <MaterialTable
-                icons={TableIcons}
-                actions={[
-                  {
-                    icon: function visibility() {
-                      return <Visibility />;
+        <AuthenticationContainer allow={true}>
+          <LoadingContainer loading={state.loading}>
+            <Grid
+              container
+              spacing={0}
+              alignItems="center"
+              justify="center"
+              className={classes.grid}
+            >
+              <Grid item xs={12}>
+                <MaterialTable
+                  icons={TableIcons}
+                  actions={[
+                    {
+                      icon: function visibility() {
+                        return <Visibility />;
+                      },
+                      tooltip: "View Application",
+                      onClick: (event, row) => {
+                        let origin =
+                          window.location.protocol +
+                          "//" +
+                          window.location.hostname +
+                          (window.location.port
+                            ? ":" + window.location.port
+                            : "");
+                        window.open(
+                          `${origin}/recruitment/application/${row._id}`
+                        );
+                      },
                     },
-                    tooltip: "View Application",
-                    onClick: (event, row) => {
-                      let origin =
-                        window.location.protocol +
-                        "//" +
-                        window.location.hostname +
-                        (window.location.port
-                          ? ":" + window.location.port
-                          : "");
-                      window.open(
-                        `${origin}/recruitment/application/${row._id}`
-                      );
+                  ]}
+                  options={{
+                    filtering: true,
+                    paging: true,
+                    pageSize: 10,
+                    emptyRowsWhenPaging: true,
+                    pageSizeOptions: [10, 20, 50, 100],
+                  }}
+                  columns={[
+                    { title: "Name", field: "name" },
+                    { title: "Email", field: "email" },
+                    { title: "Position", field: "role" },
+                    { title: "Stage", field: "current_stage" },
+                    {
+                      title: "Graduating In",
+                      field: "graduation",
+                      type: "numeric",
                     },
-                  },
-                ]}
-                options={{
-                  filtering: true,
-                  paging: true,
-                  pageSize: 10,
-                  emptyRowsWhenPaging: true,
-                  pageSizeOptions: [10, 20, 50, 100],
-                }}
-                columns={[
-                  { title: "Name", field: "name" },
-                  { title: "Email", field: "email" },
-                  { title: "Position", field: "role" },
-                  { title: "Stage", field: "current_stage" },
-                  {
-                    title: "Graduating In",
-                    field: "graduation",
-                    type: "numeric",
-                  },
-                  {
-                    title: "Submitted In",
-                    field: "submission",
-                    type: "numeric",
-                  },
-                  { title: "Completed", field: "completed", type: "boolean" },
-                  { title: "Accepted", field: "accepted", type: "boolean" },
-                ]}
-                data={state.applications}
-                title="All Applications"
-              />
+                    {
+                      title: "Submitted In",
+                      field: "submission",
+                      type: "numeric",
+                    },
+                    { title: "Completed", field: "completed", type: "boolean" },
+                    { title: "Accepted", field: "accepted", type: "boolean" },
+                  ]}
+                  data={state.applications}
+                  title="All Applications"
+                />
+              </Grid>
             </Grid>
-          </Grid>
-        </LoadingContainer>
+          </LoadingContainer>
+        </AuthenticationContainer>
       </PageContainer>
-    </WithAuthentication>
+    </>
   );
 }

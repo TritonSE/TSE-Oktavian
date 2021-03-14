@@ -1,4 +1,2 @@
-import alert from "./alert";
-import login from "./login";
-
-export default { ...alert, ...login };
+export * from "./alert";
+export * from "./login";

@@ -24,10 +24,11 @@ import {
   Inbox,
   RateReview,
 } from "@material-ui/icons";
+import AuthenticationResolver from "./AuthenticationResolver";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { logout, resolveLogin, closeAlert } from "../actions";
+import { logout, closeAlert } from "../actions";
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
@@ -82,7 +83,6 @@ const useStyles = makeStyles((theme) => ({
 //  4. While authentication is resolving, it prevents the rest of
 //  the page from being visible.
 export default function PageContainer({ window, children }) {
-  const history = useHistory();
   const classes = useStyles();
   const theme = useTheme();
   const [state, setState] = React.useState(false);
@@ -90,17 +90,8 @@ export default function PageContainer({ window, children }) {
   const alertState = useSelector((state) => state.alert);
   const dispatch = useDispatch();
 
-  // The login state is only loading when Redux is first loaded
-  React.useEffect(() => {
-    if (loginState.loading) {
-      dispatch(resolveLogin());
-    }
-  }, [loginState.loading]);
-
-  // If the login state is loading, the sidebar cannot be properly displayed
-  // Therefore, just return an empty page while the resolution progresses
   if (loginState.loading) {
-    return <></>;
+    return <AuthenticationResolver />;
   }
 
   const handleDrawerToggle = () => {
@@ -109,7 +100,6 @@ export default function PageContainer({ window, children }) {
 
   const handleLogout = () => {
     dispatch(logout());
-    history.push("/");
   };
 
   const handleSnackClose = (event, reason) => {

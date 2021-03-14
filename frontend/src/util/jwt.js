@@ -3,9 +3,6 @@ function hasJWT() {
 }
 
 function getJWT() {
-  if (!hasJWT()) {
-    return null;
-  }
   return localStorage.getItem("oktavian:token");
 }
 

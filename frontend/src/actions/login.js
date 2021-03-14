@@ -20,7 +20,7 @@ export function login(credentials, callback) {
     } else {
       const { ok, data } = await loginRequest(credentials);
       if (ok) {
-        setJWT(data.jwt);
+        setJWT(data.token);
         dispatch(setLogin(data.user));
       } else {
         dispatch(clearLogin());
@@ -38,7 +38,7 @@ export function register(credentials, callback) {
     } else {
       const { ok, data } = await registerRequest(credentials);
       if (ok) {
-        setJWT(data.jwt);
+        setJWT(data.token);
         dispatch(setLogin(data.user));
       } else {
         dispatch(clearLogin());
@@ -62,15 +62,19 @@ export function logout() {
 
 export function resolveLogin() {
   return async (dispatch) => {
+    console.log("[Login Resolution] Starting ...");
     if (hasJWT()) {
       const { ok, data } = await me();
       if (ok) {
+        console.log("[Login Resolution] User is logged in");
         dispatch(setLogin(data.user));
       } else {
+        console.log("[Login Resolution] User has an invalid token");
         dispatch(clearLogin());
         dispatch(openAlert(`Error: ${data.message}`));
       }
     } else {
+      console.log("[Login Resolution] User is not logged in");
       dispatch(clearLogin());
     }
   };

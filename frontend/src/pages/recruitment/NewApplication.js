@@ -14,7 +14,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { sendData } from "../../services/data";
+import { createApplication } from "../../services/applications";
 import { useDispatch } from "react-redux";
 import { openAlert } from "../../actions";
 
@@ -69,7 +69,7 @@ export default function NewApplication() {
       ...state,
       disabled: true,
     });
-    const submission = {
+    const body = {
       name: state.name,
       email: state.email,
       role: state.role,
@@ -78,12 +78,7 @@ export default function NewApplication() {
       about: state.about,
       why: state.why,
     };
-    const { ok, data } = await sendData(
-      "api/applications",
-      false,
-      "POST",
-      JSON.stringify(submission)
-    );
+    const { ok, data } = await createApplication(body);
     if (ok) {
       dispatch(openAlert("Sample application was submitted successfully."));
     } else {
