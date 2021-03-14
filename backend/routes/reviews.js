@@ -12,7 +12,7 @@ const {
 
 const router = express.Router();
 
-router.get("/", authorizeUser, (req, res, next) => {
+router.get("/", authorizeUser(["permit_regular_review"]), (req, res, next) => {
   let promise = null;
   if (req.query.application != null) {
     promise = getApplicationReviews(req.query.application, {});
@@ -36,22 +36,26 @@ router.get("/", authorizeUser, (req, res, next) => {
     });
 });
 
-router.get("/:id", authorizeUser, (req, res, next) => {
-  getReview(req.params.id)
-    .then((review) => {
-      res.status(200).json({
-        review: review,
+router.get(
+  "/:id",
+  authorizeUser(["permit_regular_review"]),
+  (req, res, next) => {
+    getReview(req.params.id)
+      .then((review) => {
+        res.status(200).json({
+          review: review,
+        });
+      })
+      .catch((err) => {
+        next(err);
       });
-    })
-    .catch((err) => {
-      next(err);
-    });
-});
+  }
+);
 
 router.put(
   "/:id",
   [
-    authorizeUser,
+    authorizeUser(["permit_regular_review"]),
     body("comments").optional().isString(),
     body("rating").optional().isInt({ min: 0, max: 5 }),
     body("completed").optional().isBoolean(),

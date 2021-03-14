@@ -28,6 +28,7 @@ const initializePassport = () => {
       },
       function (email, password, next) {
         User.findOne({ email: email })
+          .populate("role")
           .exec()
           .then((user) => {
             if (!user) {
@@ -51,16 +52,19 @@ const initializePassport = () => {
         secretOrKey: JWT_SECRET,
       },
       function (jwt_payload, done) {
-        User.findOne({ _id: jwt_payload._id }, function (err, user) {
-          if (err) {
+        User.findOne({ _id: jwt_payload._id })
+          .populate("role")
+          .exec()
+          .then((user) => {
+            if (user) {
+              return done(null, user);
+            } else {
+              return done(null, false);
+            }
+          })
+          .catch((err) => {
             return done(err, false);
-          }
-          if (user) {
-            return done(null, user);
-          } else {
-            return done(null, false);
-          }
-        });
+          });
       }
     )
   );
@@ -107,16 +111,13 @@ const wrappedAuthenticate = (type, options, authorization) => (
 /**
  * Middleware for the login route. Attempts to convert the username, password fields
  * in the body of the request to a user object.
- *
- * Note how the authorization callback always returns true. This is because no
- * authorization needs to be done on login.
  */
 const authenticateUser = wrappedAuthenticate(
   "local",
   { session: false },
-  () => {
+  (req) => {
     return new Promise((resolve) => {
-      resolve(true);
+      resolve(req.user.active);
     });
   }
 );
@@ -125,14 +126,28 @@ const authenticateUser = wrappedAuthenticate(
  * Middleware for any protected routes. Decodes the Authorization header token
  * and converts into a user object.
  *
- * Currently, no actual authorization is performed: users are all assumed to be
- * completely trustworthy. This is likely to change in the future.
+ * Permissions is a list of fields that must be true with respect to the user's role
+ * in order for them to be able to access the protected route. For example, you could
+ * enforce that permissions = ['permit_admin'] for admin routes, permissions = ['permit_regular_review']
+ * for them to be able to access any recruitment information, etc. If this is an empty
+ * list, that means no permissions are required.
  */
-const authorizeUser = wrappedAuthenticate("jwt", { session: false }, () => {
-  return new Promise((resolve) => {
-    resolve(true);
+const authorizeUser = (permissions) =>
+  wrappedAuthenticate("jwt", { session: false }, (req) => {
+    return new Promise((resolve) => {
+      if (!req.user.active) {
+        resolve(false);
+        return;
+      }
+      for (const permission of permissions) {
+        if (req.user.role == null || !req.user.role[permission]) {
+          resolve(false);
+          return;
+        }
+      }
+      resolve(true);
+    });
   });
-});
 
 module.exports = {
   initializePassport,

@@ -12,7 +12,7 @@ def reassign_application(app_id, email):
     # Connects to database
     uri = os.getenv('MONGO_URI')
     if uri is None:
-        uri = 'mongodb://127.0.0.1:27017/tse-recruitment'
+        uri = 'mongodb://127.0.0.1:27017/oktavian'
     components = pymongo.uri_parser.parse_uri(uri)
     client = pymongo.MongoClient(uri)
     db = client[components['database']]

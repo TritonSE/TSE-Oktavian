@@ -1,6 +1,6 @@
 import React from "react";
 import WithAuthentication from "../components/WithAuthentication";
-import WithNavbar from "../components/WithNavbar";
+import PageContainer from "../components/PageContainer";
 import { Helmet } from "react-helmet";
 import { useHistory } from "react-router-dom";
 import {
@@ -8,11 +8,6 @@ import {
   Button,
   Grid,
   FormHelperText,
-  FormGroup,
-  FormLabel,
-  FormControl,
-  FormControlLabel,
-  Checkbox,
   Snackbar,
   Typography,
 } from "@material-ui/core";
@@ -62,18 +57,10 @@ export default function Register() {
     email: "",
     password: "",
     secret: "",
-    role_developer: false,
-    role_designer: false,
-    role_project_manager: false,
-    role_final: false,
   });
 
   const handleChange = (prop) => (event) => {
     setState({ ...state, [prop]: event.target.value });
-  };
-
-  const handleChecked = (prop) => (event) => {
-    setState({ ...state, [prop]: event.target.checked });
   };
 
   const handleSubmit = async (event) => {
@@ -83,7 +70,6 @@ export default function Register() {
       email: state.email,
       password: state.password,
       secret: state.secret,
-      roles: [],
     };
     if (submission.password.length < 6) {
       setState({
@@ -91,29 +77,6 @@ export default function Register() {
         form_disabled: false,
         snack: {
           message: "Password must be at least 6 characters long.",
-          open: true,
-        },
-      });
-      return;
-    }
-    if (state.role_designer) {
-      submission.roles.push("DESIGNER");
-    }
-    if (state.role_developer) {
-      submission.roles.push("DEVELOPER");
-    }
-    if (state.role_project_manager) {
-      submission.roles.push("PROJECT_MANAGER");
-    }
-    if (state.role_final) {
-      submission.roles.push("FINAL");
-    }
-    if (submission.roles.length === 0) {
-      setState({
-        ...state,
-        form_disabled: false,
-        snack: {
-          message: "You must select at least one application type.",
           open: true,
         },
       });
@@ -150,7 +113,7 @@ export default function Register() {
       <Helmet>
         <title>Register — TSE Oktavian</title>
       </Helmet>
-      <WithNavbar>
+      <PageContainer>
         <Grid container spacing={0} alignItems="center" justify="center">
           <Grid item md={6} xs={12}>
             <Typography variant="h4" className={classes.title}>
@@ -175,58 +138,6 @@ export default function Register() {
                 type="password"
                 onChange={handleChange("password")}
               />
-              <FormControl>
-                <FormLabel component="legend">
-                  What types of applications are you responsible for?
-                </FormLabel>
-                <FormGroup>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        onChange={handleChecked("role_project_manager")}
-                        name="role-project-manager"
-                      />
-                    }
-                    label="Project Managers"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        onChange={handleChecked("role_developer")}
-                        name="role-developer"
-                      />
-                    }
-                    label="Developers"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        onChange={handleChecked("role_designer")}
-                        name="role-designer"
-                      />
-                    }
-                    label="Designers"
-                  />
-                </FormGroup>
-              </FormControl>
-              <FormControl>
-                <FormLabel component="legend">
-                  Are you cleared to make final decisions?
-                </FormLabel>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      onChange={handleChecked("role_final")}
-                      name="role-final"
-                    />
-                  }
-                  label="Yes"
-                />
-                <FormHelperText>
-                  Do not select this unless you are the president. Your
-                  registration will be flagged.
-                </FormHelperText>
-              </FormControl>
               <TextField
                 label="Secret"
                 variant="outlined"
@@ -251,7 +162,7 @@ export default function Register() {
             message={state.snack.message}
           />
         </Grid>
-      </WithNavbar>
+      </PageContainer>
     </WithAuthentication>
   );
 }

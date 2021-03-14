@@ -1,14 +1,14 @@
 import React from "react";
-import WithData from "../components/WithData";
-import WithAuthentication from "../components/WithAuthentication";
-import WithNavbar from "../components/WithNavbar";
+import WithData from "../../components/WithData";
+import WithAuthentication from "../../components/WithAuthentication";
+import PageContainer from "../../components/PageContainer";
 import { Helmet } from "react-helmet";
 import { Grid, Snackbar } from "@material-ui/core";
 import { Edit } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import MaterialTable from "@material-table/core";
-import { TableIcons } from "../components/Icons";
-import { getUser } from "../services/auth";
+import { TableIcons } from "../../components/Icons";
+import { getUser } from "../../services/auth";
 
 const useStyles = makeStyles(() => ({
   grid: {
@@ -37,7 +37,11 @@ export default function Assignments() {
       })
       .map((review) => {
         const app = review.application;
-        return { ...app, submission: new Date(app.created_at).getFullYear() };
+        return {
+          ...app,
+          role: app.role.name,
+          submission: new Date(app.created_at).getFullYear(),
+        };
       });
     setState({
       ...state,
@@ -69,7 +73,7 @@ export default function Assignments() {
       <Helmet>
         <title>Your Assignments — TSE Oktavian</title>
       </Helmet>
-      <WithNavbar>
+      <PageContainer>
         <WithData
           slug={`api/reviews?user=${getUser()._id}`}
           authenticated={true}
@@ -101,7 +105,9 @@ export default function Assignments() {
                         (window.location.port
                           ? ":" + window.location.port
                           : "");
-                      window.open(`${origin}/application/${row._id}#reviews`);
+                      window.open(
+                        `${origin}/recruitment/application/${row._id}`
+                      );
                     },
                   },
                 ]}
@@ -140,7 +146,7 @@ export default function Assignments() {
             />
           </Grid>
         </WithData>
-      </WithNavbar>
+      </PageContainer>
     </WithAuthentication>
   );
 }

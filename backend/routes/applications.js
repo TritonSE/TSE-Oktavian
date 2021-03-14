@@ -12,7 +12,7 @@ const {
 
 const router = express.Router();
 
-router.get("/", authorizeUser, (req, res, next) => {
+router.get("/", authorizeUser(["permit_regular_review"]), (req, res, next) => {
   getAllApplications({})
     .then((applications) => {
       res.status(200).json({
@@ -24,17 +24,21 @@ router.get("/", authorizeUser, (req, res, next) => {
     });
 });
 
-router.get("/:id", authorizeUser, (req, res, next) => {
-  getApplication(req.params.id)
-    .then((application) => {
-      res.status(200).json({
-        application: application,
+router.get(
+  "/:id",
+  authorizeUser(["permit_regular_review"]),
+  (req, res, next) => {
+    getApplication(req.params.id)
+      .then((application) => {
+        res.status(200).json({
+          application: application,
+        });
+      })
+      .catch((err) => {
+        next(err);
       });
-    })
-    .catch((err) => {
-      next(err);
-    });
-});
+  }
+);
 
 router.post(
   "/",

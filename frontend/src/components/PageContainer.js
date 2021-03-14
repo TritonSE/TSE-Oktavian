@@ -25,7 +25,7 @@ import {
 } from "@material-ui/icons";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { Link, useHistory } from "react-router-dom";
-import { isAuthenticated, logout } from "../services/auth";
+import { isAuthenticated, getUser, logout } from "../services/auth";
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
@@ -65,8 +65,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// Any child nodes are surrounded by a navbar and sidebar
-export default function WithNavbar({ window, children }) {
+// The page container component wraps the main page content and
+// provides the other necessary components surrounding the page:
+// for example, the top navbar, the sidebar, the footer, etc.
+export default function PageContainer({ window, children }) {
   const history = useHistory();
   const classes = useStyles();
   const theme = useTheme();
@@ -81,73 +83,119 @@ export default function WithNavbar({ window, children }) {
     history.push("/");
   };
 
-  const drawer = isAuthenticated() ? (
+  const sections = [
+    {
+      name: "Recruitment",
+      items: [
+        {
+          icon: <Dashboard />,
+          text: "Overview",
+          link: "/recruitment",
+        },
+        {
+          icon: <Inbox />,
+          text: "All Applications",
+          link: "/recruitment/applications",
+        },
+        {
+          icon: <RateReview />,
+          text: "Your Assignments",
+          link: "/recruitment/assignments",
+        },
+      ],
+      display:
+        isAuthenticated() &&
+        getUser().role != null &&
+        getUser().role.permit_regular_review,
+    },
+    {
+      name: "Account",
+      items: [
+        {
+          icon: <Settings />,
+          text: "Settings",
+          link: "/settings",
+        },
+        {
+          text: "Logout",
+        },
+      ],
+      display: isAuthenticated(),
+    },
+    {
+      name: "Account",
+      items: [
+        {
+          icon: <ExitToApp />,
+          text: "Login",
+          link: "/login",
+        },
+        {
+          icon: <Face />,
+          text: "Register",
+          link: "/register",
+        },
+      ],
+      display: !isAuthenticated(),
+    },
+  ];
+
+  const drawer = (
     <div>
       <div className={classes.toolbar} />
-      <Divider />
-      <List>
-        <ListItem button key={"Dashboard"} component={Link} to="/dashboard">
-          <ListItemIcon>
-            <Dashboard />
-          </ListItemIcon>
-          <ListItemText primary={"Dashboard"} />
-        </ListItem>
-        <ListItem
-          button
-          key={"Applications"}
-          component={Link}
-          to="/applications"
-        >
-          <ListItemIcon>
-            <Inbox />
-          </ListItemIcon>
-          <ListItemText primary={"All Applications"} />
-        </ListItem>
-        <ListItem button key={"Assignments"} component={Link} to="/assignments">
-          <ListItemIcon>
-            <RateReview />
-          </ListItemIcon>
-          <ListItemText primary={"Your Assignments"} />
-        </ListItem>
-        <ListItem button key={"Settings"} component={Link} to="/settings">
-          <ListItemIcon>
-            <Settings />
-          </ListItemIcon>
-          <ListItemText primary={"Settings"} />
-        </ListItem>
-      </List>
-      <Divider />
-      <List>
-        <ListItem button key={"Logout"} onClick={handleLogout}>
-          <ListItemIcon>
-            <ExitToApp />
-          </ListItemIcon>
-          <ListItemText primary={"Logout"} />
-        </ListItem>
-      </List>
-    </div>
-  ) : (
-    <div>
-      <div className={classes.toolbar} />
-      <Divider />
-      <List>
-        <ListItem button key={"Login"} component={Link} to="/login">
-          <ListItemIcon>
-            <ExitToApp />
-          </ListItemIcon>
-          <ListItemText primary={"Login"} />
-        </ListItem>
-        <ListItem button key={"Register"} component={Link} to="/register">
-          <ListItemIcon>
-            <Face />
-          </ListItemIcon>
-          <ListItemText primary={"Register"} />
-        </ListItem>
-      </List>
+      {sections.map((section) => {
+        return section.display ? (
+          <>
+            <Divider />
+            <List key={section.name}>
+              <ListItem>
+                <Typography
+                  color="textSecondary"
+                  display="block"
+                  variant="caption"
+                >
+                  {section.name}
+                </Typography>
+              </ListItem>
+              {section.items.map((item) => {
+                if (item.text === "Logout") {
+                  return (
+                    <>
+                      <ListItem button key={"Logout"} onClick={handleLogout}>
+                        <ListItemIcon>
+                          <ExitToApp />
+                        </ListItemIcon>
+                        <ListItemText primary={"Logout"} />
+                      </ListItem>
+                    </>
+                  );
+                }
+                return (
+                  <>
+                    <ListItem
+                      button
+                      key={item.text}
+                      component={Link}
+                      to={item.link}
+                    >
+                      <ListItemIcon>{item.icon}</ListItemIcon>
+                      <ListItemText primary={item.text} />
+                    </ListItem>
+                  </>
+                );
+              })}
+            </List>
+          </>
+        ) : (
+          <></>
+        );
+      })}
     </div>
   );
+
   const container =
     window !== undefined ? () => window().document.body : undefined;
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -211,7 +259,7 @@ export default function WithNavbar({ window, children }) {
   );
 }
 
-WithNavbar.propTypes = {
+PageContainer.propTypes = {
   children: PropTypes.any,
   window: PropTypes.instanceOf(window.constructor),
 };

@@ -1,13 +1,13 @@
 import React from "react";
-import WithData from "../components/WithData";
-import WithAuthentication from "../components/WithAuthentication";
-import WithNavbar from "../components/WithNavbar";
+import WithData from "../../components/WithData";
+import WithAuthentication from "../../components/WithAuthentication";
+import PageContainer from "../../components/PageContainer";
 import { Helmet } from "react-helmet";
 import { Grid, Snackbar } from "@material-ui/core";
 import { Visibility } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import MaterialTable from "@material-table/core";
-import { TableIcons } from "../components/Icons";
+import { TableIcons } from "../../components/Icons";
 
 const useStyles = makeStyles(() => ({
   grid: {
@@ -30,7 +30,11 @@ export default function Applications() {
 
   const handleData = (data) => {
     const applications = data.applications.map((app) => {
-      return { ...app, submission: new Date(app.created_at).getFullYear() };
+      return {
+        ...app,
+        role: app.role.name,
+        submission: new Date(app.created_at).getFullYear(),
+      };
     });
     setState({
       ...state,
@@ -62,7 +66,7 @@ export default function Applications() {
       <Helmet>
         <title>All Applications — TSE Oktavian</title>
       </Helmet>
-      <WithNavbar>
+      <PageContainer>
         <WithData
           slug="api/applications"
           authenticated={true}
@@ -94,7 +98,9 @@ export default function Applications() {
                         (window.location.port
                           ? ":" + window.location.port
                           : "");
-                      window.open(`${origin}/application/${row._id}`);
+                      window.open(
+                        `${origin}/recruitment/application/${row._id}`
+                      );
                     },
                   },
                 ]}
@@ -135,7 +141,7 @@ export default function Applications() {
             />
           </Grid>
         </WithData>
-      </WithNavbar>
+      </PageContainer>
     </WithAuthentication>
   );
 }

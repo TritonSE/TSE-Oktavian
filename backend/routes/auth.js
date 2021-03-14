@@ -19,7 +19,6 @@ router.post(
     body("name").notEmpty().isString(),
     body("email").notEmpty().isEmail(),
     body("password").notEmpty().isString().isLength({ min: 6 }),
-    body("roles").notEmpty().isArray(),
     body("secret").notEmpty().isString(),
     validateRequest,
   ],
@@ -28,8 +27,8 @@ router.post(
       name: req.body.name,
       email: req.body.email,
       password: req.body.password,
-      roles: req.body.roles,
       secret: req.body.secret,
+      active: true,
     })
       .then((user) => {
         req.login(user, { session: false }, function (err) {
