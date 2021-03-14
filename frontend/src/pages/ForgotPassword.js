@@ -7,11 +7,12 @@ import {
   Button,
   Grid,
   FormHelperText,
-  Snackbar,
   Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { sendData } from "../services/data";
+import { useDispatch } from "react-redux";
+import { openAlert } from "../actions";
 
 const useStyles = makeStyles((theme) => ({
   centered: {
@@ -43,16 +44,11 @@ const useStyles = makeStyles((theme) => ({
 export default function ForgotPassword() {
   const classes = useStyles();
   const [state, setState] = React.useState({
-    // Boilerplate
-    snack: {
-      message: "",
-      open: false,
-    },
-    // User input
-    form_disabled: false,
+    disabled: false,
     email: "",
     secret: "",
   });
+  const dispatch = useDispatch();
 
   const handleChange = (prop) => (event) => {
     setState({ ...state, [prop]: event.target.value });
@@ -60,6 +56,7 @@ export default function ForgotPassword() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setState({ ...state, disabled: true });
     const submission = {
       email: state.email,
       secret: state.secret,
@@ -71,29 +68,17 @@ export default function ForgotPassword() {
       JSON.stringify(submission)
     );
     if (ok) {
-      setState({
-        email: "",
-        secret: "",
-        form_disabled: false,
-        snack: {
-          message: "Please check your email for a password reset request.",
-          open: true,
-        },
-      });
+      openAlert(
+        dispatch,
+        "A password reset request has been sent to your email"
+      );
     } else {
-      setState({
-        ...state,
-        form_disabled: false,
-        snack: { message: `Error: ${data.message}`, open: true },
-      });
+      openAlert(dispatch, `Error: ${data.message}`);
     }
-  };
-
-  const handleSnackClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setState({ ...state, snack: { ...state.snack, open: false } });
+    setState({
+      ...state,
+      disabled: false,
+    });
   };
 
   return (
@@ -128,18 +113,17 @@ export default function ForgotPassword() {
                 This secret is only distributed internally.
               </FormHelperText>
               <div className={classes.centered}>
-                <Button variant="contained" color="primary" type="submit">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  type="submit"
+                  disabled={state.disabled}
+                >
                   Submit
                 </Button>
               </div>
             </form>
           </Grid>
-          <Snackbar
-            open={state.snack.open}
-            autoHideDuration={6000}
-            onClose={handleSnackClose}
-            message={state.snack.message}
-          />
         </Grid>
       </PageContainer>
     </WithAuthentication>

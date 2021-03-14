@@ -8,12 +8,13 @@ import {
   Card,
   CardContent,
   Grid,
-  Snackbar,
   LinearProgress,
   Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import { useDispatch } from "react-redux";
+import { openAlert } from "../../actions";
 
 const useStyles = makeStyles((theme) => ({
   centered: {
@@ -30,11 +31,6 @@ const useStyles = makeStyles((theme) => ({
 export default function Overview() {
   const classes = useStyles();
   const [state, setState] = React.useState({
-    // Boilerplate
-    snack: {
-      message: "",
-      open: false,
-    },
     // Initial backend data
     reloading: true,
     stats: null,
@@ -46,6 +42,7 @@ export default function Overview() {
     ),
     end_date: new Date(),
   });
+  const dispatch = useDispatch();
 
   const handleData = (data) => {
     const stats = JSON.parse(JSON.stringify(data.stats));
@@ -53,12 +50,9 @@ export default function Overview() {
   };
 
   const handleError = (data) => {
+    openAlert(dispatch, `Error: ${data.message}`);
     setState({
       ...state,
-      snack: {
-        message: `Error: ${data.message}`,
-        open: true,
-      },
       reloading: false,
     });
   };
@@ -69,13 +63,6 @@ export default function Overview() {
 
   const handleEndDateChange = (new_date) => {
     setState({ ...state, end_date: new_date, reloading: true });
-  };
-
-  const handleSnackClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setState({ ...state, snack: { ...state.snack, open: false } });
   };
 
   const getPositionStats = (role) => {
@@ -164,12 +151,6 @@ export default function Overview() {
                 </div>
               )}
             </Grid>
-            <Snackbar
-              open={state.snack.open}
-              autoHideDuration={6000}
-              onClose={handleSnackClose}
-              message={state.snack.message}
-            />
           </Grid>
         </WithData>
       </PageContainer>

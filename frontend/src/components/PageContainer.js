@@ -12,6 +12,7 @@ import {
   ListItemIcon,
   ListItemText,
   Toolbar,
+  Snackbar,
   Typography,
 } from "@material-ui/core";
 import {
@@ -25,7 +26,9 @@ import {
 } from "@material-ui/icons";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { Link, useHistory } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import { isAuthenticated, getUser, logout } from "../services/auth";
+import { closeAlert } from "../actions";
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
@@ -73,6 +76,8 @@ export default function PageContainer({ window, children }) {
   const classes = useStyles();
   const theme = useTheme();
   const [state, setState] = React.useState(false);
+  const alertState = useSelector((state) => state.alert);
+  const dispatch = useDispatch();
 
   const handleDrawerToggle = () => {
     setState(!state);
@@ -81,6 +86,13 @@ export default function PageContainer({ window, children }) {
   const handleLogout = () => {
     logout();
     history.push("/");
+  };
+
+  const handleSnackClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    closeAlert(dispatch);
   };
 
   const sections = [
@@ -255,6 +267,12 @@ export default function PageContainer({ window, children }) {
         <div className={classes.toolbar} />
         {children}
       </main>
+      <Snackbar
+        open={alertState.open}
+        autoHideDuration={6000}
+        onClose={handleSnackClose}
+        message={alertState.message}
+      />
     </div>
   );
 }

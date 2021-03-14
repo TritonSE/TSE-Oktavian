@@ -12,7 +12,6 @@ import {
   Card,
   CardContent,
   Grid,
-  Snackbar,
   Chip,
   Dialog,
   DialogTitle,
@@ -24,6 +23,8 @@ import { ExitToApp } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import { getUser } from "../../services/auth";
 import { sendData } from "../../services/data";
+import { useDispatch } from "react-redux";
+import { openAlert } from "../../actions";
 
 const useStyles = makeStyles((theme) => ({
   grid: {
@@ -54,11 +55,6 @@ const useStyles = makeStyles((theme) => ({
 export default function Application({ match }) {
   const classes = useStyles();
   const [state, setState] = React.useState({
-    // Boilerplate
-    snack: {
-      message: "",
-      open: false,
-    },
     // Initial backend data
     reloading_application: true,
     reloading_reviews: true,
@@ -70,6 +66,7 @@ export default function Application({ match }) {
     rating: "",
     accepted: false,
   });
+  const dispatch = useDispatch();
 
   const handleApplicationData = (data) => {
     const application = data.application;
@@ -106,12 +103,9 @@ export default function Application({ match }) {
   };
 
   const handleError = (data) => {
+    openAlert(dispatch, `Error: ${data.message}`);
     setState({
       ...state,
-      snack: {
-        message: `Error: ${data.message}`,
-        open: true,
-      },
       reloading_application: false,
       reloading_reviews: false,
     });
@@ -156,36 +150,26 @@ export default function Application({ match }) {
         JSON.stringify(submission)
       );
       if (ok) {
+        openAlert(
+          dispatch,
+          data.review.completed
+            ? "Review completed!"
+            : "Review progress saved successfully."
+        );
         setState({
           ...state,
           reloading_application: true,
           reloading_reviews: true,
           modal: false,
-          snack: {
-            message: data.review.completed
-              ? "Review completed!"
-              : "Review progress saved successfully.",
-            open: true,
-          },
         });
       } else {
+        openAlert(dispatch, `Error: ${data.message}`);
         setState({
           ...state,
           modal: false,
-          snack: {
-            message: `Error: ${data.message}`,
-            open: true,
-          },
         });
       }
     }
-  };
-
-  const handleSnackClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setState({ ...state, snack: { ...state.snack, open: false } });
   };
 
   return (
@@ -526,12 +510,6 @@ export default function Application({ match }) {
                     </Button>
                   </DialogActions>
                 </Dialog>
-                <Snackbar
-                  open={state.snack.open}
-                  autoHideDuration={6000}
-                  onClose={handleSnackClose}
-                  message={state.snack.message}
-                />
               </Grid>
             )}
           </WithData>

@@ -3,12 +3,14 @@ import WithData from "../../components/WithData";
 import WithAuthentication from "../../components/WithAuthentication";
 import PageContainer from "../../components/PageContainer";
 import { Helmet } from "react-helmet";
-import { Grid, Snackbar } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import { Edit } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import MaterialTable from "@material-table/core";
 import { TableIcons } from "../../components/Icons";
 import { getUser } from "../../services/auth";
+import { useDispatch } from "react-redux";
+import { openAlert } from "../../actions";
 
 const useStyles = makeStyles(() => ({
   grid: {
@@ -19,15 +21,10 @@ const useStyles = makeStyles(() => ({
 export default function Assignments() {
   const classes = useStyles();
   const [state, setState] = React.useState({
-    // Boilerplate
-    snack: {
-      message: "",
-      open: false,
-    },
-    // Initial backend data
     reloading: true,
     applications: [],
   });
+  const dispatch = useDispatch();
 
   const handleData = (data) => {
     const reviews = data.reviews;
@@ -51,21 +48,11 @@ export default function Assignments() {
   };
 
   const handleError = (data) => {
+    openAlert(dispatch, `Error: ${data.message}`);
     setState({
       ...state,
-      snack: {
-        message: `Error: ${data.message}`,
-        open: true,
-      },
       reloading: false,
     });
-  };
-
-  const handleSnackClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setState({ ...state, snack: { ...state.snack, open: false } });
   };
 
   return (
@@ -138,12 +125,6 @@ export default function Assignments() {
                 title="Your Active Assignments"
               />
             </Grid>
-            <Snackbar
-              open={state.snack.open}
-              autoHideDuration={6000}
-              onClose={handleSnackClose}
-              message={state.snack.message}
-            />
           </Grid>
         </WithData>
       </PageContainer>

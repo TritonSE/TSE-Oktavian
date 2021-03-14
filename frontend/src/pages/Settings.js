@@ -3,7 +3,6 @@ import { Helmet } from "react-helmet";
 import {
   TextField,
   Grid,
-  Snackbar,
   Card,
   CardContent,
   Button,
@@ -42,12 +41,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Settings() {
   const classes = useStyles();
   const [state, setState] = React.useState({
-    // Boilerplate
-    snack: {
-      message: "",
-      open: false,
-    },
-    // User input
+    disabled: true,
     old_password: "",
     new_password: "",
     confirm_password: "",
@@ -55,13 +49,6 @@ export default function Settings() {
 
   const handleChange = (prop) => (event) => {
     setState({ ...state, [prop]: event.target.value });
-  };
-
-  const handleSnackClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setState({ ...state, snack: { ...state.snack, open: false } });
   };
 
   return (
@@ -140,7 +127,7 @@ export default function Settings() {
                       variant="contained"
                       color="secondary"
                       type="submit"
-                      disabled
+                      disabled={state.disabled}
                     >
                       Submit
                     </Button>
@@ -149,12 +136,6 @@ export default function Settings() {
               </CardContent>
             </Card>
           </Grid>
-          <Snackbar
-            open={state.snack.open}
-            autoHideDuration={6000}
-            onClose={handleSnackClose}
-            message={state.snack.message}
-          />
         </Grid>
       </PageContainer>
     </WithAuthentication>
