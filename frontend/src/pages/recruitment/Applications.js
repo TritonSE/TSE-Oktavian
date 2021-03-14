@@ -28,7 +28,7 @@ export default function Applications() {
 
   React.useEffect(() => {
     const loadData = async () => {
-      let { ok, data } = await getApplications();  
+      let { ok, data } = await getApplications();
       if (ok) {
         const applications = data.applications.map((app) => {
           return {
@@ -49,11 +49,11 @@ export default function Applications() {
           loading: false,
         });
       }
-    }
+    };
     if (state.loading) {
       loadData();
     }
-  }, [state.loading])
+  }, [state.loading]);
 
   return (
     <WithAuthentication allow={true}>

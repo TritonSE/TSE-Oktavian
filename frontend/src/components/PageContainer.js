@@ -67,7 +67,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 // The PageContainer component is extremely critical and needs
 // to be present on every page. It wraps the main components of
 // the page, performing several important tasks:

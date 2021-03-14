@@ -1,6 +1,10 @@
-import { login as loginRequest, register as registerRequest, me } from '../services/auth';
-import { clearJWT, hasJWT, setJWT, getJWT } from '../util/jwt'
-import { openAlert } from './alert'
+import {
+  login as loginRequest,
+  register as registerRequest,
+  me,
+} from "../services/auth";
+import { clearJWT, hasJWT, setJWT, getJWT } from "../util/jwt";
+import { openAlert } from "./alert";
 
 export const ACTION_LOGIN = "login/login";
 export const ACTION_REGISTER = "login/register";
@@ -12,15 +16,15 @@ export const ACTION_CLEAR_LOGIN = "login/clear";
 export function login(credentials, callback) {
   return async (dispatch) => {
     if (hasJWT()) {
-      dispatch(openAlert('User is already logged in'))
+      dispatch(openAlert("User is already logged in"));
     } else {
       const { ok, data } = await loginRequest(credentials);
       if (ok) {
         setJWT(data.jwt);
-        dispatch(setLogin(data.user)); 
+        dispatch(setLogin(data.user));
       } else {
         dispatch(clearLogin());
-        dispatch(openAlert(`Error: ${data.message}`))
+        dispatch(openAlert(`Error: ${data.message}`));
       }
     }
     callback();
@@ -30,15 +34,15 @@ export function login(credentials, callback) {
 export function register(credentials, callback) {
   return async (dispatch) => {
     if (hasJWT()) {
-      dispatch(openAlert('User is already logged in'))
+      dispatch(openAlert("User is already logged in"));
     } else {
       const { ok, data } = await registerRequest(credentials);
       if (ok) {
         setJWT(data.jwt);
-        dispatch(setLogin(data.user)); 
+        dispatch(setLogin(data.user));
       } else {
         dispatch(clearLogin());
-        dispatch(openAlert(`Error: ${data.message}`))
+        dispatch(openAlert(`Error: ${data.message}`));
       }
     }
     callback();
@@ -51,7 +55,7 @@ export function logout() {
       clearJWT();
       dispatch(clearLogin());
     } else {
-      dispatch(openAlert('User is already logged out'))
+      dispatch(openAlert("User is already logged out"));
     }
   };
 }
@@ -61,13 +65,13 @@ export function resolveLogin() {
     if (hasJWT()) {
       const { ok, data } = await me();
       if (ok) {
-        dispatch(setLogin(data.user)); 
+        dispatch(setLogin(data.user));
       } else {
         dispatch(clearLogin());
-        dispatch(openAlert(`Error: ${data.message}`))
+        dispatch(openAlert(`Error: ${data.message}`));
       }
     } else {
-      dispatch(clearLogin())
+      dispatch(clearLogin());
     }
   };
 }

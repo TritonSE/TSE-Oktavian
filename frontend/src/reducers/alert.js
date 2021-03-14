@@ -1,7 +1,4 @@
-import {
-  ACTION_OPEN_ALERT,
-  ACTION_CLOSE_ALERT,
-} from "../actions";
+import { ACTION_OPEN_ALERT, ACTION_CLOSE_ALERT } from "../actions";
 
 function alert(state = { open: false, message: "" }, action) {
   switch (action.type) {

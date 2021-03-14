@@ -1,7 +1,7 @@
-import { getData, sendData } from '../util/data';
+import { getData, sendData } from "../util/data";
 
 export async function getApplications() {
-  return getData('api/applications', true);
+  return getData("api/applications", true);
 }
 
 export async function getApplication(id) {
@@ -9,5 +9,5 @@ export async function getApplication(id) {
 }
 
 export async function createApplication(body) {
-  return sendData(`api/applications`, false, 'POST', JSON.stringify(body)); 
+  return sendData(`api/applications`, false, "POST", JSON.stringify(body));
 }

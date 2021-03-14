@@ -47,7 +47,10 @@ export default function Overview() {
 
   React.useEffect(() => {
     const loadData = async () => {
-      let { ok, data } = await getApplicationStats(state.start_date, state.end_date);  
+      let { ok, data } = await getApplicationStats(
+        state.start_date,
+        state.end_date
+      );
       if (ok) {
         const stats = JSON.parse(JSON.stringify(data.stats));
         setState({ ...state, loading: false, stats: stats });
@@ -58,11 +61,11 @@ export default function Overview() {
           loading: false,
         });
       }
-    }
+    };
     if (state.loading) {
       loadData();
     }
-  }, [state.loading, state.start_date, state.end_date])
+  }, [state.loading, state.start_date, state.end_date]);
 
   const handleStartDateChange = (new_date) => {
     setState({ ...state, start_date: new_date, loading: true });
