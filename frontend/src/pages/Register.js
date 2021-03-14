@@ -8,11 +8,6 @@ import {
   Button,
   Grid,
   FormHelperText,
-  FormGroup,
-  FormLabel,
-  FormControl,
-  FormControlLabel,
-  Checkbox,
   Snackbar,
   Typography,
 } from "@material-ui/core";
