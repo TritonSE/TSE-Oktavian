@@ -17,6 +17,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { createApplication } from "../../services/applications";
 import { useDispatch } from "react-redux";
 import { openAlert } from "../../actions";
+import { withAuthorization } from "../../components/HOC";
 
 const useStyles = makeStyles((theme) => ({
   centered: {
@@ -45,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function NewApplication() {
+const NewApplication = () => {
   const classes = useStyles();
   const [state, setState] = React.useState({
     disabled: false,
@@ -209,4 +210,6 @@ export default function NewApplication() {
       </PageContainer>
     </>
   );
-}
+};
+
+export default withAuthorization(NewApplication, false, [], true);

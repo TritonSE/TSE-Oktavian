@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import AuthenticationContainer from "../components/AuthenticationContainer";
 import PageContainer from "../components/PageContainer";
 import { Helmet } from "react-helmet";
 import { useHistory } from "react-router-dom";
@@ -9,6 +8,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { resetPassword } from "../services/auth";
 import { useDispatch } from "react-redux";
 import { openAlert } from "../actions";
+import { withAuthorization } from "../components/HOC";
 
 const useStyles = makeStyles((theme) => ({
   centered: {
@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ResetPassword({ match }) {
+const ResetPassword = ({ match }) => {
   const classes = useStyles();
   const history = useHistory();
   const [state, setState] = React.useState({
@@ -93,44 +93,44 @@ export default function ResetPassword({ match }) {
         <title>Reset Password — Oktavian</title>
       </Helmet>
       <PageContainer>
-        <AuthenticationContainer allow={false}>
-          <Grid container spacing={0} alignItems="center" justify="center">
-            <Grid item md={6} xs={12}>
-              <Typography variant="h4" className={classes.title}>
-                Reset Your Password
-              </Typography>
-              <form className={classes.form} onSubmit={handleSubmit}>
-                <TextField
-                  label="Password"
-                  variant="outlined"
-                  type="password"
-                  onChange={handleChange("password")}
-                />
-                <TextField
-                  label="Confirm Password"
-                  variant="outlined"
-                  type="password"
-                  onChange={handleChange("confirm_password")}
-                />
-                <div className={classes.centered}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    type="submit"
-                    disabled={state.disabled}
-                  >
-                    Submit
-                  </Button>
-                </div>
-              </form>
-            </Grid>
+        <Grid container spacing={0} alignItems="center" justify="center">
+          <Grid item md={6} xs={12}>
+            <Typography variant="h4" className={classes.title}>
+              Reset Your Password
+            </Typography>
+            <form className={classes.form} onSubmit={handleSubmit}>
+              <TextField
+                label="Password"
+                variant="outlined"
+                type="password"
+                onChange={handleChange("password")}
+              />
+              <TextField
+                label="Confirm Password"
+                variant="outlined"
+                type="password"
+                onChange={handleChange("confirm_password")}
+              />
+              <div className={classes.centered}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  type="submit"
+                  disabled={state.disabled}
+                >
+                  Submit
+                </Button>
+              </div>
+            </form>
           </Grid>
-        </AuthenticationContainer>
+        </Grid>
       </PageContainer>
     </>
   );
-}
+};
 
 ResetPassword.propTypes = {
   match: PropTypes.object,
 };
+
+export default withAuthorization(ResetPassword, false);

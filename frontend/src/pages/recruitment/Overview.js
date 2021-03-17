@@ -1,6 +1,5 @@
 import React from "react";
 import DateFnsUtils from "@date-io/date-fns";
-import AuthenticationContainer from "../../components/AuthenticationContainer";
 import PageContainer from "../../components/PageContainer";
 import LoadingContainer from "../../components/LoadingContainer";
 import { Helmet } from "react-helmet";
@@ -16,6 +15,7 @@ import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import { useDispatch } from "react-redux";
 import { openAlert } from "../../actions";
 import { getApplicationStats } from "../../services/stats";
+import { withAuthorization } from "../../components/HOC";
 
 const useStyles = makeStyles((theme) => ({
   centered: {
@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Overview() {
+const Overview = () => {
   const classes = useStyles();
   const [state, setState] = React.useState({
     // Initial backend data
@@ -109,61 +109,61 @@ export default function Overview() {
         <title>Recruitment — TSE Oktavian</title>
       </Helmet>
       <PageContainer>
-        <AuthenticationContainer allow={true}>
-          <LoadingContainer loading={state.loading}>
-            <Grid
-              container
-              spacing={0}
-              alignItems="center"
-              justify="center"
-              className={classes.centered}
-            >
-              <Grid item xs={12}>
-                {state.dates_change ? (
-                  <LinearProgress />
-                ) : (
-                  <div>
-                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                      <Grid container spacing={3}>
-                        <Grid item md={6} xs={12}>
-                          <DatePicker
-                            label="Start Date"
-                            format="MM/dd/yyyy"
-                            value={state.start_date}
-                            onChange={handleStartDateChange}
-                          />
-                        </Grid>
-                        <Grid item md={6} xs={12}>
-                          <DatePicker
-                            label="End Date"
-                            format="MM/dd/yyyy"
-                            value={state.end_date}
-                            onChange={handleEndDateChange}
-                          />
-                        </Grid>
-                      </Grid>
-                    </MuiPickersUtilsProvider>
-                    <Typography variant="h4" className={classes.title}>
-                      Recruitment Overview
-                    </Typography>
+        <LoadingContainer loading={state.loading}>
+          <Grid
+            container
+            spacing={0}
+            alignItems="center"
+            justify="center"
+            className={classes.centered}
+          >
+            <Grid item xs={12}>
+              {state.dates_change ? (
+                <LinearProgress />
+              ) : (
+                <div>
+                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
                     <Grid container spacing={3}>
-                      <Grid item md={4} xs={12}>
-                        {getPositionStats("Developer")}
+                      <Grid item md={6} xs={12}>
+                        <DatePicker
+                          label="Start Date"
+                          format="MM/dd/yyyy"
+                          value={state.start_date}
+                          onChange={handleStartDateChange}
+                        />
                       </Grid>
-                      <Grid item md={4} xs={12}>
-                        {getPositionStats("Designer")}
-                      </Grid>
-                      <Grid item md={4} xs={12}>
-                        {getPositionStats("Project Manager")}
+                      <Grid item md={6} xs={12}>
+                        <DatePicker
+                          label="End Date"
+                          format="MM/dd/yyyy"
+                          value={state.end_date}
+                          onChange={handleEndDateChange}
+                        />
                       </Grid>
                     </Grid>
-                  </div>
-                )}
-              </Grid>
+                  </MuiPickersUtilsProvider>
+                  <Typography variant="h4" className={classes.title}>
+                    Recruitment Overview
+                  </Typography>
+                  <Grid container spacing={3}>
+                    <Grid item md={4} xs={12}>
+                      {getPositionStats("Developer")}
+                    </Grid>
+                    <Grid item md={4} xs={12}>
+                      {getPositionStats("Designer")}
+                    </Grid>
+                    <Grid item md={4} xs={12}>
+                      {getPositionStats("Project Manager")}
+                    </Grid>
+                  </Grid>
+                </div>
+              )}
             </Grid>
-          </LoadingContainer>
-        </AuthenticationContainer>
+          </Grid>
+        </LoadingContainer>
       </PageContainer>
     </>
   );
-}
+};
+
+export default withAuthorization(Overview, true, ["permit_regular_review"]);

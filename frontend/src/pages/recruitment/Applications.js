@@ -1,16 +1,16 @@
 import React from "react";
-import AuthenticationContainer from "../../components/AuthenticationContainer";
 import PageContainer from "../../components/PageContainer";
 import LoadingContainer from "../../components/LoadingContainer";
+import MaterialTable from "@material-table/core";
 import { Helmet } from "react-helmet";
 import { Grid } from "@material-ui/core";
 import { Visibility } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
-import MaterialTable from "@material-table/core";
 import { TableIcons } from "../../components/Icons";
 import { useDispatch } from "react-redux";
 import { openAlert } from "../../actions";
 import { getApplications } from "../../services/applications";
+import { withAuthorization } from "../../components/HOC";
 
 const useStyles = makeStyles(() => ({
   grid: {
@@ -18,7 +18,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default function Applications() {
+const Applications = () => {
   const classes = useStyles();
   const [state, setState] = React.useState({
     loading: true,
@@ -61,71 +61,71 @@ export default function Applications() {
         <title>All Applications — TSE Oktavian</title>
       </Helmet>
       <PageContainer>
-        <AuthenticationContainer allow={true}>
-          <LoadingContainer loading={state.loading}>
-            <Grid
-              container
-              spacing={0}
-              alignItems="center"
-              justify="center"
-              className={classes.grid}
-            >
-              <Grid item xs={12}>
-                <MaterialTable
-                  icons={TableIcons}
-                  actions={[
-                    {
-                      icon: function visibility() {
-                        return <Visibility />;
-                      },
-                      tooltip: "View Application",
-                      onClick: (event, row) => {
-                        let origin =
-                          window.location.protocol +
-                          "//" +
-                          window.location.hostname +
-                          (window.location.port
-                            ? ":" + window.location.port
-                            : "");
-                        window.open(
-                          `${origin}/recruitment/application/${row._id}`
-                        );
-                      },
+        <LoadingContainer loading={state.loading}>
+          <Grid
+            container
+            spacing={0}
+            alignItems="center"
+            justify="center"
+            className={classes.grid}
+          >
+            <Grid item xs={12}>
+              <MaterialTable
+                icons={TableIcons}
+                actions={[
+                  {
+                    icon: function visibility() {
+                      return <Visibility />;
                     },
-                  ]}
-                  options={{
-                    filtering: true,
-                    paging: true,
-                    pageSize: 10,
-                    emptyRowsWhenPaging: true,
-                    pageSizeOptions: [10, 20, 50, 100],
-                  }}
-                  columns={[
-                    { title: "Name", field: "name" },
-                    { title: "Email", field: "email" },
-                    { title: "Position", field: "role" },
-                    { title: "Stage", field: "current_stage" },
-                    {
-                      title: "Graduating In",
-                      field: "graduation",
-                      type: "numeric",
+                    tooltip: "View Application",
+                    onClick: (event, row) => {
+                      let origin =
+                        window.location.protocol +
+                        "//" +
+                        window.location.hostname +
+                        (window.location.port
+                          ? ":" + window.location.port
+                          : "");
+                      window.open(
+                        `${origin}/recruitment/application/${row._id}`
+                      );
                     },
-                    {
-                      title: "Submitted In",
-                      field: "submission",
-                      type: "numeric",
-                    },
-                    { title: "Completed", field: "completed", type: "boolean" },
-                    { title: "Accepted", field: "accepted", type: "boolean" },
-                  ]}
-                  data={state.applications}
-                  title="All Applications"
-                />
-              </Grid>
+                  },
+                ]}
+                options={{
+                  filtering: true,
+                  paging: true,
+                  pageSize: 10,
+                  emptyRowsWhenPaging: true,
+                  pageSizeOptions: [10, 20, 50, 100],
+                }}
+                columns={[
+                  { title: "Name", field: "name" },
+                  { title: "Email", field: "email" },
+                  { title: "Position", field: "role" },
+                  { title: "Stage", field: "current_stage" },
+                  {
+                    title: "Graduating In",
+                    field: "graduation",
+                    type: "numeric",
+                  },
+                  {
+                    title: "Submitted In",
+                    field: "submission",
+                    type: "numeric",
+                  },
+                  { title: "Completed", field: "completed", type: "boolean" },
+                  { title: "Accepted", field: "accepted", type: "boolean" },
+                ]}
+                data={state.applications}
+                title="All Applications"
+              />
             </Grid>
-          </LoadingContainer>
-        </AuthenticationContainer>
+          </Grid>
+        </LoadingContainer>
       </PageContainer>
     </>
   );
-}
+};
+
+export default withAuthorization(Applications, true, ["permit_regular_review"]);

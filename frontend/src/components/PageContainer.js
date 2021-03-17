@@ -24,7 +24,6 @@ import {
   Inbox,
   RateReview,
 } from "@material-ui/icons";
-import AuthenticationResolver from "./AuthenticationResolver";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -68,20 +67,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// The PageContainer component is extremely critical and needs
-// to be present on every page. It wraps the main components of
-// the page, performing several important tasks:
-//  1. It performs authentication resolution. This means that, given
-//  the current state of the application's JWT token, this token is
-//  either resolved into a valid user profile or the token is invalidated
-//  and the user is considered not logged in. The resolution essentially
-//  sets up the global user state for the application in Redux. If no
-//  resolution occurs, then other components cannot function.
-//  2. It adds a navbar and sidebar. The contents of both depend on
-//  the authentication resolution results.
-//  3. It sets up the layout for the page and adds some theming.
-//  4. While authentication is resolving, it prevents the rest of
-//  the page from being visible.
+// The PageContainer component is critical and should
+// be present on most pages. It wraps the main components of
+// the page, sets the sidebar and navbar and applies some styling.
 export default function PageContainer({ window, children }) {
   const classes = useStyles();
   const theme = useTheme();
@@ -89,10 +77,6 @@ export default function PageContainer({ window, children }) {
   const loginState = useSelector((state) => state.login);
   const alertState = useSelector((state) => state.alert);
   const dispatch = useDispatch();
-
-  if (loginState.loading) {
-    return <AuthenticationResolver />;
-  }
 
   const handleDrawerToggle = () => {
     setState(!state);
@@ -283,7 +267,7 @@ export default function PageContainer({ window, children }) {
       </main>
       <Snackbar
         open={alertState.open}
-        autoHideDuration={6000}
+        autoHideDuration={3000}
         onClose={handleSnackClose}
         message={alertState.message}
       />

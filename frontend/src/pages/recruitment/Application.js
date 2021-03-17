@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import AuthenticationContainer from "../../components/AuthenticationContainer";
 import LoadingContainer from "../../components/LoadingContainer";
 import PageContainer from "../../components/PageContainer";
 import { Helmet } from "react-helmet";
@@ -25,6 +24,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getApplication } from "../../services/applications";
 import { getApplicationReviews, updateReview } from "../../services/reviews";
 import { openAlert } from "../../actions";
+import { withAuthorization } from "../../components/HOC";
 
 const useStyles = makeStyles((theme) => ({
   grid: {
@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Application({ match }) {
+const Application = ({ match }) => {
   const classes = useStyles();
   const [state, setState] = React.useState({
     // Initial backend data
@@ -184,342 +184,340 @@ export default function Application({ match }) {
         <title>Loading Application — TSE Oktavian</title>
       </Helmet>
       <PageContainer title="Viewing Application">
-        <AuthenticationContainer allow={true}>
-          <LoadingContainer loading={state.loading}>
-            {state.loading ? (
-              <></>
-            ) : (
-              <>
-                <Helmet>
-                  <title>
-                    {`${state.application.name}'s Application — TSE Oktavian`}
-                  </title>
-                </Helmet>
-                <Grid
-                  container
-                  spacing={0}
-                  alignItems="center"
-                  justify="center"
-                  className={classes.grid}
-                >
-                  <Grid item xs={10}>
-                    <div>
-                      <h2 id="application">
-                        {`${
-                          state.application.name
-                        }'s ${state.application.created_at.getFullYear()} ${
-                          state.application.role.name
-                        } Application`}
-                      </h2>
-                      {state.application.completed ? (
-                        state.application.accepted ? (
-                          <Chip label="Accepted" color="primary" />
-                        ) : (
-                          <Chip label="Rejected" color="secondary" />
-                        )
+        <LoadingContainer loading={state.loading}>
+          {state.loading ? (
+            <></>
+          ) : (
+            <>
+              <Helmet>
+                <title>
+                  {`${state.application.name}'s Application — TSE Oktavian`}
+                </title>
+              </Helmet>
+              <Grid
+                container
+                spacing={0}
+                alignItems="center"
+                justify="center"
+                className={classes.grid}
+              >
+                <Grid item xs={10}>
+                  <div>
+                    <h2 id="application">
+                      {`${
+                        state.application.name
+                      }'s ${state.application.created_at.getFullYear()} ${
+                        state.application.role.name
+                      } Application`}
+                    </h2>
+                    {state.application.completed ? (
+                      state.application.accepted ? (
+                        <Chip label="Accepted" color="primary" />
                       ) : (
-                        <Chip label="In review" />
-                      )}
-                      <form className={classes.form}>
-                        <Grid container spacing={3}>
-                          <Grid item xs={6}>
-                            <TextField
-                              label="Name"
-                              variant="outlined"
-                              type="text"
-                              defaultValue={state.application.name}
-                              disabled
-                            />
-                          </Grid>
-                          <Grid item xs={6}>
-                            <TextField
-                              label="Email"
-                              variant="outlined"
-                              type="email"
-                              defaultValue={state.application.email}
-                              disabled
-                            />
-                          </Grid>
-                          <Grid item xs={6}>
-                            <TextField
-                              label="Role"
-                              variant="outlined"
-                              type="text"
-                              defaultValue={state.application.role.name}
-                              disabled
-                            />
-                          </Grid>
-                          <Grid item xs={6}>
-                            <TextField
-                              label="Graduation Year"
-                              variant="outlined"
-                              type="text"
-                              defaultValue={state.application.graduation}
-                              disabled
-                            />
-                          </Grid>
-                          <Grid item xs={6}>
-                            <TextField
-                              label="Submission Time"
-                              variant="outlined"
-                              type="email"
-                              defaultValue={state.application.created_at}
-                              disabled
-                            />
-                          </Grid>
-                          <Grid item xs={6}>
-                            <TextField
-                              label="Resume"
-                              variant="outlined"
-                              type="text"
-                              defaultValue={state.application.resume}
-                              disabled
-                            />
-                            <Button
-                              variant="contained"
-                              color="primary"
-                              href={state.application.resume}
-                              target="_blank"
-                            >
-                              Open resume &nbsp; <ExitToApp />
-                            </Button>
-                          </Grid>
-                          <Grid item xs={12}>
-                            <TextField
-                              multiline
-                              label="Tell us about yourself."
-                              variant="outlined"
-                              type="text"
-                              defaultValue={state.application.about}
-                              disabled
-                            />
-                          </Grid>
-                          <Grid item xs={12}>
-                            <TextField
-                              multiline
-                              label="Why TSE?"
-                              variant="outlined"
-                              type="text"
-                              defaultValue={state.application.why}
-                              disabled
-                            />
-                          </Grid>
+                        <Chip label="Rejected" color="secondary" />
+                      )
+                    ) : (
+                      <Chip label="In review" />
+                    )}
+                    <form className={classes.form}>
+                      <Grid container spacing={3}>
+                        <Grid item xs={6}>
+                          <TextField
+                            label="Name"
+                            variant="outlined"
+                            type="text"
+                            defaultValue={state.application.name}
+                            disabled
+                          />
                         </Grid>
-                      </form>
-                      <h2 id="reviews">Reviews</h2>
-                      {state.reviews.map((review) => {
-                        if (review.completed) {
-                          return (
-                            <Card className={classes.card}>
-                              <CardContent>
-                                <h3>{review.stage} Stage</h3>
-                                {review.accepted ? (
-                                  <Chip label="Passed" color="primary" />
-                                ) : (
-                                  <Chip label="Rejected" color="secondary" />
-                                )}
-                                <form className={classes.form}>
-                                  <Grid container spacing={3}>
-                                    <Grid item xs={6}>
-                                      <TextField
-                                        label="Reviewer"
-                                        variant="outlined"
-                                        type="text"
-                                        defaultValue={review.reviewer.name}
-                                        disabled
-                                      />
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                      <TextField
-                                        label="Rating"
-                                        variant="outlined"
-                                        type="number"
-                                        defaultValue={review.rating}
-                                        disabled
-                                      />
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                      <TextField
-                                        multiline
-                                        label="Comments"
-                                        variant="outlined"
-                                        type="text"
-                                        defaultValue={review.comments}
-                                        disabled
-                                      />
-                                    </Grid>
+                        <Grid item xs={6}>
+                          <TextField
+                            label="Email"
+                            variant="outlined"
+                            type="email"
+                            defaultValue={state.application.email}
+                            disabled
+                          />
+                        </Grid>
+                        <Grid item xs={6}>
+                          <TextField
+                            label="Role"
+                            variant="outlined"
+                            type="text"
+                            defaultValue={state.application.role.name}
+                            disabled
+                          />
+                        </Grid>
+                        <Grid item xs={6}>
+                          <TextField
+                            label="Graduation Year"
+                            variant="outlined"
+                            type="text"
+                            defaultValue={state.application.graduation}
+                            disabled
+                          />
+                        </Grid>
+                        <Grid item xs={6}>
+                          <TextField
+                            label="Submission Time"
+                            variant="outlined"
+                            type="email"
+                            defaultValue={state.application.created_at}
+                            disabled
+                          />
+                        </Grid>
+                        <Grid item xs={6}>
+                          <TextField
+                            label="Resume"
+                            variant="outlined"
+                            type="text"
+                            defaultValue={state.application.resume}
+                            disabled
+                          />
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            href={state.application.resume}
+                            target="_blank"
+                          >
+                            Open resume &nbsp; <ExitToApp />
+                          </Button>
+                        </Grid>
+                        <Grid item xs={12}>
+                          <TextField
+                            multiline
+                            label="Tell us about yourself."
+                            variant="outlined"
+                            type="text"
+                            defaultValue={state.application.about}
+                            disabled
+                          />
+                        </Grid>
+                        <Grid item xs={12}>
+                          <TextField
+                            multiline
+                            label="Why TSE?"
+                            variant="outlined"
+                            type="text"
+                            defaultValue={state.application.why}
+                            disabled
+                          />
+                        </Grid>
+                      </Grid>
+                    </form>
+                    <h2 id="reviews">Reviews</h2>
+                    {state.reviews.map((review) => {
+                      if (review.completed) {
+                        return (
+                          <Card className={classes.card}>
+                            <CardContent>
+                              <h3>{review.stage} Stage</h3>
+                              {review.accepted ? (
+                                <Chip label="Passed" color="primary" />
+                              ) : (
+                                <Chip label="Rejected" color="secondary" />
+                              )}
+                              <form className={classes.form}>
+                                <Grid container spacing={3}>
+                                  <Grid item xs={6}>
+                                    <TextField
+                                      label="Reviewer"
+                                      variant="outlined"
+                                      type="text"
+                                      defaultValue={review.reviewer.name}
+                                      disabled
+                                    />
                                   </Grid>
-                                </form>
-                              </CardContent>
-                            </Card>
-                          );
-                        } else if (
-                          loginState.authenticated &&
-                          review.reviewer._id === loginState.user._id
-                        ) {
-                          return (
-                            <Card className={classes.card}>
-                              <CardContent>
-                                <h3>{review.stage} Stage</h3>
-                                <Chip label="Incomplete" />
-                                <form className={classes.form}>
-                                  <Grid container spacing={3}>
-                                    <Grid item xs={6}>
-                                      <TextField
-                                        label="Reviewer"
-                                        variant="outlined"
-                                        type="text"
-                                        defaultValue={review.reviewer.name}
-                                        disabled
-                                      />
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                      <TextField
-                                        label="Rating"
-                                        variant="outlined"
-                                        type="number"
-                                        onChange={handleChange("rating")}
-                                        defaultValue={state.rating}
-                                      />
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                      <TextField
-                                        multiline
-                                        label="Comments"
-                                        variant="outlined"
-                                        type="text"
-                                        onChange={handleChange("comments")}
-                                        defaultValue={state.comments}
-                                      />
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                      <FormLabel component="legend">
-                                        Should this person move on to next
-                                        stage?
-                                      </FormLabel>
-                                      <Checkbox
-                                        name="accepted"
-                                        onChange={handleChecked("accepted")}
-                                        checked={state.accepted}
-                                      />
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                      <Button
-                                        variant="contained"
-                                        color="primary"
-                                        onClick={handleModalOpen}
-                                      >
-                                        Complete
-                                      </Button>
-                                      <Button
-                                        variant="contained"
-                                        color="secondary"
-                                        onClick={handleSubmit(false)}
-                                      >
-                                        Save for Later
-                                      </Button>
-                                    </Grid>
+                                  <Grid item xs={6}>
+                                    <TextField
+                                      label="Rating"
+                                      variant="outlined"
+                                      type="number"
+                                      defaultValue={review.rating}
+                                      disabled
+                                    />
                                   </Grid>
-                                </form>
-                              </CardContent>
-                            </Card>
-                          );
-                        } else {
-                          return (
-                            <Card className={classes.card}>
-                              <CardContent>
-                                <h3>{review.stage} Stage</h3>
-                                <Chip label="Incomplete" />
-                                <form className={classes.form}>
-                                  <Grid container spacing={3}>
-                                    <Grid item xs={6}>
-                                      <TextField
-                                        label="Reviewer"
-                                        variant="outlined"
-                                        type="text"
-                                        defaultValue={review.reviewer.name}
-                                        disabled
-                                      />
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                      <TextField
-                                        label="Rating"
-                                        variant="outlined"
-                                        type="number"
-                                        defaultValue={review.rating}
-                                        disabled
-                                      />
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                      <TextField
-                                        multiline
-                                        label="Comments"
-                                        variant="outlined"
-                                        type="text"
-                                        defaultValue={review.comments}
-                                        disabled
-                                      />
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                      <FormLabel component="legend">
-                                        Should this person move on to next
-                                        stage?
-                                      </FormLabel>
-                                      <Checkbox
-                                        name="accepted"
-                                        checked={review.accepted}
-                                        disabled
-                                      />
-                                    </Grid>
+                                  <Grid item xs={12}>
+                                    <TextField
+                                      multiline
+                                      label="Comments"
+                                      variant="outlined"
+                                      type="text"
+                                      defaultValue={review.comments}
+                                      disabled
+                                    />
                                   </Grid>
-                                </form>
-                              </CardContent>
-                            </Card>
-                          );
-                        }
-                      })}
-                    </div>
-                  </Grid>
-                  <Dialog
-                    open={state.modal}
-                    onClose={handleModalClose}
-                    aria-labelledby="alert-dialog-title"
-                    aria-describedby="alert-dialog-description"
-                  >
-                    <DialogTitle id="alert-dialog-title">
-                      {"Please confirm that your review is accurate!"}
-                    </DialogTitle>
-                    <DialogContent>
-                      <DialogContentText id="alert-dialog-description">
-                        Reverting reviews is painful, particularly since all
-                        rejection emails are automated. Triple check that you
-                        have made the appropriate decision for the applicant
-                        before submitting your review as it is final.
-                      </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                      <Button
-                        onClick={handleSubmit(true)}
-                        color="primary"
-                        autoFocus
-                      >
-                        Confirm decision
-                      </Button>
-                      <Button onClick={handleModalClose} color="secondary">
-                        Go back
-                      </Button>
-                    </DialogActions>
-                  </Dialog>
+                                </Grid>
+                              </form>
+                            </CardContent>
+                          </Card>
+                        );
+                      } else if (
+                        loginState.authenticated &&
+                        review.reviewer._id === loginState.user._id
+                      ) {
+                        return (
+                          <Card className={classes.card}>
+                            <CardContent>
+                              <h3>{review.stage} Stage</h3>
+                              <Chip label="Incomplete" />
+                              <form className={classes.form}>
+                                <Grid container spacing={3}>
+                                  <Grid item xs={6}>
+                                    <TextField
+                                      label="Reviewer"
+                                      variant="outlined"
+                                      type="text"
+                                      defaultValue={review.reviewer.name}
+                                      disabled
+                                    />
+                                  </Grid>
+                                  <Grid item xs={6}>
+                                    <TextField
+                                      label="Rating"
+                                      variant="outlined"
+                                      type="number"
+                                      onChange={handleChange("rating")}
+                                      defaultValue={state.rating}
+                                    />
+                                  </Grid>
+                                  <Grid item xs={12}>
+                                    <TextField
+                                      multiline
+                                      label="Comments"
+                                      variant="outlined"
+                                      type="text"
+                                      onChange={handleChange("comments")}
+                                      defaultValue={state.comments}
+                                    />
+                                  </Grid>
+                                  <Grid item xs={12}>
+                                    <FormLabel component="legend">
+                                      Should this person move on to next stage?
+                                    </FormLabel>
+                                    <Checkbox
+                                      name="accepted"
+                                      onChange={handleChecked("accepted")}
+                                      checked={state.accepted}
+                                    />
+                                  </Grid>
+                                  <Grid item xs={12}>
+                                    <Button
+                                      variant="contained"
+                                      color="primary"
+                                      onClick={handleModalOpen}
+                                    >
+                                      Complete
+                                    </Button>
+                                    <Button
+                                      variant="contained"
+                                      color="secondary"
+                                      onClick={handleSubmit(false)}
+                                    >
+                                      Save for Later
+                                    </Button>
+                                  </Grid>
+                                </Grid>
+                              </form>
+                            </CardContent>
+                          </Card>
+                        );
+                      } else {
+                        return (
+                          <Card className={classes.card}>
+                            <CardContent>
+                              <h3>{review.stage} Stage</h3>
+                              <Chip label="Incomplete" />
+                              <form className={classes.form}>
+                                <Grid container spacing={3}>
+                                  <Grid item xs={6}>
+                                    <TextField
+                                      label="Reviewer"
+                                      variant="outlined"
+                                      type="text"
+                                      defaultValue={review.reviewer.name}
+                                      disabled
+                                    />
+                                  </Grid>
+                                  <Grid item xs={6}>
+                                    <TextField
+                                      label="Rating"
+                                      variant="outlined"
+                                      type="number"
+                                      defaultValue={review.rating}
+                                      disabled
+                                    />
+                                  </Grid>
+                                  <Grid item xs={12}>
+                                    <TextField
+                                      multiline
+                                      label="Comments"
+                                      variant="outlined"
+                                      type="text"
+                                      defaultValue={review.comments}
+                                      disabled
+                                    />
+                                  </Grid>
+                                  <Grid item xs={12}>
+                                    <FormLabel component="legend">
+                                      Should this person move on to next stage?
+                                    </FormLabel>
+                                    <Checkbox
+                                      name="accepted"
+                                      checked={review.accepted}
+                                      disabled
+                                    />
+                                  </Grid>
+                                </Grid>
+                              </form>
+                            </CardContent>
+                          </Card>
+                        );
+                      }
+                    })}
+                  </div>
                 </Grid>
-              </>
-            )}
-          </LoadingContainer>
-        </AuthenticationContainer>
+                <Dialog
+                  open={state.modal}
+                  onClose={handleModalClose}
+                  aria-labelledby="alert-dialog-title"
+                  aria-describedby="alert-dialog-description"
+                >
+                  <DialogTitle id="alert-dialog-title">
+                    {"Please confirm that your review is accurate!"}
+                  </DialogTitle>
+                  <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                      Reverting reviews is painful, particularly since all
+                      rejection emails are automated. Triple check that you have
+                      made the appropriate decision for the applicant before
+                      submitting your review as it is final.
+                    </DialogContentText>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button
+                      onClick={handleSubmit(true)}
+                      color="primary"
+                      autoFocus
+                    >
+                      Confirm decision
+                    </Button>
+                    <Button onClick={handleModalClose} color="secondary">
+                      Go back
+                    </Button>
+                  </DialogActions>
+                </Dialog>
+              </Grid>
+            </>
+          )}
+        </LoadingContainer>
       </PageContainer>
     </>
   );
-}
+};
 
 Application.propTypes = {
   match: PropTypes.object,
 };
+
+export default withAuthorization(Application, true, ["permit_regular_review"]);

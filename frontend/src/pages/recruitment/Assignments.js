@@ -1,5 +1,4 @@
 import React from "react";
-import AuthenticationContainer from "../../components/AuthenticationContainer";
 import LoadingContainer from "../../components/LoadingContainer";
 import PageContainer from "../../components/PageContainer";
 import { Helmet } from "react-helmet";
@@ -11,6 +10,7 @@ import { TableIcons } from "../../components/Icons";
 import { getUserReviews } from "../../services/reviews";
 import { useDispatch, useSelector } from "react-redux";
 import { openAlert } from "../../actions";
+import { withAuthorization } from "../../components/HOC";
 
 const useStyles = makeStyles(() => ({
   grid: {
@@ -18,7 +18,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default function Assignments() {
+const Assignments = () => {
   const classes = useStyles();
   const [state, setState] = React.useState({
     loading: true,
@@ -71,69 +71,69 @@ export default function Assignments() {
         <title>Your Assignments — TSE Oktavian</title>
       </Helmet>
       <PageContainer>
-        <AuthenticationContainer allow={true}>
-          <LoadingContainer loading={state.loading}>
-            <Grid
-              container
-              spacing={0}
-              alignItems="center"
-              justify="center"
-              className={classes.grid}
-            >
-              <Grid item xs={12}>
-                <MaterialTable
-                  icons={TableIcons}
-                  actions={[
-                    {
-                      icon: function edit() {
-                        return <Edit />;
-                      },
-                      tooltip: "Edit Application",
-                      onClick: (event, row) => {
-                        let origin =
-                          window.location.protocol +
-                          "//" +
-                          window.location.hostname +
-                          (window.location.port
-                            ? ":" + window.location.port
-                            : "");
-                        window.open(
-                          `${origin}/recruitment/application/${row._id}`
-                        );
-                      },
+        <LoadingContainer loading={state.loading}>
+          <Grid
+            container
+            spacing={0}
+            alignItems="center"
+            justify="center"
+            className={classes.grid}
+          >
+            <Grid item xs={12}>
+              <MaterialTable
+                icons={TableIcons}
+                actions={[
+                  {
+                    icon: function edit() {
+                      return <Edit />;
                     },
-                  ]}
-                  options={{
-                    filtering: true,
-                    paging: true,
-                    pageSize: 10,
-                    emptyRowsWhenPaging: true,
-                    pageSizeOptions: [10, 20, 50, 100],
-                  }}
-                  columns={[
-                    { title: "Name", field: "name" },
-                    { title: "Email", field: "email" },
-                    { title: "Position", field: "role" },
-                    { title: "Stage", field: "current_stage" },
-                    {
-                      title: "Graduating In",
-                      field: "graduation",
-                      type: "numeric",
+                    tooltip: "Edit Application",
+                    onClick: (event, row) => {
+                      let origin =
+                        window.location.protocol +
+                        "//" +
+                        window.location.hostname +
+                        (window.location.port
+                          ? ":" + window.location.port
+                          : "");
+                      window.open(
+                        `${origin}/recruitment/application/${row._id}`
+                      );
                     },
-                    {
-                      title: "Submitted In",
-                      field: "submission",
-                      type: "numeric",
-                    },
-                  ]}
-                  data={state.applications}
-                  title="Your Active Assignments"
-                />
-              </Grid>
+                  },
+                ]}
+                options={{
+                  filtering: true,
+                  paging: true,
+                  pageSize: 10,
+                  emptyRowsWhenPaging: true,
+                  pageSizeOptions: [10, 20, 50, 100],
+                }}
+                columns={[
+                  { title: "Name", field: "name" },
+                  { title: "Email", field: "email" },
+                  { title: "Position", field: "role" },
+                  { title: "Stage", field: "current_stage" },
+                  {
+                    title: "Graduating In",
+                    field: "graduation",
+                    type: "numeric",
+                  },
+                  {
+                    title: "Submitted In",
+                    field: "submission",
+                    type: "numeric",
+                  },
+                ]}
+                data={state.applications}
+                title="Your Active Assignments"
+              />
             </Grid>
-          </LoadingContainer>
-        </AuthenticationContainer>
+          </Grid>
+        </LoadingContainer>
       </PageContainer>
     </>
   );
-}
+};
+
+export default withAuthorization(Assignments, true, ["permit_regular_review"]);

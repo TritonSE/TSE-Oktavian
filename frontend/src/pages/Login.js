@@ -1,5 +1,4 @@
 import React from "react";
-import AuthenticationContainer from "../components/AuthenticationContainer";
 import PageContainer from "../components/PageContainer";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
@@ -7,6 +6,7 @@ import { TextField, Button, Grid, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useDispatch } from "react-redux";
 import { login, openAlert } from "../actions";
+import { withAuthorization } from "../components/HOC";
 
 const useStyles = makeStyles((theme) => ({
   centered: {
@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Login() {
+const Login = () => {
   const classes = useStyles();
   const [state, setState] = React.useState({
     disabled: false,
@@ -75,43 +75,43 @@ export default function Login() {
         <title>Login — TSE Oktavian</title>
       </Helmet>
       <PageContainer>
-        <AuthenticationContainer allow={false}>
-          <Grid container spacing={0} alignItems="center" justify="center">
-            <Grid item md={6} xs={12}>
-              <Typography variant="h4" className={classes.title}>
-                Login
-              </Typography>
-              <form className={classes.form} onSubmit={handleSubmit}>
-                <TextField
-                  label="Email"
-                  variant="outlined"
-                  type="email"
-                  onChange={handleChange("email")}
-                />
-                <TextField
-                  label="Password"
-                  variant="outlined"
-                  type="password"
-                  onChange={handleChange("password")}
-                />
-                <Link to="forgot-password">
-                  <Typography>Forgot your password?</Typography>
-                </Link>
-                <div className={classes.centered}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    type="submit"
-                    disabled={state.disabled}
-                  >
-                    Submit
-                  </Button>
-                </div>
-              </form>
-            </Grid>
+        <Grid container spacing={0} alignItems="center" justify="center">
+          <Grid item md={6} xs={12}>
+            <Typography variant="h4" className={classes.title}>
+              Login
+            </Typography>
+            <form className={classes.form} onSubmit={handleSubmit}>
+              <TextField
+                label="Email"
+                variant="outlined"
+                type="email"
+                onChange={handleChange("email")}
+              />
+              <TextField
+                label="Password"
+                variant="outlined"
+                type="password"
+                onChange={handleChange("password")}
+              />
+              <Link to="forgot-password">
+                <Typography>Forgot your password?</Typography>
+              </Link>
+              <div className={classes.centered}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  type="submit"
+                  disabled={state.disabled}
+                >
+                  Submit
+                </Button>
+              </div>
+            </form>
           </Grid>
-        </AuthenticationContainer>
+        </Grid>
       </PageContainer>
     </>
   );
-}
+};
+
+export default withAuthorization(Login, false);
