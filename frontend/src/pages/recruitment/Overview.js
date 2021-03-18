@@ -80,7 +80,7 @@ const Overview = () => {
   };
 
   const getPositionStats = (role) => {
-    if (state.stats == null) {
+    if (state.stats == null || !(role in state.stats)) {
       return <></>;
     }
     return (

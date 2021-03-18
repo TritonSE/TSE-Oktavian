@@ -6,8 +6,9 @@ const morgan = require("morgan");
 const cors = require("cors");
 const mongoose = require("mongoose");
 
-const { MONGO_URI } = require("./constants");
+const { MONGO_URI, NODE_ENV } = require("./constants");
 const { initializePassport } = require("./middleware/auth");
+const { createMockData } = require("./services/mock");
 
 // Database
 mongoose.set("useCreateIndex", true);
@@ -53,5 +54,16 @@ app.use(function (err, req, res, next) {
   }
 });
 /* eslint-enable no-unused-vars */
+
+// Mock data generation
+if (NODE_ENV === "development") {
+  createMockData()
+    .then(() => {
+      console.log("Mock data has been generated.");
+    })
+    .catch((err) => {
+      console.log("There was an error generating mock data: " + err);
+    });
+}
 
 module.exports = app;
