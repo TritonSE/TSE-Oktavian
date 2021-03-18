@@ -1,5 +1,4 @@
 import React from "react";
-import WithAuthentication from "../components/WithAuthentication";
 import PageContainer from "../components/PageContainer";
 import { Helmet } from "react-helmet";
 import {
@@ -7,11 +6,13 @@ import {
   Button,
   Grid,
   FormHelperText,
-  Snackbar,
   Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { sendData } from "../services/data";
+import { forgotPassword } from "../services/auth";
+import { useDispatch } from "react-redux";
+import { openAlert } from "../actions";
+import { withAuthorization } from "../components/HOC";
 
 const useStyles = makeStyles((theme) => ({
   centered: {
@@ -40,19 +41,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ForgotPassword() {
+const ForgotPassword = () => {
   const classes = useStyles();
   const [state, setState] = React.useState({
-    // Boilerplate
-    snack: {
-      message: "",
-      open: false,
-    },
-    // User input
-    form_disabled: false,
+    disabled: false,
     email: "",
     secret: "",
   });
+  const dispatch = useDispatch();
 
   const handleChange = (prop) => (event) => {
     setState({ ...state, [prop]: event.target.value });
@@ -60,44 +56,27 @@ export default function ForgotPassword() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const submission = {
+    setState({ ...state, disabled: true });
+    const body = {
       email: state.email,
       secret: state.secret,
     };
-    const { ok, data } = await sendData(
-      "api/auth/forgot-password",
-      false,
-      "POST",
-      JSON.stringify(submission)
-    );
+    const { ok, data } = await forgotPassword(body);
     if (ok) {
-      setState({
-        email: "",
-        secret: "",
-        form_disabled: false,
-        snack: {
-          message: "Please check your email for a password reset request.",
-          open: true,
-        },
-      });
+      dispatch(
+        openAlert("A password reset request has been sent to your email")
+      );
     } else {
-      setState({
-        ...state,
-        form_disabled: false,
-        snack: { message: `Error: ${data.message}`, open: true },
-      });
+      dispatch(openAlert(`Error: ${data.message}`));
     }
-  };
-
-  const handleSnackClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setState({ ...state, snack: { ...state.snack, open: false } });
+    setState({
+      ...state,
+      disabled: false,
+    });
   };
 
   return (
-    <WithAuthentication allow={false}>
+    <>
       <Helmet>
         <title>Forgot Password — TSE Oktavian</title>
       </Helmet>
@@ -128,20 +107,21 @@ export default function ForgotPassword() {
                 This secret is only distributed internally.
               </FormHelperText>
               <div className={classes.centered}>
-                <Button variant="contained" color="primary" type="submit">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  type="submit"
+                  disabled={state.disabled}
+                >
                   Submit
                 </Button>
               </div>
             </form>
           </Grid>
-          <Snackbar
-            open={state.snack.open}
-            autoHideDuration={6000}
-            onClose={handleSnackClose}
-            message={state.snack.message}
-          />
         </Grid>
       </PageContainer>
-    </WithAuthentication>
+    </>
   );
-}
+};
+
+export default withAuthorization(ForgotPassword, false);

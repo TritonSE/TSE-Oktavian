@@ -1,14 +1,16 @@
 import React from "react";
-import WithData from "../../components/WithData";
-import WithAuthentication from "../../components/WithAuthentication";
+import LoadingContainer from "../../components/LoadingContainer";
 import PageContainer from "../../components/PageContainer";
 import { Helmet } from "react-helmet";
-import { Grid, Snackbar } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import { Edit } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import MaterialTable from "@material-table/core";
 import { TableIcons } from "../../components/Icons";
-import { getUser } from "../../services/auth";
+import { getUserReviews } from "../../services/reviews";
+import { useDispatch, useSelector } from "react-redux";
+import { openAlert } from "../../actions";
+import { withAuthorization } from "../../components/HOC";
 
 const useStyles = makeStyles(() => ({
   grid: {
@@ -16,71 +18,60 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default function Assignments() {
+const Assignments = () => {
   const classes = useStyles();
   const [state, setState] = React.useState({
-    // Boilerplate
-    snack: {
-      message: "",
-      open: false,
-    },
-    // Initial backend data
-    reloading: true,
+    loading: true,
     applications: [],
   });
+  const dispatch = useDispatch();
+  const loginState = useSelector((state) => state.login);
 
-  const handleData = (data) => {
-    const reviews = data.reviews;
-    const applications = reviews
-      .filter((review) => {
-        return !review.completed;
-      })
-      .map((review) => {
-        const app = review.application;
-        return {
-          ...app,
-          role: app.role.name,
-          submission: new Date(app.created_at).getFullYear(),
-        };
-      });
-    setState({
-      ...state,
-      reloading: false,
-      applications: applications,
-    });
-  };
-
-  const handleError = (data) => {
-    setState({
-      ...state,
-      snack: {
-        message: `Error: ${data.message}`,
-        open: true,
-      },
-      reloading: false,
-    });
-  };
-
-  const handleSnackClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
+  React.useEffect(() => {
+    const loadData = async () => {
+      if (loginState.user == null) {
+        return;
+      }
+      let { ok, data } = await getUserReviews(loginState.user._id);
+      if (ok) {
+        const reviews = data.reviews;
+        const applications = reviews
+          .filter((review) => {
+            return !review.completed;
+          })
+          .map((review) => {
+            const app = review.application;
+            return {
+              ...app,
+              role: app.role.name,
+              submission: new Date(app.created_at).getFullYear(),
+            };
+          });
+        setState((prev_state) => ({
+          ...prev_state,
+          loading: false,
+          applications: applications,
+        }));
+      } else {
+        dispatch(openAlert(`Error: ${data.message}`));
+        setState((prev_state) => ({
+          ...prev_state,
+          loading: false,
+        }));
+      }
+    };
+    if (state.loading) {
+      loadData();
     }
-    setState({ ...state, snack: { ...state.snack, open: false } });
-  };
+  }, [state.loading, loginState.user, dispatch]);
 
   return (
-    <WithAuthentication allow={true}>
+    <>
       <Helmet>
         <title>Your Assignments — TSE Oktavian</title>
       </Helmet>
       <PageContainer>
-        <WithData
-          slug={`api/reviews?user=${getUser()._id}`}
-          authenticated={true}
-          reloading={state.reloading}
-          onSuccess={handleData}
-          onError={handleError}
-        >
+        <LoadingContainer loading={state.loading}>
           <Grid
             container
             spacing={0}
@@ -138,15 +129,11 @@ export default function Assignments() {
                 title="Your Active Assignments"
               />
             </Grid>
-            <Snackbar
-              open={state.snack.open}
-              autoHideDuration={6000}
-              onClose={handleSnackClose}
-              message={state.snack.message}
-            />
           </Grid>
-        </WithData>
+        </LoadingContainer>
       </PageContainer>
-    </WithAuthentication>
+    </>
   );
-}
+};
+
+export default withAuthorization(Assignments, true, ["permit_regular_review"]);

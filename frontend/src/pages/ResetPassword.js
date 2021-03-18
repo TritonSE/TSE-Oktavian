@@ -1,18 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
-import WithAuthentication from "../components/WithAuthentication";
 import PageContainer from "../components/PageContainer";
 import { Helmet } from "react-helmet";
 import { useHistory } from "react-router-dom";
-import {
-  TextField,
-  Button,
-  Grid,
-  Snackbar,
-  Typography,
-} from "@material-ui/core";
+import { TextField, Button, Grid, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { sendData } from "../services/data";
+import { resetPassword } from "../services/auth";
+import { useDispatch } from "react-redux";
+import { openAlert } from "../actions";
+import { withAuthorization } from "../components/HOC";
 
 const useStyles = makeStyles((theme) => ({
   centered: {
@@ -41,20 +37,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ResetPassword({ match }) {
+const ResetPassword = ({ match }) => {
   const classes = useStyles();
   const history = useHistory();
   const [state, setState] = React.useState({
-    // Boilerplate
-    snack: {
-      message: "",
-      open: false,
-    },
-    // User input
-    form_disabled: false,
+    disabled: false,
     password: "",
     confirm_password: "",
   });
+  const dispatch = useDispatch();
 
   const handleChange = (prop) => (event) => {
     setState({ ...state, [prop]: event.target.value });
@@ -62,55 +53,42 @@ export default function ResetPassword({ match }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setState({ ...state, disabled: true });
     if (state.password !== state.confirm_password) {
+      dispatch(openAlert("Error: Passwords do not match"));
       setState({
         ...state,
-        form_disabled: false,
-        snack: { message: "Passwords do not match.", open: true },
+        disabled: false,
       });
       return;
     }
     if (state.password.length < 6) {
+      dispatch(openAlert("Error: Password must be at least 6 characters"));
       setState({
         ...state,
-        form_disabled: false,
-        snack: {
-          message: "Password must be at least 6 characters long.",
-          open: true,
-        },
+        disabled: false,
       });
       return;
     }
-    const submission = {
+    const body = {
       token: match.params.token,
       password: state.password,
     };
-    const { ok, data } = await sendData(
-      "api/auth/reset-password",
-      false,
-      "POST",
-      JSON.stringify(submission)
-    );
+    const { ok, data } = await resetPassword(body);
     if (ok) {
+      dispatch(openAlert("Your password has been reset."));
       history.push("/");
     } else {
-      setState({
-        ...state,
-        form_disabled: false,
-        snack: { message: `Error: ${data.message}`, open: true },
-      });
+      dispatch(openAlert(`Error: ${data.message}`));
     }
-  };
-
-  const handleSnackClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setState({ ...state, snack: { ...state.snack, open: false } });
+    setState({
+      ...state,
+      disabled: false,
+    });
   };
 
   return (
-    <WithAuthentication allow={false}>
+    <>
       <Helmet>
         <title>Reset Password — Oktavian</title>
       </Helmet>
@@ -134,24 +112,25 @@ export default function ResetPassword({ match }) {
                 onChange={handleChange("confirm_password")}
               />
               <div className={classes.centered}>
-                <Button variant="contained" color="primary" type="submit">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  type="submit"
+                  disabled={state.disabled}
+                >
                   Submit
                 </Button>
               </div>
             </form>
           </Grid>
-          <Snackbar
-            open={state.snack.open}
-            autoHideDuration={6000}
-            onClose={handleSnackClose}
-            message={state.snack.message}
-          />
         </Grid>
       </PageContainer>
-    </WithAuthentication>
+    </>
   );
-}
+};
 
 ResetPassword.propTypes = {
   match: PropTypes.object,
 };
+
+export default withAuthorization(ResetPassword, false);

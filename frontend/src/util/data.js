@@ -1,5 +1,5 @@
-import { getJWT } from "../services/auth";
-import { BACKEND_URL } from "../util/constants";
+import { getJWT } from "./jwt";
+import { BACKEND_URL } from "../constants";
 
 async function makeRequest(slug, options) {
   const response = await fetch(`${BACKEND_URL}/${slug}`, options);

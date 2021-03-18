@@ -1,9 +1,8 @@
 # Oktavian
 
-Oktavian is our planned, one-stop shop HR application, intended to handle everything from 
-recruitment to roster management to project logistics. Oktavian supersedes our previous
-recruitment tool project, which only focused on the immediate recruitment pipeline
-and did not extend past that.
+Oktavian is our planned, one-stop shop membership portal application, intended to handle 
+everything from recruitment to roster management to project logistics. Oktavian supersedes 
+the previous recruitment tool project, which only focused on the immediate recruitment pipeline.
 
 The frontend is written in React, which is bundled and served directly by the backend.
 The backend is written using a combination of NodeJS, Express, and MongoDB (the MERN stack).
@@ -14,22 +13,17 @@ The ideal feature list is given as:
 
 * Manages the recruitment pipeline
     * Applications submitted through the website are sent to Oktavian.
-    * Oktavian auto-assigns the application to a reviewer.
-    * The reviewer can guide the application through several pre-defined stages.
-    * The application is either accepted or rejected at the end.
-    * Oktavian handles applicant notification when a decision is made.
-    * Oktavian allows you to search for the details of any application.
-    * Oktavian presents you with a clean interface for viewing your own assignments.
+    * Applications are auto-assigned to a reviewer in each stage.
+    * Applications are marked as either accepted or rejected at the end.
+    * Applicants are notified automatically by email when a decision is made.
+    * The board can view the details of any active or past application.
 * Manages the organization roster
-    * Upon acceptance of an application, a developer/designer/PM profile is generated.
-    * The executive board can create/edit/delete 1 or more project teams.
-    * The executive board can assign each developer/designer/PM to a team.
-    * Each developer/designer/PM can view/edit information about themselves. 
-    * Each developer/designer/PM can view information about their team. 
-    * Oktavian presents a clean interface to all users for viewing members & groups in the club.
-    * Oktavian presents a promotion ladder to the executive board.
-    * Oktavian allows inactive members to be deleted by the executive board.
-    * Oktavian has an alumni section for contacting graduated members.
+    * All members will be given a profile, where they can add information about themselves.
+    * Members can be assigned to roles, each of which has varying permissions. 
+    * Members can be assigned to teams, which tied to a past or ongoing project.
+    * Members can view the organization roster, including other members' teams and roles.
+    * A promotion ladder is available to the board, where members can be promoted/demoted/removed.
+    * Other administrative capabilities are present, such as the ability to create/update roles & teams.
 * Manages the project lifecycle
     * Each project team starts with a name, basic description, and list of members.
     * The executive board can fill out the necessary sections of the project proposal attached to the team.
@@ -78,7 +72,7 @@ There are several environment variables that must be set for the backend to work
 
 * (required) MONGO_URI = URI pointing to a MongoDB database
 * (optional, defaults to 'tritonse') REGISTER_SECRET = used to only allow members of the executive board to sign up, must be changed in production
-* (optional, defaults to 'keyboard cat') SESSION_SECRET = used to uniquely identifying server sessions, must be changed in production
+* (optional, defaults to 'keyboard cat') JWT_SECRET = used to uniquely identifying tokens, must be changed in production
 * (optional, defaults to '') EMAIL_USERNAME = used for automated emailing, disabled if left empty
 * (optional, defaults to '') EMAIL_PASSWORD = used for automated emailing, disabled if left empty
 

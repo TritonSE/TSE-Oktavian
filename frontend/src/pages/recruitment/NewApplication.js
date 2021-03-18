@@ -10,12 +10,14 @@ import {
   FormLabel,
   FormControl,
   FormControlLabel,
-  Snackbar,
   Radio,
   Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { sendData } from "../../services/data";
+import { createApplication } from "../../services/applications";
+import { useDispatch } from "react-redux";
+import { openAlert } from "../../actions";
+import { withAuthorization } from "../../components/HOC";
 
 const useStyles = makeStyles((theme) => ({
   centered: {
@@ -44,16 +46,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function NewApplication() {
+const NewApplication = () => {
   const classes = useStyles();
   const [state, setState] = React.useState({
-    // Boilerplate
-    snack: {
-      message: "",
-      open: false,
-    },
-    // User input
-    form_disabled: false,
+    disabled: false,
     name: "",
     email: "",
     role: "Project Manager",
@@ -62,6 +58,7 @@ export default function NewApplication() {
     about: "",
     why: "",
   });
+  const dispatch = useDispatch();
 
   const handleChange = (prop) => (event) => {
     setState({ ...state, [prop]: event.target.value });
@@ -69,7 +66,11 @@ export default function NewApplication() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const submission = {
+    setState({
+      ...state,
+      disabled: true,
+    });
+    const body = {
       name: state.name,
       email: state.email,
       role: state.role,
@@ -78,38 +79,16 @@ export default function NewApplication() {
       about: state.about,
       why: state.why,
     };
-    const { ok, data } = await sendData(
-      "api/applications",
-      false,
-      "POST",
-      JSON.stringify(submission)
-    );
+    const { ok, data } = await createApplication(body);
     if (ok) {
-      setState({
-        ...state,
-        form_disabled: false,
-        snack: {
-          message: "Sample application was submitted successfully.",
-          open: true,
-        },
-      });
+      dispatch(openAlert("Sample application was submitted successfully."));
     } else {
-      setState({
-        ...state,
-        form_disabled: false,
-        snack: {
-          message: `Error: ${data.message}`,
-          open: true,
-        },
-      });
+      dispatch(openAlert(`Error: ${data.message}`));
     }
-  };
-
-  const handleSnackClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setState({ ...state, snack: { ...state.snack, open: false } });
+    setState({
+      ...state,
+      disabled: false,
+    });
   };
 
   // No restrictions on authentication here
@@ -216,20 +195,21 @@ export default function NewApplication() {
                 onChange={handleChange("why")}
               />
               <div className={classes.centered}>
-                <Button variant="contained" color="primary" type="submit">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  type="submit"
+                  disabled={state.disabled}
+                >
                   Submit
                 </Button>
               </div>
             </form>
           </Grid>
-          <Snackbar
-            open={state.snack.open}
-            autoHideDuration={6000}
-            onClose={handleSnackClose}
-            message={state.snack.message}
-          />
         </Grid>
       </PageContainer>
     </>
   );
-}
+};
+
+export default withAuthorization(NewApplication, false, [], true);

@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import WithData from "../../components/WithData";
-import WithAuthentication from "../../components/WithAuthentication";
+import LoadingContainer from "../../components/LoadingContainer";
 import PageContainer from "../../components/PageContainer";
 import { Helmet } from "react-helmet";
 import {
@@ -12,7 +11,6 @@ import {
   Card,
   CardContent,
   Grid,
-  Snackbar,
   Chip,
   Dialog,
   DialogTitle,
@@ -22,8 +20,11 @@ import {
 } from "@material-ui/core";
 import { ExitToApp } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
-import { getUser } from "../../services/auth";
-import { sendData } from "../../services/data";
+import { useDispatch, useSelector } from "react-redux";
+import { getApplication } from "../../services/applications";
+import { getApplicationReviews, updateReview } from "../../services/reviews";
+import { openAlert } from "../../actions";
+import { withAuthorization } from "../../components/HOC";
 
 const useStyles = makeStyles((theme) => ({
   grid: {
@@ -51,17 +52,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Application({ match }) {
+const Application = ({ match }) => {
   const classes = useStyles();
   const [state, setState] = React.useState({
-    // Boilerplate
-    snack: {
-      message: "",
-      open: false,
-    },
     // Initial backend data
-    reloading_application: true,
-    reloading_reviews: true,
+    loading: true,
     application: {},
     reviews: [],
     // User input
@@ -70,52 +65,62 @@ export default function Application({ match }) {
     rating: "",
     accepted: false,
   });
+  const loginState = useSelector((state) => state.login);
+  const dispatch = useDispatch();
 
-  const handleApplicationData = (data) => {
-    const application = data.application;
-    setState({
-      ...state,
-      reloading_application: false,
-      application: {
-        ...application,
-        created_at: new Date(application.created_at),
-      },
-    });
-  };
-
-  const handleReviewData = (data) => {
-    const reviews = data.reviews;
-    const new_state = {
-      ...state,
-      reloading_reviews: false,
-      reviews: reviews.map((review) => {
-        return { ...review, created_at: new Date(review.created_at) };
-      }),
-    };
-    // If a review is not completed, fill in the user input with what they last saved
-    // Note that at most one review can be incomplete at a time (corresponds to the last stage)
-    for (const review of reviews) {
-      if (!review.completed) {
-        new_state.comments = review.comments;
-        new_state.rating = review.rating;
-        new_state.accepted = review.accepted;
-        break;
+  React.useEffect(() => {
+    const loadData = async () => {
+      const { ok: ok1, data: data1 } = await getApplication(match.params.appid);
+      if (!ok1) {
+        dispatch(openAlert(`Error: ${data1.message}`));
+        setState((prev_state) => ({
+          ...prev_state,
+          loading: false,
+        }));
+        return;
       }
+      const application = {
+        ...data1.application,
+        created_at: new Date(data1.application.created_at),
+      };
+      const { ok: ok2, data: data2 } = await getApplicationReviews(
+        match.params.appid
+      );
+      if (!ok2) {
+        dispatch(openAlert(`Error: ${data2.message}`));
+        setState((prev_state) => ({
+          ...prev_state,
+          loading: false,
+        }));
+        return;
+      }
+      const reviews = data2.reviews.map((review) => {
+        return { ...review, created_at: new Date(review.created_at) };
+      });
+      const updates = {
+        loading: false,
+        application: application,
+        reviews: reviews,
+      };
+      // If a review is not completed, fill in the user input with what they last saved
+      // Note that at most one review can be incomplete at a time (corresponds to the last stage)
+      for (const review of reviews) {
+        if (!review.completed) {
+          updates.comments = review.comments;
+          updates.rating = review.rating;
+          updates.accepted = review.accepted;
+          break;
+        }
+      }
+      setState((prev_state) => ({
+        ...prev_state,
+        ...updates,
+      }));
+    };
+    if (state.loading) {
+      loadData();
     }
-    setState(new_state);
-  };
-
-  const handleError = (data) => {
-    setState({
-      ...state,
-      snack: {
-        message: `Error: ${data.message}`,
-        open: true,
-      },
-      reloading_application: false,
-      reloading_reviews: false,
-    });
-  };
+  }, [state.loading, match.params.appid, dispatch]);
 
   const handleChange = (prop) => (event) => {
     setState({ ...state, [prop]: event.target.value });
@@ -135,7 +140,7 @@ export default function Application({ match }) {
 
   const handleSubmit = (completed) => async (event) => {
     event.preventDefault();
-    const submission = {
+    const body = {
       comments: state.comments,
       rating: state.rating,
       accepted: state.accepted,
@@ -149,73 +154,46 @@ export default function Application({ match }) {
       }
     }
     if (incomplete_review != null) {
-      const { ok, data } = await sendData(
-        `api/reviews/${incomplete_review._id}`,
-        true,
-        "PUT",
-        JSON.stringify(submission)
-      );
+      const { ok, data } = await updateReview(incomplete_review._id, body);
       if (ok) {
+        dispatch(
+          openAlert(
+            data.review.completed
+              ? "Review completed!"
+              : "Review progress saved successfully."
+          )
+        );
         setState({
           ...state,
-          reloading_application: true,
-          reloading_reviews: true,
+          loading: true,
           modal: false,
-          snack: {
-            message: data.review.completed
-              ? "Review completed!"
-              : "Review progress saved successfully.",
-            open: true,
-          },
         });
       } else {
+        dispatch(openAlert(`Error: ${data.message}`));
         setState({
           ...state,
           modal: false,
-          snack: {
-            message: `Error: ${data.message}`,
-            open: true,
-          },
         });
       }
     }
   };
 
-  const handleSnackClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setState({ ...state, snack: { ...state.snack, open: false } });
-  };
-
   return (
-    <WithAuthentication allow={true}>
+    <>
       <Helmet>
         <title>Loading Application — TSE Oktavian</title>
       </Helmet>
       <PageContainer title="Viewing Application">
-        <WithData
-          slug={`api/applications/${match.params.appid}`}
-          authenticated={true}
-          reloading={state.reloading_application}
-          onSuccess={handleApplicationData}
-          onError={handleError}
-        >
-          <WithData
-            slug={`api/reviews?application=${match.params.appid}`}
-            authenticated={true}
-            reloading={state.reloading_reviews}
-            onSuccess={handleReviewData}
-            onError={handleError}
-          >
-            <Helmet>
-              <title>
-                {`${state.application.name}'s Application — TSE Oktavian`}
-              </title>
-            </Helmet>
-            {state.reloading_application || state.reloading_reviews ? (
-              <></>
-            ) : (
+        <LoadingContainer loading={state.loading}>
+          {state.loading ? (
+            <></>
+          ) : (
+            <>
+              <Helmet>
+                <title>
+                  {`${state.application.name}'s Application — TSE Oktavian`}
+                </title>
+              </Helmet>
               <Grid
                 container
                 spacing={0}
@@ -374,7 +352,10 @@ export default function Application({ match }) {
                             </CardContent>
                           </Card>
                         );
-                      } else if (review.reviewer._id === getUser()._id) {
+                      } else if (
+                        loginState.authenticated &&
+                        review.reviewer._id === loginState.user._id
+                      ) {
                         return (
                           <Card className={classes.card}>
                             <CardContent>
@@ -526,21 +507,17 @@ export default function Application({ match }) {
                     </Button>
                   </DialogActions>
                 </Dialog>
-                <Snackbar
-                  open={state.snack.open}
-                  autoHideDuration={6000}
-                  onClose={handleSnackClose}
-                  message={state.snack.message}
-                />
               </Grid>
-            )}
-          </WithData>
-        </WithData>
+            </>
+          )}
+        </LoadingContainer>
       </PageContainer>
-    </WithAuthentication>
+    </>
   );
-}
+};
 
 Application.propTypes = {
   match: PropTypes.object,
 };
+
+export default withAuthorization(Application, true, ["permit_regular_review"]);

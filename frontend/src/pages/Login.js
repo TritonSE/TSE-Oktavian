@@ -1,18 +1,12 @@
 import React from "react";
-import WithAuthentication from "../components/WithAuthentication";
 import PageContainer from "../components/PageContainer";
 import { Helmet } from "react-helmet";
-import { Link, useHistory } from "react-router-dom";
-import {
-  TextField,
-  Button,
-  Grid,
-  Snackbar,
-  Typography,
-} from "@material-ui/core";
+import { Link } from "react-router-dom";
+import { TextField, Button, Grid, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { setJWT, setUser } from "../services/auth";
-import { sendData } from "../services/data";
+import { useDispatch } from "react-redux";
+import { login, openAlert } from "../actions";
+import { withAuthorization } from "../components/HOC";
 
 const useStyles = makeStyles((theme) => ({
   centered: {
@@ -37,20 +31,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Login() {
+const Login = () => {
   const classes = useStyles();
-  const history = useHistory();
   const [state, setState] = React.useState({
-    // Boilerplate
-    snack: {
-      message: "",
-      open: false,
-    },
-    // User input
-    form_disabled: false,
+    disabled: false,
     email: "",
     password: "",
   });
+  const dispatch = useDispatch();
 
   const handleChange = (prop) => (event) => {
     setState({ ...state, [prop]: event.target.value });
@@ -58,50 +46,31 @@ export default function Login() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setState({ ...state, form_disabled: true });
-    const submission = {
+    setState({ ...state, disabled: true });
+    const body = {
       email: state.email,
       password: state.password,
     };
-    if (submission.password.length < 6) {
+    if (body.password.length < 6) {
+      dispatch(openAlert("Error: Password must be at least 6 characters"));
       setState({
         ...state,
-        form_disabled: false,
-        snack: {
-          message: "Password must be at least 6 characters long.",
-          open: true,
-        },
+        disabled: false,
       });
       return;
     }
-    const { ok, data } = await sendData(
-      "api/auth/login",
-      false,
-      "POST",
-      JSON.stringify(submission)
+    dispatch(
+      login(body, () => {
+        setState({
+          ...state,
+          disabled: false,
+        });
+      })
     );
-    if (ok) {
-      setJWT(data.token);
-      setUser(data.user);
-      history.push("/");
-    } else {
-      setState({
-        ...state,
-        form_disabled: false,
-        snack: { message: `Error: ${data.message}`, open: true },
-      });
-    }
-  };
-
-  const handleSnackClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setState({ ...state, snack: { ...state.snack, open: false } });
   };
 
   return (
-    <WithAuthentication allow={false}>
+    <>
       <Helmet>
         <title>Login — TSE Oktavian</title>
       </Helmet>
@@ -132,21 +101,17 @@ export default function Login() {
                   variant="contained"
                   color="primary"
                   type="submit"
-                  disabled={state.form_disabled}
+                  disabled={state.disabled}
                 >
                   Submit
                 </Button>
               </div>
             </form>
           </Grid>
-          <Snackbar
-            open={state.snack.open}
-            autoHideDuration={6000}
-            onClose={handleSnackClose}
-            message={state.snack.message}
-          />
         </Grid>
       </PageContainer>
-    </WithAuthentication>
+    </>
   );
-}
+};
+
+export default withAuthorization(Login, false);

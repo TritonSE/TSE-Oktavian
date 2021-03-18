@@ -1,13 +1,16 @@
 import React from "react";
-import WithData from "../../components/WithData";
-import WithAuthentication from "../../components/WithAuthentication";
 import PageContainer from "../../components/PageContainer";
+import LoadingContainer from "../../components/LoadingContainer";
+import MaterialTable from "@material-table/core";
 import { Helmet } from "react-helmet";
-import { Grid, Snackbar } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import { Visibility } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
-import MaterialTable from "@material-table/core";
 import { TableIcons } from "../../components/Icons";
+import { useDispatch } from "react-redux";
+import { openAlert } from "../../actions";
+import { getApplications } from "../../services/applications";
+import { withAuthorization } from "../../components/HOC";
 
 const useStyles = makeStyles(() => ({
   grid: {
@@ -15,65 +18,50 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default function Applications() {
+const Applications = () => {
   const classes = useStyles();
   const [state, setState] = React.useState({
-    // Boilerplate
-    snack: {
-      message: "",
-      open: false,
-    },
-    // Initial backend data
-    reloading: true,
+    loading: true,
     applications: [],
   });
+  const dispatch = useDispatch();
 
-  const handleData = (data) => {
-    const applications = data.applications.map((app) => {
-      return {
-        ...app,
-        role: app.role.name,
-        submission: new Date(app.created_at).getFullYear(),
-      };
-    });
-    setState({
-      ...state,
-      reloading: false,
-      applications: applications,
-    });
-  };
-
-  const handleError = (data) => {
-    setState({
-      ...state,
-      snack: {
-        message: `Error: ${data.message}`,
-        open: true,
-      },
-      reloading: false,
-    });
-  };
-
-  const handleSnackClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
+  React.useEffect(() => {
+    const loadData = async () => {
+      let { ok, data } = await getApplications();
+      if (ok) {
+        const applications = data.applications.map((app) => {
+          return {
+            ...app,
+            role: app.role.name,
+            submission: new Date(app.created_at).getFullYear(),
+          };
+        });
+        setState((prev_state) => ({
+          ...prev_state,
+          loading: false,
+          applications: applications,
+        }));
+      } else {
+        dispatch(openAlert(`Error: ${data.message}`));
+        setState((prev_state) => ({
+          ...prev_state,
+          loading: false,
+        }));
+      }
+    };
+    if (state.loading) {
+      loadData();
     }
-    setState({ ...state, snack: { ...state.snack, open: false } });
-  };
+  }, [state.loading, dispatch]);
 
   return (
-    <WithAuthentication allow={true}>
+    <>
       <Helmet>
         <title>All Applications — TSE Oktavian</title>
       </Helmet>
       <PageContainer>
-        <WithData
-          slug="api/applications"
-          authenticated={true}
-          reloading={state.reloading}
-          onSuccess={handleData}
-          onError={handleError}
-        >
+        <LoadingContainer loading={state.loading}>
           <Grid
             container
             spacing={0}
@@ -133,15 +121,11 @@ export default function Applications() {
                 title="All Applications"
               />
             </Grid>
-            <Snackbar
-              open={state.snack.open}
-              autoHideDuration={6000}
-              onClose={handleSnackClose}
-              message={state.snack.message}
-            />
           </Grid>
-        </WithData>
+        </LoadingContainer>
       </PageContainer>
-    </WithAuthentication>
+    </>
   );
-}
+};
+
+export default withAuthorization(Applications, true, ["permit_regular_review"]);

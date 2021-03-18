@@ -1,19 +1,21 @@
 import React from "react";
 import DateFnsUtils from "@date-io/date-fns";
-import WithData from "../../components/WithData";
-import WithAuthentication from "../../components/WithAuthentication";
 import PageContainer from "../../components/PageContainer";
+import LoadingContainer from "../../components/LoadingContainer";
 import { Helmet } from "react-helmet";
 import {
   Card,
   CardContent,
   Grid,
-  Snackbar,
   LinearProgress,
   Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import { useDispatch } from "react-redux";
+import { openAlert } from "../../actions";
+import { getApplicationStats } from "../../services/stats";
+import { withAuthorization } from "../../components/HOC";
 
 const useStyles = makeStyles((theme) => ({
   centered: {
@@ -27,16 +29,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Overview() {
+const Overview = () => {
   const classes = useStyles();
   const [state, setState] = React.useState({
-    // Boilerplate
-    snack: {
-      message: "",
-      open: false,
-    },
     // Initial backend data
-    reloading: true,
+    loading: true,
     stats: null,
     // User input
     start_date: new Date(
@@ -46,36 +43,40 @@ export default function Overview() {
     ),
     end_date: new Date(),
   });
+  const dispatch = useDispatch();
 
-  const handleData = (data) => {
-    const stats = JSON.parse(JSON.stringify(data.stats));
-    setState({ ...state, reloading: false, stats: stats });
-  };
-
-  const handleError = (data) => {
-    setState({
-      ...state,
-      snack: {
-        message: `Error: ${data.message}`,
-        open: true,
-      },
-      reloading: false,
-    });
-  };
+  React.useEffect(() => {
+    const loadData = async () => {
+      let { ok, data } = await getApplicationStats(
+        state.start_date,
+        state.end_date
+      );
+      if (ok) {
+        const stats = JSON.parse(JSON.stringify(data.stats));
+        setState((prev_state) => ({
+          ...prev_state,
+          loading: false,
+          stats: stats,
+        }));
+      } else {
+        dispatch(openAlert(`Error: ${data.message}`));
+        setState((prev_state) => ({
+          ...prev_state,
+          loading: false,
+        }));
+      }
+    };
+    if (state.loading) {
+      loadData();
+    }
+  }, [state.loading, state.start_date, state.end_date, dispatch]);
 
   const handleStartDateChange = (new_date) => {
-    setState({ ...state, start_date: new_date, reloading: true });
+    setState({ ...state, start_date: new_date, loading: true });
   };
 
   const handleEndDateChange = (new_date) => {
-    setState({ ...state, end_date: new_date, reloading: true });
-  };
-
-  const handleSnackClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setState({ ...state, snack: { ...state.snack, open: false } });
+    setState({ ...state, end_date: new_date, loading: true });
   };
 
   const getPositionStats = (role) => {
@@ -103,18 +104,12 @@ export default function Overview() {
   };
 
   return (
-    <WithAuthentication allow={true}>
+    <>
       <Helmet>
         <title>Recruitment — TSE Oktavian</title>
       </Helmet>
       <PageContainer>
-        <WithData
-          slug={`api/stats/applications?start_date=${state.start_date.getTime()}&end_date=${state.end_date.getTime()}`}
-          authenticated={true}
-          reloading={state.reloading}
-          onSuccess={handleData}
-          onError={handleError}
-        >
+        <LoadingContainer loading={state.loading}>
           <Grid
             container
             spacing={0}
@@ -164,15 +159,11 @@ export default function Overview() {
                 </div>
               )}
             </Grid>
-            <Snackbar
-              open={state.snack.open}
-              autoHideDuration={6000}
-              onClose={handleSnackClose}
-              message={state.snack.message}
-            />
           </Grid>
-        </WithData>
+        </LoadingContainer>
       </PageContainer>
-    </WithAuthentication>
+    </>
   );
-}
+};
+
+export default withAuthorization(Overview, true, ["permit_regular_review"]);

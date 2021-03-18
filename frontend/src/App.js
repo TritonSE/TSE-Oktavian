@@ -13,6 +13,7 @@ import NewApplication from "./pages/recruitment/NewApplication";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { createMuiTheme } from "@material-ui/core/styles";
 import { ThemeProvider } from "@material-ui/styles";
+import { Redirect } from "react-router-dom";
 
 const theme = createMuiTheme({
   palette: {
@@ -66,8 +67,11 @@ export default function App() {
           <Route exact={true} path="/recruitment/new-application">
             <NewApplication />
           </Route>
-          <Route path="/">
+          <Route exact={true} path="/">
             <Home />
+          </Route>
+          <Route path="/">
+            <Redirect to="/" />
           </Route>
         </Switch>
       </BrowserRouter>

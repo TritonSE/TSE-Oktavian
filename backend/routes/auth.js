@@ -7,7 +7,7 @@ const {
   forgotPassword,
   resetPassword,
 } = require("../services/users");
-const { authenticateUser } = require("../middleware/auth");
+const { authenticateUser, authorizeUser } = require("../middleware/auth");
 const { validateRequest } = require("../middleware/validation");
 const { JWT_SECRET } = require("../constants");
 
@@ -63,6 +63,12 @@ router.post(
     });
   }
 );
+
+router.get("/me", [authorizeUser([])], function (req, res) {
+  res.status(200).json({
+    user: req.user,
+  });
+});
 
 router.post(
   "/forgot-password",

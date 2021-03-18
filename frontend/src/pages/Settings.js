@@ -3,16 +3,15 @@ import { Helmet } from "react-helmet";
 import {
   TextField,
   Grid,
-  Snackbar,
   Card,
   CardContent,
   Button,
   Typography,
 } from "@material-ui/core";
-import WithAuthentication from "../components/WithAuthentication";
 import PageContainer from "../components/PageContainer";
 import { makeStyles } from "@material-ui/core/styles";
-import { getUser } from "../services/auth";
+import { useSelector } from "react-redux";
+import { withAuthorization } from "../components/HOC";
 
 const useStyles = makeStyles((theme) => ({
   grid: {
@@ -39,33 +38,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Settings() {
+const Settings = () => {
   const classes = useStyles();
   const [state, setState] = React.useState({
-    // Boilerplate
-    snack: {
-      message: "",
-      open: false,
-    },
-    // User input
+    disabled: true,
     old_password: "",
     new_password: "",
     confirm_password: "",
   });
+  const loginState = useSelector((state) => state.login);
 
   const handleChange = (prop) => (event) => {
     setState({ ...state, [prop]: event.target.value });
   };
 
-  const handleSnackClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setState({ ...state, snack: { ...state.snack, open: false } });
-  };
-
   return (
-    <WithAuthentication allow={true}>
+    <>
       <Helmet>
         <title>Settings — TSE Oktavian</title>
       </Helmet>
@@ -86,21 +74,21 @@ export default function Settings() {
                     label="ID"
                     variant="outlined"
                     type="text"
-                    defaultValue={getUser()._id}
+                    defaultValue={loginState.user._id}
                     disabled
                   />
                   <TextField
                     label="Name"
                     variant="outlined"
                     type="text"
-                    defaultValue={getUser().name}
+                    defaultValue={loginState.user.name}
                     disabled
                   />
                   <TextField
                     label="Email"
                     variant="outlined"
                     type="email"
-                    defaultValue={getUser().email}
+                    defaultValue={loginState.user.email}
                     disabled
                   />
                 </form>
@@ -140,7 +128,7 @@ export default function Settings() {
                       variant="contained"
                       color="secondary"
                       type="submit"
-                      disabled
+                      disabled={state.disabled}
                     >
                       Submit
                     </Button>
@@ -149,14 +137,10 @@ export default function Settings() {
               </CardContent>
             </Card>
           </Grid>
-          <Snackbar
-            open={state.snack.open}
-            autoHideDuration={6000}
-            onClose={handleSnackClose}
-            message={state.snack.message}
-          />
         </Grid>
       </PageContainer>
-    </WithAuthentication>
+    </>
   );
-}
+};
+
+export default withAuthorization(Settings, true);

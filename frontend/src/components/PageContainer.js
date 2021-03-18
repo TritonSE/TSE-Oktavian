@@ -12,6 +12,7 @@ import {
   ListItemIcon,
   ListItemText,
   Toolbar,
+  Snackbar,
   Typography,
 } from "@material-ui/core";
 import {
@@ -24,8 +25,9 @@ import {
   RateReview,
 } from "@material-ui/icons";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import { Link, useHistory } from "react-router-dom";
-import { isAuthenticated, getUser, logout } from "../services/auth";
+import { Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { logout, closeAlert } from "../actions";
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
@@ -65,22 +67,30 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// The page container component wraps the main page content and
-// provides the other necessary components surrounding the page:
-// for example, the top navbar, the sidebar, the footer, etc.
+// The PageContainer component is critical and should
+// be present on most pages. It wraps the main components of
+// the page, sets the sidebar and navbar and applies some styling.
 export default function PageContainer({ window, children }) {
-  const history = useHistory();
   const classes = useStyles();
   const theme = useTheme();
   const [state, setState] = React.useState(false);
+  const loginState = useSelector((state) => state.login);
+  const alertState = useSelector((state) => state.alert);
+  const dispatch = useDispatch();
 
   const handleDrawerToggle = () => {
     setState(!state);
   };
 
   const handleLogout = () => {
-    logout();
-    history.push("/");
+    dispatch(logout());
+  };
+
+  const handleSnackClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    dispatch(closeAlert());
   };
 
   const sections = [
@@ -104,9 +114,9 @@ export default function PageContainer({ window, children }) {
         },
       ],
       display:
-        isAuthenticated() &&
-        getUser().role != null &&
-        getUser().role.permit_regular_review,
+        loginState.authenticated &&
+        loginState.user.role != null &&
+        loginState.user.role.permit_regular_review,
     },
     {
       name: "Account",
@@ -120,7 +130,7 @@ export default function PageContainer({ window, children }) {
           text: "Logout",
         },
       ],
-      display: isAuthenticated(),
+      display: loginState.authenticated,
     },
     {
       name: "Account",
@@ -136,7 +146,7 @@ export default function PageContainer({ window, children }) {
           link: "/register",
         },
       ],
-      display: !isAuthenticated(),
+      display: !loginState.authenticated,
     },
   ];
 
@@ -255,6 +265,12 @@ export default function PageContainer({ window, children }) {
         <div className={classes.toolbar} />
         {children}
       </main>
+      <Snackbar
+        open={alertState.open}
+        autoHideDuration={3000}
+        onClose={handleSnackClose}
+        message={alertState.message}
+      />
     </div>
   );
 }
