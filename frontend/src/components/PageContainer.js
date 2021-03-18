@@ -90,7 +90,7 @@ export default function PageContainer({ window, children }) {
     if (reason === "clickaway") {
       return;
     }
-    closeAlert(dispatch);
+    dispatch(closeAlert);
   };
 
   const sections = [
