@@ -79,29 +79,32 @@ const Overview = () => {
     setState({ ...state, end_date: new_date, loading: true });
   };
 
-  const getPositionStats = (role) => {
-    if (state.stats == null || !(role in state.stats)) {
-      return <></>;
-    }
-    return (
-      <Card>
-        <CardContent>
-          <Typography variant="h5" className={classes.title}>
-            {role}
-          </Typography>
-          {Object.keys(state.stats[role]).map((stage) => {
-            const count = state.stats[role][stage];
-            return (
-              <div className={classes.counter} key={`${role}-${stage}`}>
-                <Typography variant="h3">{count}</Typography>
-                <Typography variant="caption">{stage}</Typography>
-              </div>
-            );
-          })}
-        </CardContent>
-      </Card>
+  const position_stats =
+    state.stats == null ? (
+      <></>
+    ) : (
+      Object.entries(state.stats).map(([role, stats]) => {
+        return (
+          <Grid item md={4} xs={12} key={role}>
+            <Card>
+              <CardContent>
+                <Typography variant="h5" className={classes.title}>
+                  {role}
+                </Typography>
+                {Object.entries(stats).map(([stage, count]) => {
+                  return (
+                    <div className={classes.counter} key={`${role}-${stage}`}>
+                      <Typography variant="h3">{count}</Typography>
+                      <Typography variant="caption">{stage}</Typography>
+                    </div>
+                  );
+                })}
+              </CardContent>
+            </Card>
+          </Grid>
+        );
+      })
     );
-  };
 
   return (
     <>
@@ -146,15 +149,7 @@ const Overview = () => {
                     Recruitment Overview
                   </Typography>
                   <Grid container spacing={3}>
-                    <Grid item md={4} xs={12}>
-                      {getPositionStats("Developer")}
-                    </Grid>
-                    <Grid item md={4} xs={12}>
-                      {getPositionStats("Designer")}
-                    </Grid>
-                    <Grid item md={4} xs={12}>
-                      {getPositionStats("Project Manager")}
-                    </Grid>
+                    {position_stats}
                   </Grid>
                 </div>
               )}

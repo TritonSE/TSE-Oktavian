@@ -62,7 +62,7 @@ if (NODE_ENV === "development") {
       console.log("Mock data has been generated.");
     })
     .catch((err) => {
-      console.log("There was an error generating mock data: " + err);
+      console.log("Error generating mock data: " + err);
     });
 }
 
