@@ -70,6 +70,7 @@ export function resolveLogin() {
         dispatch(setLogin(data.user));
       } else {
         console.log("[Login Resolution] User has an invalid token");
+        clearJWT();
         dispatch(clearLogin());
         dispatch(openAlert(`Error: ${data.message}`));
       }
