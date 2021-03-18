@@ -4,6 +4,13 @@ import { LinearProgress } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
 import { resolveLogin } from "../actions";
 
+// The withAuthorization HOC is performs authentication
+// checks on the component that it wraps. It will ensure
+// that the user visited `WrappedComponent` meets the
+// specified authentication `authenticated` criteria as
+// well as the authorization `permissions` criteria. If the
+// user's auth state is still being loaded, it will render a
+// loading bar instead of the component it wraps.
 const withAuthorization = (
   WrappedComponent,
   authenticated,
@@ -31,7 +38,6 @@ const withAuthorization = (
       (authenticated && !loginState.authenticated) ||
       (!authenticated && loginState.authenticated)
     ) {
-      console.log("Authentication check failed.");
       return <Redirect to="/" />;
     }
 
