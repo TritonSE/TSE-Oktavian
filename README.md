@@ -72,7 +72,7 @@ There are several environment variables that must be set for the backend to work
 
 * (required) MONGO_URI = URI pointing to a MongoDB database
 * (optional, defaults to 'tritonse') REGISTER_SECRET = used to only allow members of the executive board to sign up, must be changed in production
-* (optional, defaults to 'keyboard cat') SESSION_SECRET = used to uniquely identifying server sessions, must be changed in production
+* (optional, defaults to 'keyboard cat') JWT_SECRET = used to uniquely identifying tokens, must be changed in production
 * (optional, defaults to '') EMAIL_USERNAME = used for automated emailing, disabled if left empty
 * (optional, defaults to '') EMAIL_PASSWORD = used for automated emailing, disabled if left empty
 
