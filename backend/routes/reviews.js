@@ -57,7 +57,7 @@ router.put(
   [
     authorizeUser(["permit_regular_review"]),
     body("comments").optional().isString(),
-    body("rating").optional().isInt({ min: 0, max: 5 }),
+    body("rating").optional().isFloat({ min: 0, max: 5 }),
     body("completed").optional().isBoolean(),
     body("accepted").optional().isBoolean(),
     validateRequest,
