@@ -64,6 +64,8 @@ if (NODE_ENV === "development") {
     .catch((err) => {
       console.log("Error generating mock data: " + err);
     });
+} else {
+  console.log("Ignoring mock data generation.");
 }
 
 module.exports = app;
