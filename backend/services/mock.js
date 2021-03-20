@@ -26,25 +26,25 @@ async function createMockData() {
 
   // Users
   const public_user = new User({
-    email: "developer@tse.ucsd.edu",
+    email: "developer@example.com",
     password: "password",
-    name: "Test Developer",
+    name: "Example Developer",
     role: public_role._id,
     active: true,
   });
   await public_user.save();
   const private_user = new User({
-    email: "pm@tse.ucsd.edu",
+    email: "pm@example.com",
     password: "password",
-    name: "Test PM",
+    name: "Example PM",
     role: private_role._id,
     active: true,
   });
   await private_user.save();
   const admin_user = new User({
-    email: "president@tse.ucsd.edu",
+    email: "president@example.com",
     password: "password",
-    name: "Test President",
+    name: "Example President",
     role: admin_role._id,
     active: true,
   });
