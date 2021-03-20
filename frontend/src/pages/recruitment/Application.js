@@ -178,6 +178,189 @@ const Application = ({ match }) => {
     }
   };
 
+  const fixedReview = (review) => {
+    return (
+      <Card className={classes.card}>
+        <CardContent>
+          <h3>{review.stage} Stage</h3>
+          {review.completed ? (
+            review.accepted ? (
+              <Chip label="Passed" color="primary" />
+            ) : (
+              <Chip label="Rejected" color="secondary" />
+            )
+          ) : (
+            <Chip label="Incomplete" />
+          )}
+          <form className={classes.form}>
+            <Grid container spacing={3}>
+              <Grid item xs={6}>
+                <TextField
+                  label="Reviewer"
+                  variant="outlined"
+                  type="text"
+                  defaultValue={review.reviewer.name}
+                  disabled
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  label="Rating"
+                  variant="outlined"
+                  type="number"
+                  defaultValue={review.rating}
+                  disabled
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  multiline
+                  label="Comments"
+                  variant="outlined"
+                  type="text"
+                  defaultValue={review.comments}
+                  disabled
+                />
+              </Grid>
+              {state.completed ? (
+                <Grid item xs={12}>
+                  <FormLabel component="legend">
+                    Should this person move on to next stage?
+                  </FormLabel>
+                  <Checkbox
+                    name="accepted"
+                    checked={review.accepted}
+                    disabled
+                  />
+                </Grid>
+              ) : (
+                <></>
+              )}
+            </Grid>
+          </form>
+        </CardContent>
+      </Card>
+    );
+  };
+
+  // const incompleteReview = (review) => {
+  //   return (
+  //     <Card className={classes.card}>
+  //       <CardContent>
+  //         <h3>{review.stage} Stage</h3>
+  //         <Chip label="Incomplete" />
+  //         <form className={classes.form}>
+  //           <Grid container spacing={3}>
+  //             <Grid item xs={6}>
+  //               <TextField
+  //                 label="Reviewer"
+  //                 variant="outlined"
+  //                 type="text"
+  //                 defaultValue={review.reviewer.name}
+  //                 disabled
+  //               />
+  //             </Grid>
+  //             <Grid item xs={6}>
+  //               <TextField
+  //                 label="Rating"
+  //                 variant="outlined"
+  //                 type="number"
+  //                 defaultValue={review.rating}
+  //                 disabled
+  //               />
+  //             </Grid>
+  //             <Grid item xs={12}>
+  //               <TextField
+  //                 multiline
+  //                 label="Comments"
+  //                 variant="outlined"
+  //                 type="text"
+  //                 defaultValue={review.comments}
+  //                 disabled
+  //               />
+  //             </Grid>
+  //             <Grid item xs={12}>
+  //               <FormLabel component="legend">
+  //                 Should this person move on to next stage?
+  //               </FormLabel>
+  //               <Checkbox name="accepted" checked={review.accepted} disabled />
+  //             </Grid>
+  //           </Grid>
+  //         </form>
+  //       </CardContent>
+  //     </Card>
+  //   );
+  // };
+
+  const editableReview = (review) => {
+    return (
+      <Card className={classes.card}>
+        <CardContent>
+          <h3>{review.stage} Stage</h3>
+          <Chip label="Incomplete" />
+          <form className={classes.form}>
+            <Grid container spacing={3}>
+              <Grid item xs={6}>
+                <TextField
+                  label="Reviewer"
+                  variant="outlined"
+                  type="text"
+                  defaultValue={review.reviewer.name}
+                  disabled
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  label="Rating"
+                  variant="outlined"
+                  type="number"
+                  onChange={handleChange("rating")}
+                  defaultValue={state.rating}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  multiline
+                  label="Comments"
+                  variant="outlined"
+                  type="text"
+                  onChange={handleChange("comments")}
+                  defaultValue={state.comments}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <FormLabel component="legend">
+                  Should this person move on to next stage?
+                </FormLabel>
+                <Checkbox
+                  name="accepted"
+                  onChange={handleChecked("accepted")}
+                  checked={state.accepted}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleModalOpen}
+                >
+                  Complete
+                </Button>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={handleSubmit(false)}
+                >
+                  Save for Later
+                </Button>
+              </Grid>
+            </Grid>
+          </form>
+        </CardContent>
+      </Card>
+    );
+  };
+
   return (
     <>
       <Helmet>
@@ -307,172 +490,14 @@ const Application = ({ match }) => {
                     </form>
                     <h2 id="reviews">Reviews</h2>
                     {state.reviews.map((review) => {
-                      if (review.completed) {
-                        return (
-                          <Card className={classes.card}>
-                            <CardContent>
-                              <h3>{review.stage} Stage</h3>
-                              {review.accepted ? (
-                                <Chip label="Passed" color="primary" />
-                              ) : (
-                                <Chip label="Rejected" color="secondary" />
-                              )}
-                              <form className={classes.form}>
-                                <Grid container spacing={3}>
-                                  <Grid item xs={6}>
-                                    <TextField
-                                      label="Reviewer"
-                                      variant="outlined"
-                                      type="text"
-                                      defaultValue={review.reviewer.name}
-                                      disabled
-                                    />
-                                  </Grid>
-                                  <Grid item xs={6}>
-                                    <TextField
-                                      label="Rating"
-                                      variant="outlined"
-                                      type="number"
-                                      defaultValue={review.rating}
-                                      disabled
-                                    />
-                                  </Grid>
-                                  <Grid item xs={12}>
-                                    <TextField
-                                      multiline
-                                      label="Comments"
-                                      variant="outlined"
-                                      type="text"
-                                      defaultValue={review.comments}
-                                      disabled
-                                    />
-                                  </Grid>
-                                </Grid>
-                              </form>
-                            </CardContent>
-                          </Card>
-                        );
-                      } else if (
+                      if (
+                        !review.completed &&
                         loginState.authenticated &&
                         review.reviewer._id === loginState.user._id
                       ) {
-                        return (
-                          <Card className={classes.card}>
-                            <CardContent>
-                              <h3>{review.stage} Stage</h3>
-                              <Chip label="Incomplete" />
-                              <form className={classes.form}>
-                                <Grid container spacing={3}>
-                                  <Grid item xs={6}>
-                                    <TextField
-                                      label="Reviewer"
-                                      variant="outlined"
-                                      type="text"
-                                      defaultValue={review.reviewer.name}
-                                      disabled
-                                    />
-                                  </Grid>
-                                  <Grid item xs={6}>
-                                    <TextField
-                                      label="Rating"
-                                      variant="outlined"
-                                      type="number"
-                                      onChange={handleChange("rating")}
-                                      defaultValue={state.rating}
-                                    />
-                                  </Grid>
-                                  <Grid item xs={12}>
-                                    <TextField
-                                      multiline
-                                      label="Comments"
-                                      variant="outlined"
-                                      type="text"
-                                      onChange={handleChange("comments")}
-                                      defaultValue={state.comments}
-                                    />
-                                  </Grid>
-                                  <Grid item xs={12}>
-                                    <FormLabel component="legend">
-                                      Should this person move on to next stage?
-                                    </FormLabel>
-                                    <Checkbox
-                                      name="accepted"
-                                      onChange={handleChecked("accepted")}
-                                      checked={state.accepted}
-                                    />
-                                  </Grid>
-                                  <Grid item xs={12}>
-                                    <Button
-                                      variant="contained"
-                                      color="primary"
-                                      onClick={handleModalOpen}
-                                    >
-                                      Complete
-                                    </Button>
-                                    <Button
-                                      variant="contained"
-                                      color="secondary"
-                                      onClick={handleSubmit(false)}
-                                    >
-                                      Save for Later
-                                    </Button>
-                                  </Grid>
-                                </Grid>
-                              </form>
-                            </CardContent>
-                          </Card>
-                        );
+                        return editableReview(review);
                       } else {
-                        return (
-                          <Card className={classes.card}>
-                            <CardContent>
-                              <h3>{review.stage} Stage</h3>
-                              <Chip label="Incomplete" />
-                              <form className={classes.form}>
-                                <Grid container spacing={3}>
-                                  <Grid item xs={6}>
-                                    <TextField
-                                      label="Reviewer"
-                                      variant="outlined"
-                                      type="text"
-                                      defaultValue={review.reviewer.name}
-                                      disabled
-                                    />
-                                  </Grid>
-                                  <Grid item xs={6}>
-                                    <TextField
-                                      label="Rating"
-                                      variant="outlined"
-                                      type="number"
-                                      defaultValue={review.rating}
-                                      disabled
-                                    />
-                                  </Grid>
-                                  <Grid item xs={12}>
-                                    <TextField
-                                      multiline
-                                      label="Comments"
-                                      variant="outlined"
-                                      type="text"
-                                      defaultValue={review.comments}
-                                      disabled
-                                    />
-                                  </Grid>
-                                  <Grid item xs={12}>
-                                    <FormLabel component="legend">
-                                      Should this person move on to next stage?
-                                    </FormLabel>
-                                    <Checkbox
-                                      name="accepted"
-                                      checked={review.accepted}
-                                      disabled
-                                    />
-                                  </Grid>
-                                </Grid>
-                              </form>
-                            </CardContent>
-                          </Card>
-                        );
+                        return fixedReview(review);
                       }
                     })}
                   </div>
