@@ -36,21 +36,17 @@ router.get(
   }
 );
 
-router.get(
-  "/:id",
-  authorizeUser(["recruitment"]),
-  (req, res, next) => {
-    getApplication(req.params.id)
-      .then((application) => {
-        res.status(200).json({
-          application: application,
-        });
-      })
-      .catch((err) => {
-        next(err);
+router.get("/:id", authorizeUser(["recruitment"]), (req, res, next) => {
+  getApplication(req.params.id)
+    .then((application) => {
+      res.status(200).json({
+        application: application,
       });
-  }
-);
+    })
+    .catch((err) => {
+      next(err);
+    });
+});
 
 router.post(
   "/",

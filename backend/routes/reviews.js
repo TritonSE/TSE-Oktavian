@@ -36,21 +36,17 @@ router.get("/", authorizeUser(["recruitment"]), (req, res, next) => {
     });
 });
 
-router.get(
-  "/:id",
-  authorizeUser(["recruitment"]),
-  (req, res, next) => {
-    getReview(req.params.id)
-      .then((review) => {
-        res.status(200).json({
-          review: review,
-        });
-      })
-      .catch((err) => {
-        next(err);
+router.get("/:id", authorizeUser(["recruitment"]), (req, res, next) => {
+  getReview(req.params.id)
+    .then((review) => {
+      res.status(200).json({
+        review: review,
       });
-  }
-);
+    })
+    .catch((err) => {
+      next(err);
+    });
+});
 
 router.put(
   "/:id",
