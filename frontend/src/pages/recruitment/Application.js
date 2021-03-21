@@ -4,8 +4,11 @@ import LoadingContainer from "../../components/LoadingContainer";
 import PageContainer from "../../components/PageContainer";
 import { Helmet } from "react-helmet";
 import {
+  FormControl,
+  FormControlLabel,
   FormLabel,
-  Checkbox,
+  RadioGroup,
+  Radio,
   Button,
   TextField,
   Card,
@@ -126,8 +129,8 @@ const Application = ({ match }) => {
     setState({ ...state, [prop]: event.target.value });
   };
 
-  const handleChecked = (prop) => (event) => {
-    setState({ ...state, [prop]: event.target.checked });
+  const handleRadioChange = (prop) => (event) => {
+    setState({ ...state, [prop]: event.target.value === "true" });
   };
 
   const handleModalOpen = () => {
@@ -222,19 +225,34 @@ const Application = ({ match }) => {
                   disabled
                 />
               </Grid>
-              {state.completed ? (
-                <Grid item xs={12}>
-                  <FormLabel component="legend">
-                    Should this person move on to next stage?
-                  </FormLabel>
-                  <Checkbox
-                    name="accepted"
-                    checked={review.accepted}
-                    disabled
-                  />
-                </Grid>
-              ) : (
+              {review.completed ? (
                 <></>
+              ) : (
+                <Grid item xs={12}>
+                  <FormControl>
+                    <FormLabel component="legend">
+                      Should this person move on to next stage?
+                    </FormLabel>
+                    <RadioGroup
+                      aria-label="accepted"
+                      name="accepted"
+                      defaultValue={review.accepted}
+                    >
+                      <FormControlLabel
+                        control={<Radio />}
+                        value={true}
+                        label="Yes"
+                        disabled
+                      />
+                      <FormControlLabel
+                        control={<Radio />}
+                        value={false}
+                        label="No"
+                        disabled
+                      />
+                    </RadioGroup>
+                  </FormControl>
+                </Grid>
               )}
             </Grid>
           </form>
@@ -242,55 +260,6 @@ const Application = ({ match }) => {
       </Card>
     );
   };
-
-  // const incompleteReview = (review) => {
-  //   return (
-  //     <Card className={classes.card}>
-  //       <CardContent>
-  //         <h3>{review.stage} Stage</h3>
-  //         <Chip label="Incomplete" />
-  //         <form className={classes.form}>
-  //           <Grid container spacing={3}>
-  //             <Grid item xs={6}>
-  //               <TextField
-  //                 label="Reviewer"
-  //                 variant="outlined"
-  //                 type="text"
-  //                 defaultValue={review.reviewer.name}
-  //                 disabled
-  //               />
-  //             </Grid>
-  //             <Grid item xs={6}>
-  //               <TextField
-  //                 label="Rating"
-  //                 variant="outlined"
-  //                 type="number"
-  //                 defaultValue={review.rating}
-  //                 disabled
-  //               />
-  //             </Grid>
-  //             <Grid item xs={12}>
-  //               <TextField
-  //                 multiline
-  //                 label="Comments"
-  //                 variant="outlined"
-  //                 type="text"
-  //                 defaultValue={review.comments}
-  //                 disabled
-  //               />
-  //             </Grid>
-  //             <Grid item xs={12}>
-  //               <FormLabel component="legend">
-  //                 Should this person move on to next stage?
-  //               </FormLabel>
-  //               <Checkbox name="accepted" checked={review.accepted} disabled />
-  //             </Grid>
-  //           </Grid>
-  //         </form>
-  //       </CardContent>
-  //     </Card>
-  //   );
-  // };
 
   const editableReview = (review) => {
     return (
@@ -329,14 +298,28 @@ const Application = ({ match }) => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <FormLabel component="legend">
-                  Should this person move on to next stage?
-                </FormLabel>
-                <Checkbox
-                  name="accepted"
-                  onChange={handleChecked("accepted")}
-                  checked={state.accepted}
-                />
+                <FormControl>
+                  <FormLabel component="legend">
+                    Should this person move on to next stage?
+                  </FormLabel>
+                  <RadioGroup
+                    aria-label="accepted"
+                    name="accepted"
+                    value={state.accepted}
+                    onChange={handleRadioChange("accepted")}
+                  >
+                    <FormControlLabel
+                      control={<Radio />}
+                      value={true}
+                      label="Yes"
+                    />
+                    <FormControlLabel
+                      control={<Radio />}
+                      value={false}
+                      label="No"
+                    />
+                  </RadioGroup>
+                </FormControl>
               </Grid>
               <Grid item xs={12}>
                 <Button
