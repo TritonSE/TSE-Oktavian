@@ -116,7 +116,7 @@ export default function PageContainer({ window, children }) {
       display:
         loginState.authenticated &&
         loginState.user.role != null &&
-        loginState.user.role.permit_regular_review,
+        loginState.user.role.permissions.recruitment,
     },
     {
       name: "Account",

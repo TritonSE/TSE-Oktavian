@@ -161,4 +161,4 @@ const Home = () => {
   );
 };
 
-export default withAuthorization(Home, true, ["permit_regular_review"]);
+export default withAuthorization(Home, true, ["recruitment"]);
