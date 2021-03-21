@@ -95,7 +95,7 @@ const NewApplication = () => {
   return (
     <>
       <Helmet>
-        <title>Create Application — TSE Oktavian</title>
+        <title>New Application — TSE Oktavian</title>
       </Helmet>
       <PageContainer>
         <Grid container spacing={0} alignItems="center" justify="center">
