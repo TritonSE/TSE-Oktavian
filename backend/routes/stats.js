@@ -10,7 +10,7 @@ const router = express.Router();
 router.get(
   "/applications",
   [
-    authorizeUser(["permit_regular_review"]),
+    authorizeUser(["recruitment"]),
     query("start_date").notEmpty().isNumeric().toInt(),
     query("end_date").notEmpty().isNumeric().toInt(),
     validateRequest,

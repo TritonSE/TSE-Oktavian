@@ -172,4 +172,4 @@ const Applications = () => {
   );
 };
 
-export default withAuthorization(Applications, true, ["permit_regular_review"]);
+export default withAuthorization(Applications, true, ["recruitment"]);

@@ -46,7 +46,7 @@ const withAuthorization = (
       for (const permission of permissions) {
         if (
           loginState.user.role == null ||
-          loginState.user.role[permission] !== true
+          loginState.user.role.permissions[permission] !== true
         ) {
           return <Redirect to="/" />;
         }

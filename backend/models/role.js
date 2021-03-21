@@ -7,13 +7,14 @@ const Schema = mongoose.Schema;
  * Designer, VP Operations, President.
  *
  * A role also carries certain permissions:
- *  1. permit_regular_review = If true, users who belong to this role can be involved with the
+ *  1. recruitment = If true, users who belong to this role can be involved with the
  *  recruitment process. This grants them access to the recruitment dashboard.
  *    Examples: President, VP ..., Project Manager
- *  2. permit_final_review = If true, users who belong to this role can be involved with the
+ *  2. final_approval = If true, users who belong to this role can be involved with the
  *  final review decision making. This gives them the final say in any application.
+ *  Note that they need the `recruitment` permission to be able to see application details.
  *    Examples: President
- *  3. permit_admin = If true, users who belong to this role can create/edit/delete roles,
+ *  3. admin = If true, users who belong to this role can create/edit/delete roles,
  *  promote/demote/deactivate users, and have access to the administrative dashboard.
  *    Examples: President, VP ...
  *
@@ -28,20 +29,22 @@ module.exports = mongoose.model(
       required: true,
       unique: true,
     },
-    permit_regular_review: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
-    permit_final_review: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
-    permit_admin: {
-      type: Boolean,
-      required: true,
-      default: false,
+    permissions: {
+      recruitment: {
+        type: Boolean,
+        required: true,
+        default: false,
+      },
+      final_approval: {
+        type: Boolean,
+        required: true,
+        default: false,
+      },
+      admin: {
+        type: Boolean,
+        required: true,
+        default: false,
+      },
     },
   })
 );

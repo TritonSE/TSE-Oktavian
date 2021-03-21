@@ -136,4 +136,4 @@ const Assignments = () => {
   );
 };
 
-export default withAuthorization(Assignments, true, ["permit_regular_review"]);
+export default withAuthorization(Assignments, true, ["recruitment"]);

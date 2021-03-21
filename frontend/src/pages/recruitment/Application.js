@@ -528,4 +528,4 @@ Application.propTypes = {
   match: PropTypes.object,
 };
 
-export default withAuthorization(Application, true, ["permit_regular_review"]);
+export default withAuthorization(Application, true, ["recruitment"]);
