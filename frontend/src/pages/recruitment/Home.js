@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Overview = () => {
+const Home = () => {
   const classes = useStyles();
   const [state, setState] = React.useState({
     // Initial backend data
@@ -47,7 +47,7 @@ const Overview = () => {
 
   React.useEffect(() => {
     const loadData = async () => {
-      let { ok, data } = await getApplicationStats(
+      const { ok, data } = await getApplicationStats(
         state.start_date,
         state.end_date
       );
@@ -88,7 +88,7 @@ const Overview = () => {
           <Grid item md={4} xs={12} key={role}>
             <Card>
               <CardContent>
-                <Typography variant="h5" className={classes.title}>
+                <Typography variant="h6" className={classes.title}>
                   {role}
                 </Typography>
                 {Object.entries(stats).map(([stage, count]) => {
@@ -124,7 +124,7 @@ const Overview = () => {
               {state.dates_change ? (
                 <LinearProgress />
               ) : (
-                <div>
+                <>
                   <MuiPickersUtilsProvider utils={DateFnsUtils}>
                     <Grid container spacing={3}>
                       <Grid item md={6} xs={12}>
@@ -145,13 +145,13 @@ const Overview = () => {
                       </Grid>
                     </Grid>
                   </MuiPickersUtilsProvider>
-                  <Typography variant="h4" className={classes.title}>
-                    Recruitment Overview
+                  <Typography variant="h5" className={classes.title}>
+                    Breakdown by Position
                   </Typography>
                   <Grid container spacing={3}>
                     {position_stats}
                   </Grid>
-                </div>
+                </>
               )}
             </Grid>
           </Grid>
@@ -161,4 +161,4 @@ const Overview = () => {
   );
 };
 
-export default withAuthorization(Overview, true, ["permit_regular_review"]);
+export default withAuthorization(Home, true, ["permit_regular_review"]);

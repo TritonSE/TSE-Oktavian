@@ -99,7 +99,7 @@ export default function PageContainer({ window, children }) {
       items: [
         {
           icon: <Dashboard />,
-          text: "Overview",
+          text: "Dashboard",
           link: "/recruitment",
         },
         {
