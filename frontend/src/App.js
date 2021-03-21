@@ -5,7 +5,7 @@ import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import Settings from "./pages/Settings";
-import RecruitmentOverview from "./pages/recruitment/Overview.js";
+import RecruitmentHome from "./pages/recruitment/Home.js";
 import Applications from "./pages/recruitment/Applications";
 import Assignments from "./pages/recruitment/Assignments";
 import Application from "./pages/recruitment/Application";
@@ -50,7 +50,7 @@ export default function App() {
             <Settings />
           </Route>
           <Route exact={true} path="/recruitment">
-            <RecruitmentOverview />
+            <RecruitmentHome />
           </Route>
           <Route exact={true} path="/recruitment/applications">
             <Applications />
@@ -64,7 +64,7 @@ export default function App() {
           <Route exact={true} path="/recruitment/assignments">
             <Assignments />
           </Route>
-          <Route exact={true} path="/recruitment/new-application">
+          <Route exact={true} path="/recruitment/new">
             <NewApplication />
           </Route>
           <Route exact={true} path="/">

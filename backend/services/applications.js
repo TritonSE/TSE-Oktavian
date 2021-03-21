@@ -191,8 +191,13 @@ async function createApplication(raw_application) {
  * Returns a list of JSON objects representing all applications in the system.
  * Can be filtered using options (e.g. to fetch only open applications, etc.)
  */
-async function getAllApplications(options) {
-  return await Application.find({ ...options })
+async function getAllApplications(start_date, end_date) {
+  return await Application.find({
+    created_at: {
+      $gte: start_date,
+      $lte: end_date,
+    },
+  })
     .populate("role")
     .exec();
 }

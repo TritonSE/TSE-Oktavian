@@ -1,7 +1,9 @@
 import React from "react";
+import DateFnsUtils from "@date-io/date-fns";
 import PageContainer from "../../components/PageContainer";
 import LoadingContainer from "../../components/LoadingContainer";
 import MaterialTable from "@material-table/core";
+import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import { Helmet } from "react-helmet";
 import { Grid } from "@material-ui/core";
 import { Visibility } from "@material-ui/icons";
@@ -12,23 +14,37 @@ import { openAlert } from "../../actions";
 import { getApplications } from "../../services/applications";
 import { withAuthorization } from "../../components/HOC";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   grid: {
     textAlign: "center",
+  },
+  dates: {
+    marginBottom: theme.spacing(2),
   },
 }));
 
 const Applications = () => {
   const classes = useStyles();
   const [state, setState] = React.useState({
+    // Initial backend data
     loading: true,
     applications: [],
+    // User input
+    start_date: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth() - 9,
+      new Date().getDate()
+    ),
+    end_date: new Date(),
   });
   const dispatch = useDispatch();
 
   React.useEffect(() => {
     const loadData = async () => {
-      let { ok, data } = await getApplications();
+      const { ok, data } = await getApplications(
+        state.start_date,
+        state.end_date
+      );
       if (ok) {
         const applications = data.applications.map((app) => {
           return {
@@ -53,7 +69,15 @@ const Applications = () => {
     if (state.loading) {
       loadData();
     }
-  }, [state.loading, dispatch]);
+  }, [state.loading, state.start_date, state.end_date, dispatch]);
+
+  const handleStartDateChange = (new_date) => {
+    setState({ ...state, start_date: new_date, loading: true });
+  };
+
+  const handleEndDateChange = (new_date) => {
+    setState({ ...state, end_date: new_date, loading: true });
+  };
 
   return (
     <>
@@ -70,6 +94,26 @@ const Applications = () => {
             className={classes.grid}
           >
             <Grid item xs={12}>
+              <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <Grid container spacing={3} className={classes.dates}>
+                  <Grid item md={6} xs={12}>
+                    <DatePicker
+                      label="Start Date"
+                      format="MM/dd/yyyy"
+                      value={state.start_date}
+                      onChange={handleStartDateChange}
+                    />
+                  </Grid>
+                  <Grid item md={6} xs={12}>
+                    <DatePicker
+                      label="End Date"
+                      format="MM/dd/yyyy"
+                      value={state.end_date}
+                      onChange={handleEndDateChange}
+                    />
+                  </Grid>
+                </Grid>
+              </MuiPickersUtilsProvider>
               <MaterialTable
                 icons={TableIcons}
                 actions={[

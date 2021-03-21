@@ -1,7 +1,7 @@
 const express = require("express");
 const rateLimit = require("express-rate-limit");
-const { body } = require("express-validator");
 
+const { body, query } = require("express-validator");
 const { authorizeUser } = require("../middleware/auth");
 const { validateRequest } = require("../middleware/validation");
 const {
@@ -12,17 +12,29 @@ const {
 
 const router = express.Router();
 
-router.get("/", authorizeUser(["permit_regular_review"]), (req, res, next) => {
-  getAllApplications({})
-    .then((applications) => {
-      res.status(200).json({
-        applications: applications,
+router.get(
+  "/",
+  [
+    authorizeUser(["permit_regular_review"]),
+    query("start_date").notEmpty().isNumeric().toInt(),
+    query("end_date").notEmpty().isNumeric().toInt(),
+    validateRequest,
+  ],
+  (req, res, next) => {
+    getAllApplications(
+      new Date(req.query.start_date),
+      new Date(req.query.end_date)
+    )
+      .then((applications) => {
+        res.status(200).json({
+          applications: applications,
+        });
+      })
+      .catch((err) => {
+        next(err);
       });
-    })
-    .catch((err) => {
-      next(err);
-    });
-});
+  }
+);
 
 router.get(
   "/:id",
