@@ -4,23 +4,29 @@ async function createMockData() {
   // Roles
   const public_role = new Role({
     name: "Developer",
-    permit_regular_review: false,
-    permit_admin: false,
-    permit_final_review: false,
+    permissions: {
+      recruitment: false,
+      admin: false,
+      final_approval: false,
+    },
   });
   await public_role.save();
   const private_role = new Role({
     name: "Project Manager",
-    permit_regular_review: true,
-    permit_admin: false,
-    permit_final_review: false,
+    permissions: {
+      recruitment: true,
+      admin: false,
+      final_approval: false,
+    },
   });
   await private_role.save();
   const admin_role = new Role({
     name: "President",
-    permit_regular_review: true,
-    permit_admin: true,
-    permit_final_review: true,
+    permissions: {
+      recruitment: true,
+      admin: true,
+      final_approval: true,
+    },
   });
   await admin_role.save();
 

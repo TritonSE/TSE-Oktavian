@@ -15,7 +15,7 @@ const router = express.Router();
 router.get(
   "/",
   [
-    authorizeUser(["permit_regular_review"]),
+    authorizeUser(["recruitment"]),
     query("start_date").notEmpty().isNumeric().toInt(),
     query("end_date").notEmpty().isNumeric().toInt(),
     validateRequest,
@@ -38,7 +38,7 @@ router.get(
 
 router.get(
   "/:id",
-  authorizeUser(["permit_regular_review"]),
+  authorizeUser(["recruitment"]),
   (req, res, next) => {
     getApplication(req.params.id)
       .then((application) => {

@@ -128,7 +128,7 @@ const authenticateUser = wrappedAuthenticate(
  *
  * Permissions is a list of fields that must be true with respect to the user's role
  * in order for them to be able to access the protected route. For example, you could
- * enforce that permissions = ['permit_admin'] for admin routes, permissions = ['permit_regular_review']
+ * enforce that permissions = ['admin'] for admin routes, permissions = ['recruitment']
  * for them to be able to access any recruitment information, etc. If this is an empty
  * list, that means no permissions are required.
  */
@@ -140,7 +140,7 @@ const authorizeUser = (permissions) =>
         return;
       }
       for (const permission of permissions) {
-        if (req.user.role == null || !req.user.role[permission]) {
+        if (req.user.role == null || !req.user.role.permissions[permission]) {
           resolve(false);
           return;
         }

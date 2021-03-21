@@ -30,7 +30,7 @@ async function autoAssignApplication(application) {
   const role = application.role;
   let reviewer = null;
   if (application.current_stage === STAGES[STAGES.length - 1]) {
-    // Special case: president(s) make the final decision
+    // Special case: person(s) with `final_approval` permission make the final decision
     const final_reviewers = await User.aggregate([
       {
         $lookup: {
@@ -40,7 +40,7 @@ async function autoAssignApplication(application) {
           as: "role",
         },
       },
-      { $match: { "role.permit_final_review": true } },
+      { $match: { "role.permissions.final_approval": true } },
     ]).exec();
     if (final_reviewers == null || final_reviewers.length === 0) {
       throw ServiceError(
