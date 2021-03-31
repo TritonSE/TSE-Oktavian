@@ -1,5 +1,11 @@
 const { STAGES } = require("../constants");
-const { User, Role, Application, Review, ApplicationPipeline } = require("../models");
+const {
+  User,
+  Role,
+  Application,
+  Review,
+  ApplicationPipeline,
+} = require("../models");
 const { ServiceError } = require("./errors");
 const { sendEmail } = require("./email");
 

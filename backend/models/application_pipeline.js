@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 /**
  * In order for a role to be able to be applied to, it must have an ApplicationPipeline
  * object attached to it. This pipeline determines some of the criteria necessary
- * for applications to be processed. Notably, the pipeline contains a subset of users, 
+ * for applications to be processed. Notably, the pipeline contains a subset of users,
  * who have been assigned to review all of the applications corresponding to the pipeline's role.
  *
  * The basic process looks like such:
