@@ -1,5 +1,5 @@
 const { STAGES } = require("../constants");
-const { User, Role, Application, Review, Committee } = require("../models");
+const { User, Role, Application, Review, ApplicationPipeline } = require("../models");
 const { ServiceError } = require("./errors");
 const { sendEmail } = require("./email");
 
@@ -52,8 +52,8 @@ async function autoAssignApplication(application) {
     reviewer =
       final_reviewers[Math.floor(Math.random() * final_reviewers.length)];
   } else {
-    // Non-special case: find the appropriate committee and make a round-robin decision
-    const committee = await Committee.findOne({ role: role })
+    // Non-special case: find the appropriate pipeline and make a round-robin decision
+    const pipeline = await ApplicationPipeline.findOne({ role: role })
       .populate({
         path: "reviewers",
         populate: {
@@ -61,7 +61,7 @@ async function autoAssignApplication(application) {
         },
       })
       .exec();
-    if (committee == null || committee.reviewers.length === 0) {
+    if (pipeline == null || pipeline.reviewers.length === 0) {
       throw ServiceError(
         400,
         "Unable to auto-assign any reviewer to application"
@@ -76,16 +76,16 @@ async function autoAssignApplication(application) {
     );
     // In the case where no reviewer is new, just use the first person
     let ridx = 0;
-    for (let [i, reviewer] of committee.reviewers.entries()) {
+    for (let [i, reviewer] of pipeline.reviewers.entries()) {
       if (!past_reviewers.has(reviewer._id.toString())) {
         ridx = i;
         break;
       }
     }
-    reviewer = committee.reviewers[ridx];
-    committee.reviewers.splice(ridx, 1);
-    committee.reviewers.push(reviewer);
-    await committee.save();
+    reviewer = pipeline.reviewers[ridx];
+    pipeline.reviewers.splice(ridx, 1);
+    pipeline.reviewers.push(reviewer);
+    await pipeline.save();
   }
   await assignApplication(application, reviewer);
 }
@@ -153,13 +153,13 @@ async function advanceApplication(application, review_accepted) {
  * will be resolved into an actual role by the function.
  */
 async function createApplication(raw_application) {
-  // Users can only apply to valid roles with a committee attached to them
+  // Users can only apply to valid roles with a pipeline attached to them
   let role = await Role.findOne({ name: raw_application.role }).exec();
   if (role == null) {
     throw ServiceError(400, "Invalid application role");
   }
-  let committee = await Committee.findOne({ role: role._id }).exec();
-  if (committee == null) {
+  let pipeline = await ApplicationPipeline.findOne({ role: role._id }).exec();
+  if (pipeline == null) {
     throw ServiceError(400, "Invalid application role");
   }
   raw_application.role = role;

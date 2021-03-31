@@ -2,7 +2,7 @@ const Application = require("./application");
 const Review = require("./review");
 const User = require("./user");
 const Role = require("./role");
-const Committee = require("./committee");
+const ApplicationPipeline = require("./application_pipeline");
 const PasswordReset = require("./password_reset");
 
 module.exports = {
@@ -13,5 +13,5 @@ module.exports = {
   // Recruitment
   Application,
   Review,
-  Committee,
+  ApplicationPipeline,
 };
