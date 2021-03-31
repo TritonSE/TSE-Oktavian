@@ -1,4 +1,4 @@
-const { User, Role, Committee } = require("../models");
+const { User, Role, ApplicationPipeline } = require("../models");
 
 async function createMockData() {
   // Roles
@@ -57,11 +57,11 @@ async function createMockData() {
   await admin_user.save();
 
   // Commitees
-  const public_committee = new Committee({
+  const public_pipeline = new ApplicationPipeline({
     role: public_role._id,
     reviewers: [private_user._id, admin_user._id],
   });
-  await public_committee.save();
+  await public_pipeline.save();
 }
 
 module.exports = {

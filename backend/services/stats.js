@@ -1,5 +1,5 @@
 const { STAGES } = require("../constants");
-const { Application, Committee } = require("../models");
+const { Application, ApplicationPipeline } = require("../models");
 
 /**
  * Returns statistics related to the number of applications
@@ -7,8 +7,8 @@ const { Application, Committee } = require("../models");
  * was created, not necessarily updated.
  */
 async function getApplicationStats(start_date, end_date) {
-  const committees = await Committee.find().populate("role").exec();
-  const roles = committees.map((committee) => committee.role);
+  const pipelines = await ApplicationPipeline.find().populate("role").exec();
+  const roles = pipelines.map((pipeline) => pipeline.role);
   const stats = {};
   for (const role of roles) {
     const criteria = {
