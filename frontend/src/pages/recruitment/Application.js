@@ -99,6 +99,8 @@ const Application = ({ match }) => {
       }
       const reviews = data2.reviews.map((review) => {
         return { ...review, created_at: new Date(review.created_at) };
+      }).sort((a, b) => {
+        return b.created_at - a.created_at
       });
       const updates = {
         loading: false,
