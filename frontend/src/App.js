@@ -8,7 +8,7 @@ import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import Settings from "./pages/Settings";
-import RecruitmentHome from "./pages/recruitment/Home.js";
+import RecruitmentHome from "./pages/recruitment/Home";
 import Applications from "./pages/recruitment/Applications";
 import Assignments from "./pages/recruitment/Assignments";
 import Application from "./pages/recruitment/Application";

@@ -74,7 +74,7 @@ const NewApplication = () => {
       name: state.name,
       email: state.email,
       role: state.role,
-      graduation: parseInt(state.graduation),
+      graduation: parseInt(state.graduation, 10),
       resume: state.resume,
       about: state.about,
       why: state.why,

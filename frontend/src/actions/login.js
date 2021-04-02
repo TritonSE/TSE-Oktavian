@@ -9,6 +9,14 @@ export const ACTION_LOGOUT = "login/logout";
 export const ACTION_SET_LOGIN = "login/set";
 export const ACTION_CLEAR_LOGIN = "login/clear";
 
+export function setLogin(user) {
+  return { type: ACTION_SET_LOGIN, user };
+}
+
+export function clearLogin() {
+  return { type: ACTION_CLEAR_LOGIN };
+}
+
 export function login(credentials, callback) {
   return async (dispatch) => {
     if (hasJWT()) {
@@ -75,12 +83,4 @@ export function resolveLogin() {
       dispatch(clearLogin());
     }
   };
-}
-
-export function setLogin(user) {
-  return { type: ACTION_SET_LOGIN, user };
-}
-
-export function clearLogin() {
-  return { type: ACTION_CLEAR_LOGIN };
 }

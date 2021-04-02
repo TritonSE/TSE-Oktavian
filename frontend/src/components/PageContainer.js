@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import {
   AppBar,
   CssBaseline,
@@ -66,8 +65,8 @@ export default function PageContainer({ window, children }) {
   const classes = useStyles();
   const theme = useTheme();
   const [state, setState] = React.useState(false);
-  const loginState = useSelector((state) => state.login);
-  const alertState = useSelector((state) => state.alert);
+  const loginState = useSelector((lstate) => lstate.login);
+  const alertState = useSelector((astate) => astate.alert);
   const dispatch = useDispatch();
 
   const handleDrawerToggle = () => {
@@ -250,8 +249,3 @@ export default function PageContainer({ window, children }) {
     </div>
   );
 }
-
-PageContainer.propTypes = {
-  children: PropTypes.any,
-  window: PropTypes.instanceOf(window.constructor),
-};

@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Helmet } from "react-helmet";
 import {
   FormControl,
@@ -68,7 +67,7 @@ const Application = ({ match }) => {
     rating: "",
     accepted: false,
   });
-  const loginState = useSelector((state) => state.login);
+  const loginState = useSelector((lstate) => lstate.login);
   const dispatch = useDispatch();
 
   React.useEffect(() => {
@@ -177,69 +176,75 @@ const Application = ({ match }) => {
     }
   };
 
-  const fixedReview = (review) => (
-    <Card className={classes.card}>
-      <CardContent>
-        <h3>{review.stage} Stage</h3>
-        {review.completed ? (
-          review.accepted ? (
-            <Chip label="Passed" color="primary" />
-          ) : (
-            <Chip label="Rejected" color="secondary" />
-          )
-        ) : (
-          <Chip label="Incomplete" />
-        )}
-        <form className={classes.form}>
-          <Grid container spacing={3}>
-            <Grid item xs={6}>
-              <TextField
-                label="Reviewer"
-                variant="outlined"
-                type="text"
-                defaultValue={review.reviewer.name}
-                disabled
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                label="Rating"
-                variant="outlined"
-                type="number"
-                defaultValue={review.rating}
-                disabled
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                multiline
-                label="Comments"
-                variant="outlined"
-                type="text"
-                defaultValue={review.comments}
-                disabled
-              />
-            </Grid>
-            {review.completed ? (
-              <></>
-            ) : (
-              <Grid item xs={12}>
-                <FormControl>
-                  <FormLabel component="legend">
-                    Should this person move on to next stage?
-                  </FormLabel>
-                  <RadioGroup aria-label="accepted" name="accepted" defaultValue={review.accepted}>
-                    <FormControlLabel control={<Radio />} value label="Yes" disabled />
-                    <FormControlLabel control={<Radio />} value={false} label="No" disabled />
-                  </RadioGroup>
-                </FormControl>
+  const fixedReview = (review) => {
+    let review_status;
+    if (!review.completed) {
+      review_status = <Chip label="Incomplete" />;
+    } else if (!review.accepted) {
+      review_status = <Chip label="Rejected" color="secondary" />;
+    } else {
+      review_status = <Chip label="Passed" color="primary" />;
+    }
+    return (
+      <Card className={classes.card}>
+        <CardContent>
+          <h3>{review.stage} Stage</h3>
+          {review_status}
+          <form className={classes.form}>
+            <Grid container spacing={3}>
+              <Grid item xs={6}>
+                <TextField
+                  label="Reviewer"
+                  variant="outlined"
+                  type="text"
+                  defaultValue={review.reviewer.name}
+                  disabled
+                />
               </Grid>
-            )}
-          </Grid>
-        </form>
-      </CardContent>
-    </Card>
-  );
+              <Grid item xs={6}>
+                <TextField
+                  label="Rating"
+                  variant="outlined"
+                  type="number"
+                  defaultValue={review.rating}
+                  disabled
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  multiline
+                  label="Comments"
+                  variant="outlined"
+                  type="text"
+                  defaultValue={review.comments}
+                  disabled
+                />
+              </Grid>
+              {review.completed ? (
+                <></>
+              ) : (
+                <Grid item xs={12}>
+                  <FormControl>
+                    <FormLabel component="legend">
+                      Should this person move on to next stage?
+                    </FormLabel>
+                    <RadioGroup
+                      aria-label="accepted"
+                      name="accepted"
+                      defaultValue={review.accepted}
+                    >
+                      <FormControlLabel control={<Radio />} value label="Yes" disabled />
+                      <FormControlLabel control={<Radio />} value={false} label="No" disabled />
+                    </RadioGroup>
+                  </FormControl>
+                </Grid>
+              )}
+            </Grid>
+          </form>
+        </CardContent>
+      </Card>
+    );
+  };
 
   const editableReview = (review) => (
     <Card className={classes.card}>
@@ -304,6 +309,15 @@ const Application = ({ match }) => {
     </Card>
   );
 
+  let application_status;
+  if (!state.application.completed) {
+    application_status = <Chip label="In review" />;
+  } else if (!state.application.accepted) {
+    application_status = <Chip label="Rejected" color="secondary" />;
+  } else {
+    application_status = <Chip label="Accepted" color="primary" />;
+  }
+
   return (
     <>
       <Helmet>
@@ -332,15 +346,7 @@ const Application = ({ match }) => {
                         state.application.role.name
                       } Application`}
                     </h2>
-                    {state.application.completed ? (
-                      state.application.accepted ? (
-                        <Chip label="Accepted" color="primary" />
-                      ) : (
-                        <Chip label="Rejected" color="secondary" />
-                      )
-                    ) : (
-                      <Chip label="In review" />
-                    )}
+                    {application_status}
                     <form className={classes.form}>
                       <Grid container spacing={3}>
                         <Grid item xs={6}>
@@ -472,10 +478,6 @@ const Application = ({ match }) => {
       </PageContainer>
     </>
   );
-};
-
-Application.propTypes = {
-  match: PropTypes.object,
 };
 
 export default withAuthorization(Application, true, ["recruitment"]);

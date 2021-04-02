@@ -22,6 +22,9 @@ const generalRules = {
       varsIgnorePattern: "^_",
     },
   ],
+
+  // Not necessary for some APIs (consistency reasons)
+  "import/prefer-default-export": "off",
 };
 
 const reactRules = {

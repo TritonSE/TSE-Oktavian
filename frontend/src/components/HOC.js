@@ -48,7 +48,9 @@ const withAuthorization = (WrappedComponent, authenticated, permissions = [], ig
     }
   }
 
+  /* eslint-disable react/jsx-props-no-spreading */
   return <WrappedComponent {...props} />;
+  /* eslint-enable react/jsx-props-no-spreading */
 };
 
 export { withAuthorization };

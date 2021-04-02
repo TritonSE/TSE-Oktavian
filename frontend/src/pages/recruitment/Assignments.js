@@ -25,7 +25,7 @@ const Assignments = () => {
     applications: [],
   });
   const dispatch = useDispatch();
-  const loginState = useSelector((state) => state.login);
+  const loginState = useSelector((lstate) => lstate.login);
 
   React.useEffect(() => {
     const loadData = async () => {

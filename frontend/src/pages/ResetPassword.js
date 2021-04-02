@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Helmet } from "react-helmet";
 import { useHistory } from "react-router-dom";
 import { TextField, Button, Grid, Typography } from "@material-ui/core";
@@ -122,10 +121,6 @@ const ResetPassword = ({ match }) => {
       </PageContainer>
     </>
   );
-};
-
-ResetPassword.propTypes = {
-  match: PropTypes.object,
 };
 
 export default withAuthorization(ResetPassword, false);

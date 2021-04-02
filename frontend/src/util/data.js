@@ -16,7 +16,7 @@ async function getData(slug, authenticated) {
   if (authenticated) {
     headers.Authorization = `Bearer ${getJWT()}`;
   }
-  return await makeRequest(slug, {
+  return makeRequest(slug, {
     headers,
   });
 }
@@ -28,7 +28,7 @@ async function sendData(slug, authenticated, method, body) {
   if (authenticated) {
     headers.Authorization = `Bearer ${getJWT()}`;
   }
-  return await makeRequest(slug, {
+  return makeRequest(slug, {
     method,
     headers,
     body,

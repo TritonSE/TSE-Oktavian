@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 
 import { LinearProgress } from "@material-ui/core";
 
@@ -12,8 +11,3 @@ export default function LoadingContainer({ children, loading }) {
   }
   return <>{children}</>;
 }
-
-LoadingContainer.propTypes = {
-  children: PropTypes.any,
-  loading: PropTypes.bool,
-};

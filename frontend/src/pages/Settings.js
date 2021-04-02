@@ -39,7 +39,7 @@ const Settings = () => {
     new_password: "",
     confirm_password: "",
   });
-  const loginState = useSelector((state) => state.login);
+  const loginState = useSelector((lstate) => lstate.login);
 
   const handleChange = (prop) => (event) => {
     setState({ ...state, [prop]: event.target.value });
