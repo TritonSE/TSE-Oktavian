@@ -71,7 +71,7 @@ async function updateReview(raw_review, submitter) {
  * Can be filtered using options (e.g. to fetch only open reviews, etc.)
  */
 async function getUserReviews(user_id, options) {
-  return await Review.find({ reviewer: user_id, ...options })
+  return Review.find({ reviewer: user_id, ...options })
     .populate({
       path: "application",
       populate: {
@@ -92,7 +92,7 @@ async function getUserReviews(user_id, options) {
  * Can be filtered using options (e.g. to fetch only open reviews, etc.)
  */
 async function getApplicationReviews(application_id, options) {
-  return await Review.find({ application: application_id, ...options })
+  return Review.find({ application: application_id, ...options })
     .populate({
       path: "application",
       populate: {
@@ -112,7 +112,7 @@ async function getApplicationReviews(application_id, options) {
  * Returns a JSON object representing a review given an ID.
  */
 async function getReview(review_id) {
-  return await Review.findOne({ _id: review_id })
+  return Review.findOne({ _id: review_id })
     .populate({
       path: "application",
       populate: {

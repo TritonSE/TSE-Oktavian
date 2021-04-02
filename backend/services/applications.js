@@ -67,8 +67,8 @@ async function autoAssignApplication(application) {
     const past_reviewers = new Set(past_reviews.map((review) => review.reviewer.toString()));
     // In the case where no reviewer is new, just use the first person
     let ridx = 0;
-    for (const [i, reviewer] of pipeline.reviewers.entries()) {
-      if (!past_reviewers.has(reviewer._id.toString())) {
+    for (const [i, r] of pipeline.reviewers.entries()) {
+      if (!past_reviewers.has(r._id.toString())) {
         ridx = i;
         break;
       }
@@ -87,6 +87,7 @@ async function autoAssignApplication(application) {
  * imply a final acceptance or another review (with the stage advanced).
  */
 async function advanceApplication(application, review_accepted) {
+  /* eslint-disable no-param-reassign */
   const old_completed = application.completed;
   const old_accepted = application.accepted;
   const old_stage = application.current_stage;
@@ -129,6 +130,7 @@ async function advanceApplication(application, review_accepted) {
       throw err;
     }
   }
+  /* eslint-enable no-param-reassign */
 }
 
 /*
@@ -150,16 +152,15 @@ async function createApplication(raw_application) {
   if (pipeline == null) {
     throw ServiceError(400, "Invalid application role");
   }
-  raw_application.role = role;
   let application = await Application.findOne({
-    role: raw_application.role._id,
+    role: role._id,
     email: raw_application.email,
     completed: false,
   }).exec();
   if (application != null) {
     throw ServiceError(400, "Previous application is still in review");
   }
-  application = new Application(raw_application);
+  application = new Application({ ...raw_application, role });
   await application.save();
   try {
     await autoAssignApplication(application);
@@ -170,7 +171,7 @@ async function createApplication(raw_application) {
   }
   await sendEmail("applicant-confirmation", raw_application.email, {
     name: raw_application.name,
-    role: raw_application.role,
+    role,
   });
   return application;
 }
@@ -180,7 +181,7 @@ async function createApplication(raw_application) {
  * Can be filtered using options (e.g. to fetch only open applications, etc.)
  */
 async function getAllApplications(start_date, end_date) {
-  return await Application.find({
+  return Application.find({
     created_at: {
       $gte: start_date,
       $lte: end_date,
@@ -194,7 +195,7 @@ async function getAllApplications(start_date, end_date) {
  * Returns a JSON object representing an application given an ID.
  */
 async function getApplication(application_id) {
-  return await Application.findOne({ _id: application_id }).populate("role").exec();
+  return Application.findOne({ _id: application_id }).populate("role").exec();
 }
 
 module.exports = {

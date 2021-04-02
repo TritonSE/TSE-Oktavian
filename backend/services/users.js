@@ -10,11 +10,12 @@ async function createUser(raw_user) {
   if (raw_user.secret !== REGISTER_SECRET) {
     throw ServiceError(403, "Invalid secret value");
   }
-  delete raw_user.secret;
   if (user) {
     throw ServiceError(409, "Email already taken");
   }
-  user = new User(raw_user);
+  const raw_user_no_secret = { ...raw_user };
+  delete raw_user_no_secret.secret;
+  user = new User(raw_user_no_secret);
   await user.save();
   return user;
 }

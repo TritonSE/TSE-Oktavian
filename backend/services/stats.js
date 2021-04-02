@@ -10,6 +10,7 @@ async function getApplicationStats(start_date, end_date) {
   const pipelines = await ApplicationPipeline.find().populate("role").exec();
   const roles = pipelines.map((pipeline) => pipeline.role);
   const stats = {};
+  /* eslint-disable no-await-in-loop */
   for (const role of roles) {
     const criteria = {
       role,
@@ -37,6 +38,7 @@ async function getApplicationStats(start_date, end_date) {
       accepted: false,
     }).exec();
   }
+  /* eslint-enable no-await-in-loop */
   return stats;
 }
 

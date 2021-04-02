@@ -95,7 +95,7 @@ const wrappedAuthenticate = (type, options, authorization) => (req, res, next) =
         message: "You do not have the necessary permissions",
       });
     }
-    next();
+    return next();
   })(req, res, next);
 };
 
