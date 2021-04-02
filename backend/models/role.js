@@ -8,16 +8,15 @@ const { Schema } = mongoose;
  * Designer, VP Operations, President.
  *
  * A role also carries certain permissions:
- *  1. recruitment = If true, users who belong to this role can be involved with the
+ *  1. roster = If true, users who belong to this role can view the organization
+ *  roster. This grants them access to other users' profiles & the global roster list.
+ *  2. recruitment = If true, users who belong to this role can be involved with the
  *  recruitment process. This grants them access to the recruitment dashboard.
- *    Examples: President, VP ..., Project Manager
- *  2. final_approval = If true, users who belong to this role can be involved with the
+ *  3. final_approval = If true, users who belong to this role can be involved with the
  *  final review decision making. This gives them the final say in any application.
  *  Note that they need the `recruitment` permission to be able to see application details.
- *    Examples: President
- *  3. admin = If true, users who belong to this role can create/edit/delete roles,
+ *  4. admin = If true, users who belong to this role can create/edit/delete roles,
  *  promote/demote/deactivate users, and have access to the administrative dashboard.
- *    Examples: President, VP ...
  *
  *  Almost all critical objects refer to a role. Users have a role that they belong to,
  *  and applications also refer to a role (the position they are applying for).
@@ -31,6 +30,11 @@ module.exports = mongoose.model(
       unique: true,
     },
     permissions: {
+      roster: {
+        type: Boolean,
+        required: true,
+        default: false,
+      },
       recruitment: {
         type: Boolean,
         required: true,
