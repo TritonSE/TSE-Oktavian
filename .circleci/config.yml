@@ -1,37 +1,23 @@
 version: 2.1
 orbs:
   heroku: circleci/heroku@1.2.5
-executors:
-  tmp-executor:
-    working_directory: ~/tmp
-    docker: 
-      - image: circleci/node:14
-jobs: 
-  lint:
-    executor: tmp-executor
-    steps: 
-      - checkout
-      - run:
-          name: Installing latest version of NPM
-          command: 'sudo npm install -g npm@latest'
-      - run:
-          name: Installing backend dependencies
-          command: 'npm install --prefix backend'
-      - run:
-          name: Installing frontend dependencies
-          command: 'npm install --prefix frontend'
-      - run:
-          name: Running ESLint & Prettier
-          command: 'npm run lint'
+  node: circleci/node@4.2.0
 workflows:
   lint-deploy:
     jobs:
-      # The linter can be run for every branch
-      - lint
+      - node/test:
+          name: Backend lint and style check
+          app-dir: backend
+          run-command: lint-check
+      - node/test:
+          name: Frontend lint and style check
+          app-dir: frontend
+          run-command: lint-check
       # Deployment only occurs for the main branch
       - heroku/deploy-via-git:
           requires:
-            - lint
+            - Backend lint and style check
+            - Frontend lint and style check
           filters:
             branches:
               only: main
