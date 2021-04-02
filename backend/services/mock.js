@@ -5,6 +5,7 @@ async function createMockData() {
   const public_role = new Role({
     name: "Developer",
     permissions: {
+      roster: true,
       recruitment: false,
       admin: false,
       final_approval: false,
@@ -14,6 +15,7 @@ async function createMockData() {
   const private_role = new Role({
     name: "Project Manager",
     permissions: {
+      roster: true,
       recruitment: true,
       admin: false,
       final_approval: false,
@@ -23,6 +25,7 @@ async function createMockData() {
   const admin_role = new Role({
     name: "President",
     permissions: {
+      roster: true,
       recruitment: true,
       admin: true,
       final_approval: true,
