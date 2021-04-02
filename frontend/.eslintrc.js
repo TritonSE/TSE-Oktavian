@@ -98,12 +98,11 @@ function generateRules() {
   return rules;
 }
 
-const rules = generateRules();
-
 if (process.env.NODE_ENV === "production") {
   // Solves issues with Heroku not installing dev-dependencies
   module.exports = {};
 } else {
+  const rules = generateRules();
   module.exports = {
     settings: {
       react: {
