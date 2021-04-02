@@ -4,24 +4,30 @@
   "author": "Triton Software Engineering <tse@ucsd.edu>",
   "private": true,
   "dependencies": {
+    "@date-io/date-fns": "^1.3.13",
     "@material-table/core": "^2.3.26",
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
+    "@material-ui/pickers": "^3.3.10",
+    "@material-ui/styles": "^4.11.3",
     "prop-types": "^15.7.2",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-helmet": "^6.1.0",
     "react-redux": "^7.2.2",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "3.4.3",
+    "react-scripts": "4.0.3",
+    "redux": "^4.0.5",
     "redux-thunk": "^2.3.0"
   },
   "scripts": {
     "start": "node --max_old_space_size=4096 node_modules/.bin/react-scripts start",
     "build": "node --max_old_space_size=4096 node_modules/.bin/react-scripts build",
-    "lint": "npx eslint . && npx prettier --check .",
-    "format": "npx prettier --write .",
-    "watch": "cra-build-watch -b ../backend/public"
+    "lint": "eslint --fix --cache --report-unused-disable-directives . && prettier --write .",
+    "format": "prettier --write .",
+    "watch": "cra-build-watch -b ../backend/public",
+    "lint-check": "eslint --cache --report-unused-disable-directives . && prettier --check .",
+    "prepare": "cd .. && husky install .husky"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -39,7 +45,13 @@
     ]
   },
   "devDependencies": {
+    "@babel/eslint-parser": "^7.13.14",
     "cra-build-watch": "^3.4.0",
-    "prettier": "2.2.1"
+    "eslint": "^7.23.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-react": "^7.23.1",
+    "husky": "^6.0.0",
+    "prettier": "^2.2.1"
   }
 }

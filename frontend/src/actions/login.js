@@ -1,8 +1,4 @@
-import {
-  login as loginRequest,
-  register as registerRequest,
-  me,
-} from "../services/auth";
+import { login as loginRequest, register as registerRequest, me } from "../services/auth";
 import { clearJWT, hasJWT, setJWT } from "../util/jwt";
 import { openAlert } from "./alert";
 
@@ -12,6 +8,14 @@ export const ACTION_RESOLVE = "login/resolve";
 export const ACTION_LOGOUT = "login/logout";
 export const ACTION_SET_LOGIN = "login/set";
 export const ACTION_CLEAR_LOGIN = "login/clear";
+
+export function setLogin(user) {
+  return { type: ACTION_SET_LOGIN, user };
+}
+
+export function clearLogin() {
+  return { type: ACTION_CLEAR_LOGIN };
+}
 
 export function login(credentials, callback) {
   return async (dispatch) => {
@@ -79,12 +83,4 @@ export function resolveLogin() {
       dispatch(clearLogin());
     }
   };
-}
-
-export function setLogin(user) {
-  return { type: ACTION_SET_LOGIN, user: user };
-}
-
-export function clearLogin() {
-  return { type: ACTION_CLEAR_LOGIN };
 }

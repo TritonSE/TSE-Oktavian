@@ -1,19 +1,18 @@
 import React from "react";
+import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
+import { createMuiTheme } from "@material-ui/core/styles";
+import { ThemeProvider } from "@material-ui/styles";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import Settings from "./pages/Settings";
-import RecruitmentHome from "./pages/recruitment/Home.js";
+import RecruitmentHome from "./pages/recruitment/Home";
 import Applications from "./pages/recruitment/Applications";
 import Assignments from "./pages/recruitment/Assignments";
 import Application from "./pages/recruitment/Application";
 import NewApplication from "./pages/recruitment/NewApplication";
-import { BrowserRouter, Switch, Route } from "react-router-dom";
-import { createMuiTheme } from "@material-ui/core/styles";
-import { ThemeProvider } from "@material-ui/styles";
-import { Redirect } from "react-router-dom";
 
 const theme = createMuiTheme({
   palette: {
@@ -31,43 +30,39 @@ export default function App() {
     <ThemeProvider theme={theme}>
       <BrowserRouter>
         <Switch>
-          <Route exact={true} path="/login">
+          <Route exact path="/login">
             <Login />
           </Route>
-          <Route exact={true} path="/register">
+          <Route exact path="/register">
             <Register />
           </Route>
-          <Route exact={true} path="/forgot-password">
+          <Route exact path="/forgot-password">
             <ForgotPassword />
           </Route>
           <Route
             path="/reset-password/:token"
-            component={({ match }) => {
-              return <ResetPassword match={match} />;
-            }}
+            component={({ match }) => <ResetPassword match={match} />}
           />
-          <Route exact={true} path="/settings">
+          <Route exact path="/settings">
             <Settings />
           </Route>
-          <Route exact={true} path="/recruitment">
+          <Route exact path="/recruitment">
             <RecruitmentHome />
           </Route>
-          <Route exact={true} path="/recruitment/applications">
+          <Route exact path="/recruitment/applications">
             <Applications />
           </Route>
           <Route
             path="/recruitment/application/:appid"
-            component={({ match }) => {
-              return <Application match={match} />;
-            }}
+            component={({ match }) => <Application match={match} />}
           />
-          <Route exact={true} path="/recruitment/assignments">
+          <Route exact path="/recruitment/assignments">
             <Assignments />
           </Route>
-          <Route exact={true} path="/recruitment/new">
+          <Route exact path="/recruitment/new">
             <NewApplication />
           </Route>
-          <Route exact={true} path="/">
+          <Route exact path="/">
             <Home />
           </Route>
           <Route path="/">

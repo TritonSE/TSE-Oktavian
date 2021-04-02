@@ -9,21 +9,11 @@ export async function register(body) {
 }
 
 export async function forgotPassword(body) {
-  return sendData(
-    "api/auth/forgot-password",
-    false,
-    "POST",
-    JSON.stringify(body)
-  );
+  return sendData("api/auth/forgot-password", false, "POST", JSON.stringify(body));
 }
 
 export async function resetPassword(body) {
-  return sendData(
-    "api/auth/reset-password",
-    false,
-    "POST",
-    JSON.stringify(body)
-  );
+  return sendData("api/auth/reset-password", false, "POST", JSON.stringify(body));
 }
 
 export async function me() {

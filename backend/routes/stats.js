@@ -16,13 +16,10 @@ router.get(
     validateRequest,
   ],
   (req, res, next) => {
-    getApplicationStats(
-      new Date(req.query.start_date),
-      new Date(req.query.end_date)
-    )
+    getApplicationStats(new Date(req.query.start_date), new Date(req.query.end_date))
       .then((stats) => {
         res.status(200).json({
-          stats: stats,
+          stats,
         });
       })
       .catch((err) => {

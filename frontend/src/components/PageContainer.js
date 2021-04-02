@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import {
   AppBar,
   CssBaseline,
@@ -15,15 +14,7 @@ import {
   Snackbar,
   Typography,
 } from "@material-ui/core";
-import {
-  Menu,
-  ExitToApp,
-  Face,
-  Dashboard,
-  Settings,
-  Inbox,
-  RateReview,
-} from "@material-ui/icons";
+import { Menu, ExitToApp, Face, Dashboard, Settings, Inbox, RateReview } from "@material-ui/icons";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -74,8 +65,8 @@ export default function PageContainer({ window, children }) {
   const classes = useStyles();
   const theme = useTheme();
   const [state, setState] = React.useState(false);
-  const loginState = useSelector((state) => state.login);
-  const alertState = useSelector((state) => state.alert);
+  const loginState = useSelector((lstate) => lstate.login);
+  const alertState = useSelector((astate) => astate.alert);
   const dispatch = useDispatch();
 
   const handleDrawerToggle = () => {
@@ -153,17 +144,13 @@ export default function PageContainer({ window, children }) {
   const drawer = (
     <div>
       <div className={classes.toolbar} />
-      {sections.map((section) => {
-        return section.display ? (
+      {sections.map((section) =>
+        section.display ? (
           <>
             <Divider />
             <List key={section.name}>
               <ListItem>
-                <Typography
-                  color="textSecondary"
-                  display="block"
-                  variant="caption"
-                >
+                <Typography color="textSecondary" display="block" variant="caption">
                   {section.name}
                 </Typography>
               </ListItem>
@@ -171,23 +158,18 @@ export default function PageContainer({ window, children }) {
                 if (item.text === "Logout") {
                   return (
                     <>
-                      <ListItem button key={"Logout"} onClick={handleLogout}>
+                      <ListItem button key="Logout" onClick={handleLogout}>
                         <ListItemIcon>
                           <ExitToApp />
                         </ListItemIcon>
-                        <ListItemText primary={"Logout"} />
+                        <ListItemText primary="Logout" />
                       </ListItem>
                     </>
                   );
                 }
                 return (
                   <>
-                    <ListItem
-                      button
-                      key={item.text}
-                      component={Link}
-                      to={item.link}
-                    >
+                    <ListItem button key={item.text} component={Link} to={item.link}>
                       <ListItemIcon>{item.icon}</ListItemIcon>
                       <ListItemText primary={item.text} />
                     </ListItem>
@@ -198,13 +180,12 @@ export default function PageContainer({ window, children }) {
           </>
         ) : (
           <></>
-        );
-      })}
+        )
+      )}
     </div>
   );
 
-  const container =
-    window !== undefined ? () => window().document.body : undefined;
+  const container = window !== undefined ? () => window().document.body : undefined;
 
   return (
     <div className={classes.root}>
@@ -220,13 +201,7 @@ export default function PageContainer({ window, children }) {
           >
             <Menu />
           </IconButton>
-          <Typography
-            variant="h6"
-            noWrap
-            className={classes.title}
-            component={Link}
-            to="/"
-          >
+          <Typography variant="h6" noWrap className={classes.title} component={Link} to="/">
             Oktavian
           </Typography>
         </Toolbar>
@@ -274,8 +249,3 @@ export default function PageContainer({ window, children }) {
     </div>
   );
 }
-
-PageContainer.propTypes = {
-  children: PropTypes.any,
-  window: PropTypes.instanceOf(window.constructor),
-};

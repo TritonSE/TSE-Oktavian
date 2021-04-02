@@ -10,9 +10,10 @@ async function getApplicationStats(start_date, end_date) {
   const pipelines = await ApplicationPipeline.find().populate("role").exec();
   const roles = pipelines.map((pipeline) => pipeline.role);
   const stats = {};
+  /* eslint-disable no-await-in-loop */
   for (const role of roles) {
     const criteria = {
-      role: role,
+      role,
       created_at: {
         $gte: start_date,
         $lte: end_date,
@@ -26,17 +27,18 @@ async function getApplicationStats(start_date, end_date) {
         current_stage: stage,
       }).exec();
     }
-    stats[role.name]["Accepted"] = await Application.countDocuments({
+    stats[role.name].Accepted = await Application.countDocuments({
       ...criteria,
       completed: true,
       accepted: true,
     }).exec();
-    stats[role.name]["Rejected"] = await Application.countDocuments({
+    stats[role.name].Rejected = await Application.countDocuments({
       ...criteria,
       completed: true,
       accepted: false,
     }).exec();
   }
+  /* eslint-enable no-await-in-loop */
   return stats;
 }
 

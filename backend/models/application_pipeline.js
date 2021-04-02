@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+
+const { Schema } = mongoose;
 
 /**
  * In order for a role to be able to be applied to, it must have an ApplicationPipeline

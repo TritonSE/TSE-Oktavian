@@ -21,13 +21,10 @@ router.get(
     validateRequest,
   ],
   (req, res, next) => {
-    getAllApplications(
-      new Date(req.query.start_date),
-      new Date(req.query.end_date)
-    )
+    getAllApplications(new Date(req.query.start_date), new Date(req.query.end_date))
       .then((applications) => {
         res.status(200).json({
-          applications: applications,
+          applications,
         });
       })
       .catch((err) => {
@@ -40,7 +37,7 @@ router.get("/:id", authorizeUser(["recruitment"]), (req, res, next) => {
   getApplication(req.params.id)
     .then((application) => {
       res.status(200).json({
-        application: application,
+        application,
       });
     })
     .catch((err) => {
@@ -77,7 +74,7 @@ router.post(
     })
       .then((application) => {
         res.status(200).json({
-          application: application,
+          application,
         });
       })
       .catch((err) => {

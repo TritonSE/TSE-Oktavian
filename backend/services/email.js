@@ -23,9 +23,7 @@ const mail =
         preview: false,
       });
 if (mail == null) {
-  console.log(
-    "No mail credentials were provided, so automated mail has been disabled."
-  );
+  console.log("No mail credentials were provided, so automated mail has been disabled.");
 }
 
 /**
@@ -39,7 +37,7 @@ if (mail == null) {
 async function sendEmail(template, target_email, params) {
   if (mail != null) {
     await mail.send({
-      template: template,
+      template,
       message: {
         from: EMAIL_USERNAME,
         to: target_email,
@@ -48,9 +46,7 @@ async function sendEmail(template, target_email, params) {
     });
     console.log(`Email ${template} has been sent to ${target_email}.`);
   } else {
-    console.log(
-      `Email ${template} would have been sent to ${target_email} but is disabled.`
-    );
+    console.log(`Email ${template} would have been sent to ${target_email} but is disabled.`);
   }
 }
 

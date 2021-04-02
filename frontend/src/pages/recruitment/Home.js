@@ -1,18 +1,12 @@
 import React from "react";
 import DateFnsUtils from "@date-io/date-fns";
-import PageContainer from "../../components/PageContainer";
-import LoadingContainer from "../../components/LoadingContainer";
 import { Helmet } from "react-helmet";
-import {
-  Card,
-  CardContent,
-  Grid,
-  LinearProgress,
-  Typography,
-} from "@material-ui/core";
+import { Card, CardContent, Grid, LinearProgress, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import { useDispatch } from "react-redux";
+import LoadingContainer from "../../components/LoadingContainer";
+import PageContainer from "../../components/PageContainer";
 import { openAlert } from "../../actions";
 import { getApplicationStats } from "../../services/stats";
 import { withAuthorization } from "../../components/HOC";
@@ -36,27 +30,20 @@ const Home = () => {
     loading: true,
     stats: null,
     // User input
-    start_date: new Date(
-      new Date().getFullYear(),
-      new Date().getMonth() - 9,
-      new Date().getDate()
-    ),
+    start_date: new Date(new Date().getFullYear(), new Date().getMonth() - 9, new Date().getDate()),
     end_date: new Date(),
   });
   const dispatch = useDispatch();
 
   React.useEffect(() => {
     const loadData = async () => {
-      const { ok, data } = await getApplicationStats(
-        state.start_date,
-        state.end_date
-      );
+      const { ok, data } = await getApplicationStats(state.start_date, state.end_date);
       if (ok) {
         const stats = JSON.parse(JSON.stringify(data.stats));
         setState((prev_state) => ({
           ...prev_state,
           loading: false,
-          stats: stats,
+          stats,
         }));
       } else {
         dispatch(openAlert(`Error: ${data.message}`));
@@ -83,27 +70,23 @@ const Home = () => {
     state.stats == null ? (
       <></>
     ) : (
-      Object.entries(state.stats).map(([role, stats]) => {
-        return (
-          <Grid item md={4} xs={12} key={role}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6" className={classes.title}>
-                  {role}
-                </Typography>
-                {Object.entries(stats).map(([stage, count]) => {
-                  return (
-                    <div className={classes.counter} key={`${role}-${stage}`}>
-                      <Typography variant="h3">{count}</Typography>
-                      <Typography variant="caption">{stage}</Typography>
-                    </div>
-                  );
-                })}
-              </CardContent>
-            </Card>
-          </Grid>
-        );
-      })
+      Object.entries(state.stats).map(([role, stats]) => (
+        <Grid item md={4} xs={12} key={role}>
+          <Card>
+            <CardContent>
+              <Typography variant="h6" className={classes.title}>
+                {role}
+              </Typography>
+              {Object.entries(stats).map(([stage, count]) => (
+                <div className={classes.counter} key={`${role}-${stage}`}>
+                  <Typography variant="h3">{count}</Typography>
+                  <Typography variant="caption">{stage}</Typography>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        </Grid>
+      ))
     );
 
   return (

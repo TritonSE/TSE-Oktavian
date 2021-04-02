@@ -1,7 +1,7 @@
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
-const JwtStrategy = require("passport-jwt").Strategy,
-  ExtractJwt = require("passport-jwt").ExtractJwt;
+const JwtStrategy = require("passport-jwt").Strategy;
+const { ExtractJwt } = require("passport-jwt");
 
 const { User } = require("../models");
 const { JWT_SECRET } = require("../constants");
@@ -26,22 +26,20 @@ const initializePassport = () => {
         usernameField: "email",
         passwordField: "password",
       },
-      function (email, password, next) {
-        User.findOne({ email: email })
+      (email, password, next) => {
+        User.findOne({ email })
           .populate("role")
           .exec()
           .then((user) => {
             if (!user) {
               return next(null, false);
-            } else if (!user.verifyPassword(password)) {
-              return next(null, false);
-            } else {
-              return next(null, user);
             }
+            if (!user.verifyPassword(password)) {
+              return next(null, false);
+            }
+            return next(null, user);
           })
-          .catch((err) => {
-            return next(err);
-          });
+          .catch((err) => next(err));
       }
     )
   );
@@ -51,27 +49,24 @@ const initializePassport = () => {
         jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
         secretOrKey: JWT_SECRET,
       },
-      function (jwt_payload, done) {
+      (jwt_payload, done) => {
         User.findOne({ _id: jwt_payload._id })
           .populate("role")
           .exec()
           .then((user) => {
             if (user) {
               return done(null, user);
-            } else {
-              return done(null, false);
             }
+            return done(null, false);
           })
-          .catch((err) => {
-            return done(err, false);
-          });
+          .catch((err) => done(err, false));
       }
     )
   );
-  passport.serializeUser(function (user, done) {
+  passport.serializeUser((user, done) => {
     done(null, user);
   });
-  passport.deserializeUser(function (user, done) {
+  passport.deserializeUser((user, done) => {
     done(null, user);
   });
   return passport.initialize();
@@ -83,11 +78,7 @@ const initializePassport = () => {
  * JSON messages in the event of an authentication failure, and it also can
  * perform authorization once the authentication step is complete.
  */
-const wrappedAuthenticate = (type, options, authorization) => (
-  req,
-  res,
-  next
-) => {
+const wrappedAuthenticate = (type, options, authorization) => (req, res, next) => {
   passport.authenticate(type, options, async (err, user) => {
     if (err) {
       return next(err);
@@ -98,13 +89,13 @@ const wrappedAuthenticate = (type, options, authorization) => (
       });
     }
     req.user = user;
-    let authorized = await authorization(req);
+    const authorized = await authorization(req);
     if (!authorized) {
       return res.status(403).json({
         message: "You do not have the necessary permissions",
       });
     }
-    next();
+    return next();
   })(req, res, next);
 };
 
@@ -115,11 +106,10 @@ const wrappedAuthenticate = (type, options, authorization) => (
 const authenticateUser = wrappedAuthenticate(
   "local",
   { session: false },
-  (req) => {
-    return new Promise((resolve) => {
+  (req) =>
+    new Promise((resolve) => {
       resolve(req.user.active);
-    });
-  }
+    })
 );
 
 /**
@@ -133,21 +123,24 @@ const authenticateUser = wrappedAuthenticate(
  * list, that means no permissions are required.
  */
 const authorizeUser = (permissions) =>
-  wrappedAuthenticate("jwt", { session: false }, (req) => {
-    return new Promise((resolve) => {
-      if (!req.user.active) {
-        resolve(false);
-        return;
-      }
-      for (const permission of permissions) {
-        if (req.user.role == null || !req.user.role.permissions[permission]) {
+  wrappedAuthenticate(
+    "jwt",
+    { session: false },
+    (req) =>
+      new Promise((resolve) => {
+        if (!req.user.active) {
           resolve(false);
           return;
         }
-      }
-      resolve(true);
-    });
-  });
+        for (const permission of permissions) {
+          if (req.user.role == null || !req.user.role.permissions[permission]) {
+            resolve(false);
+            return;
+          }
+        }
+        resolve(true);
+      })
+  );
 
 module.exports = {
   initializePassport,

@@ -3,7 +3,7 @@ import { BACKEND_URL } from "../constants";
 
 async function makeRequest(slug, options) {
   const response = await fetch(`${BACKEND_URL}/${slug}`, options);
-  let json = await response.json();
+  const json = await response.json();
   return {
     status: response.status,
     ok: response.ok,
@@ -14,10 +14,10 @@ async function makeRequest(slug, options) {
 async function getData(slug, authenticated) {
   const headers = {};
   if (authenticated) {
-    headers["Authorization"] = `Bearer ${getJWT()}`;
+    headers.Authorization = `Bearer ${getJWT()}`;
   }
-  return await makeRequest(slug, {
-    headers: headers,
+  return makeRequest(slug, {
+    headers,
   });
 }
 
@@ -26,12 +26,12 @@ async function sendData(slug, authenticated, method, body) {
     "Content-Type": "application/json",
   };
   if (authenticated) {
-    headers["Authorization"] = `Bearer ${getJWT()}`;
+    headers.Authorization = `Bearer ${getJWT()}`;
   }
-  return await makeRequest(slug, {
-    method: method,
-    headers: headers,
-    body: body,
+  return makeRequest(slug, {
+    method,
+    headers,
+    body,
   });
 }
 

@@ -2,11 +2,7 @@ const express = require("express");
 const { body } = require("express-validator");
 const jwt = require("jsonwebtoken");
 
-const {
-  createUser,
-  forgotPassword,
-  resetPassword,
-} = require("../services/users");
+const { createUser, forgotPassword, resetPassword } = require("../services/users");
 const { authenticateUser, authorizeUser } = require("../middleware/auth");
 const { validateRequest } = require("../middleware/validation");
 const { JWT_SECRET } = require("../constants");
@@ -22,7 +18,7 @@ router.post(
     body("secret").notEmpty().isString(),
     validateRequest,
   ],
-  function (req, res, next) {
+  (req, res, next) => {
     createUser({
       name: req.body.name,
       email: req.body.email,
@@ -31,7 +27,7 @@ router.post(
       active: true,
     })
       .then((user) => {
-        req.login(user, { session: false }, function (err) {
+        req.login(user, { session: false }, (err) => {
           if (err) {
             next(err);
           } else {
@@ -56,7 +52,7 @@ router.post(
     validateRequest,
     authenticateUser,
   ],
-  function (req, res) {
+  (req, res) => {
     res.status(200).json({
       user: req.user,
       token: jwt.sign(req.user.toJSON(), JWT_SECRET),
@@ -64,7 +60,7 @@ router.post(
   }
 );
 
-router.get("/me", [authorizeUser([])], function (req, res) {
+router.get("/me", [authorizeUser([])], (req, res) => {
   res.status(200).json({
     user: req.user,
   });
@@ -72,12 +68,8 @@ router.get("/me", [authorizeUser([])], function (req, res) {
 
 router.post(
   "/forgot-password",
-  [
-    body("email").isEmail(),
-    body("secret").notEmpty().isString(),
-    validateRequest,
-  ],
-  function (req, res, next) {
+  [body("email").isEmail(), body("secret").notEmpty().isString(), validateRequest],
+  (req, res, next) => {
     forgotPassword({
       email: req.body.email,
       secret: req.body.secret,
@@ -93,12 +85,8 @@ router.post(
 
 router.post(
   "/reset-password",
-  [
-    body("token").isUUID(4),
-    body("password").isString().isLength({ min: 6 }),
-    validateRequest,
-  ],
-  function (req, res, next) {
+  [body("token").isUUID(4), body("password").isString().isLength({ min: 6 }), validateRequest],
+  (req, res, next) => {
     resetPassword({
       token: req.body.token,
       password: req.body.password,

@@ -1,16 +1,10 @@
 import React from "react";
-import PageContainer from "../components/PageContainer";
 import { Helmet } from "react-helmet";
-import {
-  TextField,
-  Button,
-  Grid,
-  FormHelperText,
-  Typography,
-} from "@material-ui/core";
+import { TextField, Button, Grid, FormHelperText, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { forgotPassword } from "../services/auth";
 import { useDispatch } from "react-redux";
+import { forgotPassword } from "../services/auth";
+import PageContainer from "../components/PageContainer";
 import { openAlert } from "../actions";
 import { withAuthorization } from "../components/HOC";
 
@@ -63,9 +57,7 @@ const ForgotPassword = () => {
     };
     const { ok, data } = await forgotPassword(body);
     if (ok) {
-      dispatch(
-        openAlert("A password reset request has been sent to your email")
-      );
+      dispatch(openAlert("A password reset request has been sent to your email"));
     } else {
       dispatch(openAlert(`Error: ${data.message}`));
     }
@@ -94,8 +86,8 @@ const ForgotPassword = () => {
                 onChange={handleChange("email")}
               />
               <FormHelperText className={classes.lightSpacing}>
-                You should expect an email within a few minutes. The reset token
-                will expire within 1 hour.
+                You should expect an email within a few minutes. The reset token will expire within
+                1 hour.
               </FormHelperText>
               <TextField
                 label="Secret"
@@ -107,12 +99,7 @@ const ForgotPassword = () => {
                 This secret is only distributed internally.
               </FormHelperText>
               <div className={classes.centered}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  type="submit"
-                  disabled={state.disabled}
-                >
+                <Button variant="contained" color="primary" type="submit" disabled={state.disabled}>
                   Submit
                 </Button>
               </div>
