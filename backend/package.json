@@ -4,9 +4,10 @@
   "author": "Triton Software Engineering <tse@ucsd.edu>",
   "private": true,
   "scripts": {
-    "lint": "npx eslint . && npx prettier --check .",
-    "format": "npx prettier --write .",
-    "start": "node ./bin/www"
+    "lint": "eslint --fix --cache --report-unused-disable-directives . && prettier --write .",
+    "format": "prettier --write .",
+    "start": "node ./bin/www",
+    "lint-check": "eslint --cache --report-unused-disable-directives . && prettier --check ."
   },
   "dependencies": {
     "bcrypt": "^5.0.0",
@@ -29,7 +30,10 @@
     "pug": "^3.0.0"
   },
   "devDependencies": {
-    "eslint": "^7.20.0",
-    "prettier": "2.2.1"
+    "eslint": "^7.23.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-import": "^2.22.1",
+    "prettier": "^2.2.1"
   }
 }
