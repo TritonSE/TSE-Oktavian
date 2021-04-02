@@ -8,7 +8,7 @@ The goal of Oktavian is two-fold: (1) centralize our most important documents an
 data and (2) automate away some of the redundancies associated with our processes. The core
 idea behind Oktavian is that of role-based access control. Through Oktavian, users are
 assigned to unique roles, each of which has certain permissions. These permissions are
-propogated internally throughout Oktavian, controlling what information users are allowed
+propagated internally throughout Oktavian, controlling what information users are allowed
 to see (for example, project-related documents, recruitment-related applications, etc.) and
 are propogated externally beyond Oktavian, cascading into the other services that TSE uses,
 such as Google Drive, Monday.com, GitHub, and others. Ultimately, a user's entire technological 
@@ -22,6 +22,7 @@ The backend is written using a combination of NodeJS, Express, and MongoDB (the 
 Dependencies you'll need:
 * Node 12+
 * NPM 6+
+* MongoDB
 
 First, install all Node dependencies:
 
