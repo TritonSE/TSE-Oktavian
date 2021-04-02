@@ -90,30 +90,29 @@ function usingReact() {
  */
 function generateRules() {
   const rules = { ...generalRules };
-  try {
-    Object.assign(rules, getAllowForOfRules());
-    if (usingReact()) {
-      Object.assign(rules, reactRules);
-      Object.assign(rules, getAccessibilityWarningRules());
-    }
-  } catch (err) {
-    // Fixes issues with the Heroku deployment procedure for Oktavian specifically
-    // Some of the modules are being incorrectly recognized as global
-    // It's not really important that the linting process works at that stage though
+  Object.assign(rules, getAllowForOfRules());
+  if (usingReact()) {
+    Object.assign(rules, reactRules);
+    Object.assign(rules, getAccessibilityWarningRules());
   }
   return rules;
 }
 
 const rules = generateRules();
 
-module.exports = {
-  settings: {
-    react: {
-      version: "detect",
+if (process.env.NODE_ENV === "production") {
+  // Solves issues with Heroku not installing dev-dependencies
+  module.exports = {};
+} else {
+  module.exports = {
+    settings: {
+      react: {
+        version: "detect",
+      },
     },
-  },
-  ...jsonConfig,
-  ...(usingReact() ? { parser: "babel-eslint" } : {}),
-  extends: ["eslint:recommended", usingReact() ? "airbnb" : "airbnb-base", "prettier"],
-  rules,
-};
+    ...jsonConfig,
+    ...(usingReact() ? { parser: "babel-eslint" } : {}),
+    extends: ["eslint:recommended", usingReact() ? "airbnb" : "airbnb-base", "prettier"],
+    rules,
+  };
+}
