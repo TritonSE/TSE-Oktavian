@@ -11,6 +11,9 @@ const generalRules = {
   // Some APIs use snake_case identifiers.
   camelcase: "off",
 
+  // Depending on the context, using bracket notation might be clearer.
+  "dot-notation": "off",
+
   /**
    * Unused variables and arguments should be removed in most cases, but sometimes they are
    * unavoidable. Prefix variable names with an underscore to suppress the error.
@@ -99,7 +102,9 @@ function generateRules() {
 }
 
 if (process.env.NODE_ENV === "production") {
-  // Solves issues with Heroku not installing dev-dependencies
+  // In production (e.g. on Heroku), sometimes dev-dependencies are not installed
+  // This results in errors with the rule generation process
+  // Since linting isn't necessary in production, we can just ignore it
   module.exports = {};
 } else {
   const rules = generateRules();
