@@ -9,7 +9,7 @@ const generalRules = {
   "no-underscore-dangle": "off",
 
   // Some APIs use snake_case identifiers.
-  "camelcase": "off",
+  camelcase: "off",
 
   /**
    * Unused variables and arguments should be removed in most cases, but sometimes they are
@@ -67,7 +67,9 @@ function loadConfig() {
   try {
     return JSON.parse(readFileSync(path, "utf8"));
   } catch (e) {
-    throw new Error(`File '${path}' does not exist. Generate it by running 'npx eslint --init'. When prompted to choose the file format, select JSON.`);
+    throw new Error(
+      `File '${path}' does not exist. Generate it by running 'npx eslint --init'. When prompted to choose the file format, select JSON.`
+    );
   }
 }
 
@@ -105,10 +107,6 @@ module.exports = {
   },
   ...jsonConfig,
   ...(usingReact() ? { parser: "babel-eslint" } : {}),
-  extends: [
-    "eslint:recommended",
-    usingReact() ? "airbnb" : "airbnb-base",
-    "prettier"
-  ],
+  extends: ["eslint:recommended", usingReact() ? "airbnb" : "airbnb-base", "prettier"],
   rules,
 };

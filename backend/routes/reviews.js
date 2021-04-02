@@ -20,15 +20,13 @@ router.get("/", authorizeUser(["recruitment"]), (req, res, next) => {
     promise = getUserReviews(req.query.user, {});
   }
   if (promise == null) {
-    res
-      .status(400)
-      .json({ message: "Query must specify either user or application" });
+    res.status(400).json({ message: "Query must specify either user or application" });
     return;
   }
   promise
     .then((reviews) => {
       res.status(200).json({
-        reviews: reviews,
+        reviews,
       });
     })
     .catch((err) => {
@@ -40,7 +38,7 @@ router.get("/:id", authorizeUser(["recruitment"]), (req, res, next) => {
   getReview(req.params.id)
     .then((review) => {
       res.status(200).json({
-        review: review,
+        review,
       });
     })
     .catch((err) => {
@@ -75,7 +73,7 @@ router.put(
     updateReview(review_update, req.user)
       .then((review) => {
         res.status(200).json({
-          review: review,
+          review,
         });
       })
       .catch((err) => {

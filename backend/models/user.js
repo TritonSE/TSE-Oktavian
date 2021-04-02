@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+
+const { Schema } = mongoose;
 
 /**
  * A user represents a member of TSE. Users are defined by their personal information, their latest
@@ -46,7 +47,7 @@ UserSchema.methods.verifyPassword = function (password) {
 };
 
 UserSchema.set("toJSON", {
-  transform: function (doc, ret) {
+  transform(doc, ret) {
     delete ret.password;
     return ret;
   },

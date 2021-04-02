@@ -10,15 +10,12 @@ const validateRequest = (req, res, next) => {
   const vres = validationResult(req);
   if (vres.isEmpty()) {
     return next();
-  } else {
-    const bad_fields = new Set();
-    for (const error of vres.errors) {
-      bad_fields.add(error.param);
-    }
-    return res
-      .status(400)
-      .json({ message: `Invalid or missing: ${[...bad_fields].join(", ")}` });
   }
+  const bad_fields = new Set();
+  for (const error of vres.errors) {
+    bad_fields.add(error.param);
+  }
+  return res.status(400).json({ message: `Invalid or missing: ${[...bad_fields].join(", ")}` });
 };
 
 module.exports = {

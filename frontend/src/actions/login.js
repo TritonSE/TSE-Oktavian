@@ -1,8 +1,4 @@
-import {
-  login as loginRequest,
-  register as registerRequest,
-  me,
-} from "../services/auth";
+import { login as loginRequest, register as registerRequest, me } from "../services/auth";
 import { clearJWT, hasJWT, setJWT } from "../util/jwt";
 import { openAlert } from "./alert";
 
@@ -82,7 +78,7 @@ export function resolveLogin() {
 }
 
 export function setLogin(user) {
-  return { type: ACTION_SET_LOGIN, user: user };
+  return { type: ACTION_SET_LOGIN, user };
 }
 
 export function clearLogin() {

@@ -1,15 +1,9 @@
 import React from "react";
-import PageContainer from "../components/PageContainer";
 import { Helmet } from "react-helmet";
-import {
-  TextField,
-  Button,
-  Grid,
-  FormHelperText,
-  Typography,
-} from "@material-ui/core";
+import { TextField, Button, Grid, FormHelperText, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useDispatch } from "react-redux";
+import PageContainer from "../components/PageContainer";
 import { register, openAlert } from "../actions";
 import { withAuthorization } from "../components/HOC";
 
@@ -119,16 +113,10 @@ const Register = () => {
                 onChange={handleChange("secret")}
               />
               <FormHelperText className={classes.lightSpacing}>
-                This secret is required for registration and is only distributed
-                internally.
+                This secret is required for registration and is only distributed internally.
               </FormHelperText>
               <div className={classes.centered}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  type="submit"
-                  disabled={state.disabled}
-                >
+                <Button variant="contained" color="primary" type="submit" disabled={state.disabled}>
                   Submit
                 </Button>
               </div>

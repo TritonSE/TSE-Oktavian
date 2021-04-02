@@ -1,11 +1,11 @@
 import React from "react";
-import PageContainer from "../components/PageContainer";
 import { Grid, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { Helmet } from "react-helmet";
-import { withAuthorization } from "../components/HOC";
 import { Redirect } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { withAuthorization } from "../components/HOC";
+import PageContainer from "../components/PageContainer";
 
 const useStyles = makeStyles((theme) => ({
   centered: {

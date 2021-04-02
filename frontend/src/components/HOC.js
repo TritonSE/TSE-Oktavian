@@ -11,12 +11,9 @@ import { resolveLogin } from "../actions";
 // well as the authorization `permissions` criteria. If the
 // user's auth state is still being loaded, it will render a
 // loading bar instead of the component it wraps.
-const withAuthorization = (
-  WrappedComponent,
-  authenticated,
-  permissions = [],
-  ignore = false
-) => (props) => {
+const withAuthorization = (WrappedComponent, authenticated, permissions = [], ignore = false) => (
+  props
+) => {
   const loginState = useSelector((state) => state.login);
   const dispatch = useDispatch();
 
@@ -44,10 +41,7 @@ const withAuthorization = (
     // User does not meet certain permissions
     if (authenticated) {
       for (const permission of permissions) {
-        if (
-          loginState.user.role == null ||
-          loginState.user.role.permissions[permission] !== true
-        ) {
+        if (loginState.user.role == null || loginState.user.role.permissions[permission] !== true) {
           return <Redirect to="/" />;
         }
       }

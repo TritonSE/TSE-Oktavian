@@ -47,10 +47,7 @@ async function updateReview(raw_review, submitter) {
     review.accepted = raw_review.accepted;
   }
   if (review.completed && review.comments === "") {
-    throw ServiceError(
-      400,
-      "Comments cannot be empty; please justify your decision"
-    );
+    throw ServiceError(400, "Comments cannot be empty; please justify your decision");
   }
   await review.save();
   if (review.completed) {

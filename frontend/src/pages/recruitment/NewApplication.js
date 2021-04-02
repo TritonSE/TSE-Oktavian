@@ -1,5 +1,4 @@
 import React from "react";
-import PageContainer from "../../components/PageContainer";
 import { Helmet } from "react-helmet";
 import {
   TextField,
@@ -14,8 +13,9 @@ import {
   Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { createApplication } from "../../services/applications";
 import { useDispatch } from "react-redux";
+import { createApplication } from "../../services/applications";
+import PageContainer from "../../components/PageContainer";
 import { openAlert } from "../../actions";
 import { withAuthorization } from "../../components/HOC";
 
@@ -129,16 +129,8 @@ const NewApplication = () => {
                     value="Project Manager"
                     label="Project Manager"
                   />
-                  <FormControlLabel
-                    control={<Radio />}
-                    value="Developer"
-                    label="Developer"
-                  />
-                  <FormControlLabel
-                    control={<Radio />}
-                    value="Designer"
-                    label="Designer"
-                  />
+                  <FormControlLabel control={<Radio />} value="Developer" label="Developer" />
+                  <FormControlLabel control={<Radio />} value="Designer" label="Designer" />
                 </RadioGroup>
               </FormControl>
               <FormControl>
@@ -149,26 +141,10 @@ const NewApplication = () => {
                   value={state.graduation}
                   onChange={handleChange("graduation")}
                 >
-                  <FormControlLabel
-                    value="2021"
-                    control={<Radio />}
-                    label="2021"
-                  />
-                  <FormControlLabel
-                    value="2022"
-                    control={<Radio />}
-                    label="2022"
-                  />
-                  <FormControlLabel
-                    value="2023"
-                    control={<Radio />}
-                    label="2023"
-                  />
-                  <FormControlLabel
-                    value="2024"
-                    control={<Radio />}
-                    label="2024"
-                  />
+                  <FormControlLabel value="2021" control={<Radio />} label="2021" />
+                  <FormControlLabel value="2022" control={<Radio />} label="2022" />
+                  <FormControlLabel value="2023" control={<Radio />} label="2023" />
+                  <FormControlLabel value="2024" control={<Radio />} label="2024" />
                 </RadioGroup>
               </FormControl>
               <TextField
@@ -195,12 +171,7 @@ const NewApplication = () => {
                 onChange={handleChange("why")}
               />
               <div className={classes.centered}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  type="submit"
-                  disabled={state.disabled}
-                >
+                <Button variant="contained" color="primary" type="submit" disabled={state.disabled}>
                   Submit
                 </Button>
               </div>

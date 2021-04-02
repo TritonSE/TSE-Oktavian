@@ -1,14 +1,14 @@
 import React from "react";
-import LoadingContainer from "../../components/LoadingContainer";
-import PageContainer from "../../components/PageContainer";
 import { Helmet } from "react-helmet";
 import { Grid } from "@material-ui/core";
 import { Edit } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import MaterialTable from "@material-table/core";
+import { useDispatch, useSelector } from "react-redux";
 import { TableIcons } from "../../components/Icons";
 import { getUserReviews } from "../../services/reviews";
-import { useDispatch, useSelector } from "react-redux";
+import PageContainer from "../../components/PageContainer";
+import LoadingContainer from "../../components/LoadingContainer";
 import { openAlert } from "../../actions";
 import { withAuthorization } from "../../components/HOC";
 
@@ -32,13 +32,11 @@ const Assignments = () => {
       if (loginState.user == null) {
         return;
       }
-      let { ok, data } = await getUserReviews(loginState.user._id);
+      const { ok, data } = await getUserReviews(loginState.user._id);
       if (ok) {
-        const reviews = data.reviews;
+        const { reviews } = data;
         const applications = reviews
-          .filter((review) => {
-            return !review.completed;
-          })
+          .filter((review) => !review.completed)
           .map((review) => {
             const app = review.application;
             return {
@@ -50,7 +48,7 @@ const Assignments = () => {
         setState((prev_state) => ({
           ...prev_state,
           loading: false,
-          applications: applications,
+          applications,
         }));
       } else {
         dispatch(openAlert(`Error: ${data.message}`));
@@ -72,13 +70,7 @@ const Assignments = () => {
       </Helmet>
       <PageContainer>
         <LoadingContainer loading={state.loading}>
-          <Grid
-            container
-            spacing={0}
-            alignItems="center"
-            justify="center"
-            className={classes.grid}
-          >
+          <Grid container spacing={0} alignItems="center" justify="center" className={classes.grid}>
             <Grid item xs={12}>
               <MaterialTable
                 icons={TableIcons}
@@ -89,16 +81,10 @@ const Assignments = () => {
                     },
                     tooltip: "Edit Application",
                     onClick: (event, row) => {
-                      let origin =
-                        window.location.protocol +
-                        "//" +
-                        window.location.hostname +
-                        (window.location.port
-                          ? ":" + window.location.port
-                          : "");
-                      window.open(
-                        `${origin}/recruitment/application/${row._id}`
-                      );
+                      const origin = `${window.location.protocol}//${window.location.hostname}${
+                        window.location.port ? `:${window.location.port}` : ""
+                      }`;
+                      window.open(`${origin}/recruitment/application/${row._id}`);
                     },
                   },
                 ]}

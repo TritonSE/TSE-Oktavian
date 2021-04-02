@@ -1,11 +1,5 @@
 const { STAGES } = require("../constants");
-const {
-  User,
-  Role,
-  Application,
-  Review,
-  ApplicationPipeline,
-} = require("../models");
+const { User, Role, Application, Review, ApplicationPipeline } = require("../models");
 const { ServiceError } = require("./errors");
 const { sendEmail } = require("./email");
 
@@ -33,7 +27,7 @@ async function assignApplication(application, reviewer) {
  * applications preferably don't end up with the same reviewer assigned to two stages
  */
 async function autoAssignApplication(application) {
-  const role = application.role;
+  const { role } = application;
   let reviewer = null;
   if (application.current_stage === STAGES[STAGES.length - 1]) {
     // Special case: person(s) with `final_approval` permission make the final decision
@@ -49,17 +43,13 @@ async function autoAssignApplication(application) {
       { $match: { "role.permissions.final_approval": true } },
     ]).exec();
     if (final_reviewers == null || final_reviewers.length === 0) {
-      throw ServiceError(
-        400,
-        "Unable to auto-assign any reviewer to application"
-      );
+      throw ServiceError(400, "Unable to auto-assign any reviewer to application");
     }
     // Choose a final reviewer randomly: no need for round robin here
-    reviewer =
-      final_reviewers[Math.floor(Math.random() * final_reviewers.length)];
+    reviewer = final_reviewers[Math.floor(Math.random() * final_reviewers.length)];
   } else {
     // Non-special case: find the appropriate pipeline and make a round-robin decision
-    const pipeline = await ApplicationPipeline.findOne({ role: role })
+    const pipeline = await ApplicationPipeline.findOne({ role })
       .populate({
         path: "reviewers",
         populate: {
@@ -68,21 +58,16 @@ async function autoAssignApplication(application) {
       })
       .exec();
     if (pipeline == null || pipeline.reviewers.length === 0) {
-      throw ServiceError(
-        400,
-        "Unable to auto-assign any reviewer to application"
-      );
+      throw ServiceError(400, "Unable to auto-assign any reviewer to application");
     }
     // Find first reviewer in the round robin list not in past reviewers
     const past_reviews = await Review.find({
       application: application._id,
     }).exec();
-    const past_reviewers = new Set(
-      past_reviews.map((review) => review.reviewer.toString())
-    );
+    const past_reviewers = new Set(past_reviews.map((review) => review.reviewer.toString()));
     // In the case where no reviewer is new, just use the first person
     let ridx = 0;
-    for (let [i, reviewer] of pipeline.reviewers.entries()) {
+    for (const [i, reviewer] of pipeline.reviewers.entries()) {
       if (!past_reviewers.has(reviewer._id.toString())) {
         ridx = i;
         break;
@@ -112,10 +97,7 @@ async function advanceApplication(application, review_accepted) {
     } else {
       const idx = STAGES.indexOf(application.current_stage);
       if (idx === -1) {
-        throw ServiceError(
-          400,
-          "Application has invalid stage '" + application.current_stage + "'"
-        );
+        throw ServiceError(400, `Application has invalid stage '${application.current_stage}'`);
       }
       application.current_stage = STAGES[idx + 1];
     }
@@ -160,11 +142,11 @@ async function advanceApplication(application, review_accepted) {
  */
 async function createApplication(raw_application) {
   // Users can only apply to valid roles with a pipeline attached to them
-  let role = await Role.findOne({ name: raw_application.role }).exec();
+  const role = await Role.findOne({ name: raw_application.role }).exec();
   if (role == null) {
     throw ServiceError(400, "Invalid application role");
   }
-  let pipeline = await ApplicationPipeline.findOne({ role: role._id }).exec();
+  const pipeline = await ApplicationPipeline.findOne({ role: role._id }).exec();
   if (pipeline == null) {
     throw ServiceError(400, "Invalid application role");
   }
@@ -212,9 +194,7 @@ async function getAllApplications(start_date, end_date) {
  * Returns a JSON object representing an application given an ID.
  */
 async function getApplication(application_id) {
-  return await Application.findOne({ _id: application_id })
-    .populate("role")
-    .exec();
+  return await Application.findOne({ _id: application_id }).populate("role").exec();
 }
 
 module.exports = {

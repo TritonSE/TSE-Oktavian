@@ -1,12 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
-import PageContainer from "../components/PageContainer";
 import { Helmet } from "react-helmet";
 import { useHistory } from "react-router-dom";
 import { TextField, Button, Grid, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { resetPassword } from "../services/auth";
 import { useDispatch } from "react-redux";
+import { resetPassword } from "../services/auth";
+import PageContainer from "../components/PageContainer";
 import { openAlert } from "../actions";
 import { withAuthorization } from "../components/HOC";
 
@@ -112,12 +112,7 @@ const ResetPassword = ({ match }) => {
                 onChange={handleChange("confirm_password")}
               />
               <div className={classes.centered}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  type="submit"
-                  disabled={state.disabled}
-                >
+                <Button variant="contained" color="primary" type="submit" disabled={state.disabled}>
                   Submit
                 </Button>
               </div>

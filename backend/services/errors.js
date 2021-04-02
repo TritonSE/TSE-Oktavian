@@ -1,9 +1,7 @@
-const ServiceError = (status, message) => {
-  return {
-    name: "ServiceError",
-    status: status,
-    message: message,
-  };
-};
+const ServiceError = (status, message) => ({
+  name: "ServiceError",
+  status,
+  message,
+});
 
 module.exports = { ServiceError };

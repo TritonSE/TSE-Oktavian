@@ -1,7 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import LoadingContainer from "../../components/LoadingContainer";
-import PageContainer from "../../components/PageContainer";
 import { Helmet } from "react-helmet";
 import {
   FormControl,
@@ -24,6 +22,8 @@ import {
 import { ExitToApp } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import { useDispatch, useSelector } from "react-redux";
+import PageContainer from "../../components/PageContainer";
+import LoadingContainer from "../../components/LoadingContainer";
 import { getApplication } from "../../services/applications";
 import { getApplicationReviews, updateReview } from "../../services/reviews";
 import { openAlert } from "../../actions";
@@ -86,9 +86,7 @@ const Application = ({ match }) => {
         ...data1.application,
         created_at: new Date(data1.application.created_at),
       };
-      const { ok: ok2, data: data2 } = await getApplicationReviews(
-        match.params.appid
-      );
+      const { ok: ok2, data: data2 } = await getApplicationReviews(match.params.appid);
       if (!ok2) {
         dispatch(openAlert(`Error: ${data2.message}`));
         setState((prev_state) => ({
@@ -98,16 +96,12 @@ const Application = ({ match }) => {
         return;
       }
       const reviews = data2.reviews
-        .map((review) => {
-          return { ...review, created_at: new Date(review.created_at) };
-        })
-        .sort((a, b) => {
-          return a.created_at - b.created_at;
-        });
+        .map((review) => ({ ...review, created_at: new Date(review.created_at) }))
+        .sort((a, b) => a.created_at - b.created_at);
       const updates = {
         loading: false,
-        application: application,
-        reviews: reviews,
+        application,
+        reviews,
       };
       // If a review is not completed, fill in the user input with what they last saved
       // Note that at most one review can be incomplete at a time (corresponds to the last stage)
@@ -151,7 +145,7 @@ const Application = ({ match }) => {
       comments: state.comments,
       rating: state.rating,
       accepted: state.accepted,
-      completed: completed,
+      completed,
     };
     let incomplete_review = null;
     for (const review of state.reviews) {
@@ -165,9 +159,7 @@ const Application = ({ match }) => {
       if (ok) {
         dispatch(
           openAlert(
-            data.review.completed
-              ? "Review completed!"
-              : "Review progress saved successfully."
+            data.review.completed ? "Review completed!" : "Review progress saved successfully."
           )
         );
         setState({
@@ -185,168 +177,132 @@ const Application = ({ match }) => {
     }
   };
 
-  const fixedReview = (review) => {
-    return (
-      <Card className={classes.card}>
-        <CardContent>
-          <h3>{review.stage} Stage</h3>
-          {review.completed ? (
-            review.accepted ? (
-              <Chip label="Passed" color="primary" />
-            ) : (
-              <Chip label="Rejected" color="secondary" />
-            )
+  const fixedReview = (review) => (
+    <Card className={classes.card}>
+      <CardContent>
+        <h3>{review.stage} Stage</h3>
+        {review.completed ? (
+          review.accepted ? (
+            <Chip label="Passed" color="primary" />
           ) : (
-            <Chip label="Incomplete" />
-          )}
-          <form className={classes.form}>
-            <Grid container spacing={3}>
-              <Grid item xs={6}>
-                <TextField
-                  label="Reviewer"
-                  variant="outlined"
-                  type="text"
-                  defaultValue={review.reviewer.name}
-                  disabled
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  label="Rating"
-                  variant="outlined"
-                  type="number"
-                  defaultValue={review.rating}
-                  disabled
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  multiline
-                  label="Comments"
-                  variant="outlined"
-                  type="text"
-                  defaultValue={review.comments}
-                  disabled
-                />
-              </Grid>
-              {review.completed ? (
-                <></>
-              ) : (
-                <Grid item xs={12}>
-                  <FormControl>
-                    <FormLabel component="legend">
-                      Should this person move on to next stage?
-                    </FormLabel>
-                    <RadioGroup
-                      aria-label="accepted"
-                      name="accepted"
-                      defaultValue={review.accepted}
-                    >
-                      <FormControlLabel
-                        control={<Radio />}
-                        value={true}
-                        label="Yes"
-                        disabled
-                      />
-                      <FormControlLabel
-                        control={<Radio />}
-                        value={false}
-                        label="No"
-                        disabled
-                      />
-                    </RadioGroup>
-                  </FormControl>
-                </Grid>
-              )}
-            </Grid>
-          </form>
-        </CardContent>
-      </Card>
-    );
-  };
-
-  const editableReview = (review) => {
-    return (
-      <Card className={classes.card}>
-        <CardContent>
-          <h3>{review.stage} Stage</h3>
+            <Chip label="Rejected" color="secondary" />
+          )
+        ) : (
           <Chip label="Incomplete" />
-          <form className={classes.form}>
-            <Grid container spacing={3}>
-              <Grid item xs={6}>
-                <TextField
-                  label="Reviewer"
-                  variant="outlined"
-                  type="text"
-                  defaultValue={review.reviewer.name}
-                  disabled
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  label="Rating"
-                  variant="outlined"
-                  type="number"
-                  onChange={handleChange("rating")}
-                  defaultValue={state.rating}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  multiline
-                  label="Comments"
-                  variant="outlined"
-                  type="text"
-                  onChange={handleChange("comments")}
-                  defaultValue={state.comments}
-                />
-              </Grid>
+        )}
+        <form className={classes.form}>
+          <Grid container spacing={3}>
+            <Grid item xs={6}>
+              <TextField
+                label="Reviewer"
+                variant="outlined"
+                type="text"
+                defaultValue={review.reviewer.name}
+                disabled
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                label="Rating"
+                variant="outlined"
+                type="number"
+                defaultValue={review.rating}
+                disabled
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                multiline
+                label="Comments"
+                variant="outlined"
+                type="text"
+                defaultValue={review.comments}
+                disabled
+              />
+            </Grid>
+            {review.completed ? (
+              <></>
+            ) : (
               <Grid item xs={12}>
                 <FormControl>
                   <FormLabel component="legend">
                     Should this person move on to next stage?
                   </FormLabel>
-                  <RadioGroup
-                    aria-label="accepted"
-                    name="accepted"
-                    value={state.accepted}
-                    onChange={handleRadioChange("accepted")}
-                  >
-                    <FormControlLabel
-                      control={<Radio />}
-                      value={true}
-                      label="Yes"
-                    />
-                    <FormControlLabel
-                      control={<Radio />}
-                      value={false}
-                      label="No"
-                    />
+                  <RadioGroup aria-label="accepted" name="accepted" defaultValue={review.accepted}>
+                    <FormControlLabel control={<Radio />} value label="Yes" disabled />
+                    <FormControlLabel control={<Radio />} value={false} label="No" disabled />
                   </RadioGroup>
                 </FormControl>
               </Grid>
-              <Grid item xs={12}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleModalOpen}
-                >
-                  Complete
-                </Button>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  onClick={handleSubmit(false)}
-                >
-                  Save for Later
-                </Button>
-              </Grid>
+            )}
+          </Grid>
+        </form>
+      </CardContent>
+    </Card>
+  );
+
+  const editableReview = (review) => (
+    <Card className={classes.card}>
+      <CardContent>
+        <h3>{review.stage} Stage</h3>
+        <Chip label="Incomplete" />
+        <form className={classes.form}>
+          <Grid container spacing={3}>
+            <Grid item xs={6}>
+              <TextField
+                label="Reviewer"
+                variant="outlined"
+                type="text"
+                defaultValue={review.reviewer.name}
+                disabled
+              />
             </Grid>
-          </form>
-        </CardContent>
-      </Card>
-    );
-  };
+            <Grid item xs={6}>
+              <TextField
+                label="Rating"
+                variant="outlined"
+                type="number"
+                onChange={handleChange("rating")}
+                defaultValue={state.rating}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                multiline
+                label="Comments"
+                variant="outlined"
+                type="text"
+                onChange={handleChange("comments")}
+                defaultValue={state.comments}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <FormControl>
+                <FormLabel component="legend">Should this person move on to next stage?</FormLabel>
+                <RadioGroup
+                  aria-label="accepted"
+                  name="accepted"
+                  value={state.accepted}
+                  onChange={handleRadioChange("accepted")}
+                >
+                  <FormControlLabel control={<Radio />} value label="Yes" />
+                  <FormControlLabel control={<Radio />} value={false} label="No" />
+                </RadioGroup>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12}>
+              <Button variant="contained" color="primary" onClick={handleModalOpen}>
+                Complete
+              </Button>
+              <Button variant="contained" color="secondary" onClick={handleSubmit(false)}>
+                Save for Later
+              </Button>
+            </Grid>
+          </Grid>
+        </form>
+      </CardContent>
+    </Card>
+  );
 
   return (
     <>
@@ -360,9 +316,7 @@ const Application = ({ match }) => {
           ) : (
             <>
               <Helmet>
-                <title>
-                  {`${state.application.name}'s Application — TSE Oktavian`}
-                </title>
+                <title>{`${state.application.name}'s Application — TSE Oktavian`}</title>
               </Helmet>
               <Grid
                 container
@@ -374,9 +328,7 @@ const Application = ({ match }) => {
                 <Grid item xs={10}>
                   <div>
                     <h2 id="application">
-                      {`${
-                        state.application.name
-                      }'s ${state.application.created_at.getFullYear()} ${
+                      {`${state.application.name}'s ${state.application.created_at.getFullYear()} ${
                         state.application.role.name
                       } Application`}
                     </h2>
@@ -483,9 +435,8 @@ const Application = ({ match }) => {
                         review.reviewer._id === loginState.user._id
                       ) {
                         return editableReview(review);
-                      } else {
-                        return fixedReview(review);
                       }
+                      return fixedReview(review);
                     })}
                   </div>
                 </Grid>
@@ -496,22 +447,17 @@ const Application = ({ match }) => {
                   aria-describedby="alert-dialog-description"
                 >
                   <DialogTitle id="alert-dialog-title">
-                    {"Please confirm that your review is accurate!"}
+                    Please confirm that your review is accurate!
                   </DialogTitle>
                   <DialogContent>
                     <DialogContentText id="alert-dialog-description">
-                      Reverting reviews is painful, particularly since all
-                      rejection emails are automated. Triple check that you have
-                      made the appropriate decision for the applicant before
-                      submitting your review as it is final.
+                      Reverting reviews is painful, particularly since all rejection emails are
+                      automated. Triple check that you have made the appropriate decision for the
+                      applicant before submitting your review as it is final.
                     </DialogContentText>
                   </DialogContent>
                   <DialogActions>
-                    <Button
-                      onClick={handleSubmit(true)}
-                      color="primary"
-                      autoFocus
-                    >
+                    <Button onClick={handleSubmit(true)} color="primary" autoFocus>
                       Confirm decision
                     </Button>
                     <Button onClick={handleModalClose} color="secondary">

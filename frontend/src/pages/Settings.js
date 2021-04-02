@@ -1,16 +1,9 @@
 import React from "react";
 import { Helmet } from "react-helmet";
-import {
-  TextField,
-  Grid,
-  Card,
-  CardContent,
-  Button,
-  Typography,
-} from "@material-ui/core";
-import PageContainer from "../components/PageContainer";
+import { TextField, Grid, Card, CardContent, Button, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useSelector } from "react-redux";
+import PageContainer from "../components/PageContainer";
 import { withAuthorization } from "../components/HOC";
 
 const useStyles = makeStyles((theme) => ({
@@ -58,13 +51,7 @@ const Settings = () => {
         <title>Settings — TSE Oktavian</title>
       </Helmet>
       <PageContainer>
-        <Grid
-          container
-          spacing={0}
-          alignItems="center"
-          justify="center"
-          className={classes.grid}
-        >
+        <Grid container spacing={0} alignItems="center" justify="center" className={classes.grid}>
           <Grid item md={6} xs={12}>
             <Card className={classes.card}>
               <CardContent>
@@ -97,12 +84,8 @@ const Settings = () => {
             <Card className={classes.card}>
               <CardContent>
                 <Typography variant="h5">Change Password</Typography>
-                <Typography
-                  className={classes.lightSpacing}
-                  color="textSecondary"
-                >
-                  The ability to change passwords will be enabled in a future
-                  update.
+                <Typography className={classes.lightSpacing} color="textSecondary">
+                  The ability to change passwords will be enabled in a future update.
                 </Typography>
                 <form className={classes.form}>
                   <TextField

@@ -12,7 +12,7 @@ async function getApplicationStats(start_date, end_date) {
   const stats = {};
   for (const role of roles) {
     const criteria = {
-      role: role,
+      role,
       created_at: {
         $gte: start_date,
         $lte: end_date,
@@ -26,12 +26,12 @@ async function getApplicationStats(start_date, end_date) {
         current_stage: stage,
       }).exec();
     }
-    stats[role.name]["Accepted"] = await Application.countDocuments({
+    stats[role.name].Accepted = await Application.countDocuments({
       ...criteria,
       completed: true,
       accepted: true,
     }).exec();
-    stats[role.name]["Rejected"] = await Application.countDocuments({
+    stats[role.name].Rejected = await Application.countDocuments({
       ...criteria,
       completed: true,
       accepted: false,

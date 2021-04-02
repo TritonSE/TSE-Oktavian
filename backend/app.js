@@ -39,13 +39,14 @@ app.use("/api/auth", require("./routes/auth"));
 app.use("/api/applications", require("./routes/applications"));
 app.use("/api/reviews", require("./routes/reviews"));
 app.use("/api/stats", require("./routes/stats"));
+
 app.get(["/", "/*"], (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 // Error handling
 /* eslint-disable no-unused-vars */
-app.use(function (err, req, res, next) {
+app.use((err, req, res, next) => {
   if (err.status === 500 || err.status == null) {
     console.error(err);
     res.status(500).json({ message: "Something went wrong on the server" });
@@ -62,7 +63,7 @@ if (NODE_ENV === "development") {
       console.log("Mock data has been generated.");
     })
     .catch((err) => {
-      console.log("Error generating mock data: " + err);
+      console.log(`Error generating mock data: ${err}`);
     });
 } else {
   console.log("Ignoring mock data generation.");

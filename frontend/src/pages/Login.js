@@ -1,10 +1,10 @@
 import React from "react";
-import PageContainer from "../components/PageContainer";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import { TextField, Button, Grid, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useDispatch } from "react-redux";
+import PageContainer from "../components/PageContainer";
 import { login, openAlert } from "../actions";
 import { withAuthorization } from "../components/HOC";
 
@@ -97,12 +97,7 @@ const Login = () => {
                 <Typography>Forgot your password?</Typography>
               </Link>
               <div className={classes.centered}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  type="submit"
-                  disabled={state.disabled}
-                >
+                <Button variant="contained" color="primary" type="submit" disabled={state.disabled}>
                   Submit
                 </Button>
               </div>
