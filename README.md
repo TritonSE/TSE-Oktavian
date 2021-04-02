@@ -4,32 +4,18 @@ Oktavian is our planned, one-stop shop membership portal application, intended t
 everything from recruitment to roster management to project logistics. Oktavian supersedes 
 the previous recruitment tool project, which only focused on the immediate recruitment pipeline.
 
+The goal of Oktavian is two-fold: (1) centralize our most important documents and
+data and (2) automate away some of the redundancies associated with our processes. The core
+idea behind Oktavian is that of role-based access control. Through Oktavian, users are
+assigned to unique roles, each of which has certain permissions. These permissions are
+propogated internally throughout Oktavian, controlling what information users are allowed
+to see (for example, project-related documents, recruitment-related applications, etc.) and
+are propogated externally beyond Oktavian, cascading into the other services that TSE uses,
+such as Google Drive, Monday.com, GitHub, and others. Ultimately, a user's entire technological 
+footprint with respect to TSE will be tied solely to Oktavian.
+
 The frontend is written in React, which is bundled and served directly by the backend.
 The backend is written using a combination of NodeJS, Express, and MongoDB (the MERN stack).
-
-## Features
-
-The ideal feature list is given as:
-
-* Manages the recruitment pipeline
-    * Applications submitted through the website are sent to Oktavian.
-    * Applications are auto-assigned to a reviewer in each stage.
-    * Applications are marked as either accepted or rejected at the end.
-    * Applicants are notified automatically by email when a decision is made.
-    * The board can view the details of any active or past application.
-* Manages the organization roster
-    * All members will be given a profile, where they can add information about themselves.
-    * Members can be assigned to roles, each of which has varying permissions. 
-    * Members can be assigned to teams, which tied to a past or ongoing project.
-    * Members can view the organization roster, including other members' teams and roles.
-    * A promotion ladder is available to the board, where members can be promoted/demoted/removed.
-    * Other administrative capabilities are present, such as the ability to create/update roles & teams.
-* Manages the project lifecycle
-    * Each project team starts with a name, basic description, and list of members.
-    * The executive board can fill out the necessary sections of the project proposal attached to the team.
-    * The PM can fill out the remaining sections of the project proposal attached to the team.
-    * Any member in the organization has access to public information regarding the proposal (e.g. architecture).
-    * Sensitive information in the project proposal is hidden (e.g. contacts).
 
 ## Setup
 
