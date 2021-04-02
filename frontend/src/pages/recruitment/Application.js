@@ -102,7 +102,7 @@ const Application = ({ match }) => {
           return { ...review, created_at: new Date(review.created_at) };
         })
         .sort((a, b) => {
-          return b.created_at - a.created_at;
+          return a.created_at - b.created_at;
         });
       const updates = {
         loading: false,
