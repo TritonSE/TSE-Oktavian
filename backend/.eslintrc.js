@@ -46,10 +46,13 @@ const reactRules = {
  * Return a rules object which produces warnings instead of errors for accessibility problems.
  */
 function getAccessibilityWarningRules() {
-  const a11yRules = require("eslint-plugin-jsx-a11y").rules;
-  return Object.fromEntries(
-    Object.entries(a11yRules).map(([name, _rule]) => [`jsx-a11y/${name}`, "warn"])
-  );
+  const oldRules = require("eslint-plugin-jsx-a11y").rules;
+
+  const newRules = {};
+  Object.entries(oldRules).forEach(([name, _rule]) => {
+    newRules[`jsx-a11y/${name}`] = "warn";
+  });
+  return newRules;
 }
 
 /**
