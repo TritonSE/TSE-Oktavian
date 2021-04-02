@@ -90,13 +90,17 @@ function usingReact() {
  */
 function generateRules() {
   const rules = { ...generalRules };
-  Object.assign(rules, getAllowForOfRules());
-
-  if (usingReact()) {
-    Object.assign(rules, reactRules);
-    Object.assign(rules, getAccessibilityWarningRules());
+  try {
+    Object.assign(rules, getAllowForOfRules());
+    if (usingReact()) {
+      Object.assign(rules, reactRules);
+      Object.assign(rules, getAccessibilityWarningRules());
+    }
+  } catch (err) {
+    // Fixes issues with the Heroku deployment procedure for Oktavian specifically
+    // Some of the modules are being incorrectly recognized as global
+    // It's not really important that the linting process works at that stage though
   }
-
   return rules;
 }
 
