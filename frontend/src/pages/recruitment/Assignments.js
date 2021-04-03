@@ -42,7 +42,6 @@ const Assignments = () => {
             return {
               ...app,
               role: app.role.name,
-              submission: new Date(app.created_at).getFullYear(),
             };
           });
         setState((prev_state) => ({
@@ -103,11 +102,6 @@ const Assignments = () => {
                   {
                     title: "Graduating In",
                     field: "graduation",
-                    type: "numeric",
-                  },
-                  {
-                    title: "Submitted In",
-                    field: "submission",
                     type: "numeric",
                   },
                 ]}

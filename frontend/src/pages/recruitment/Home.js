@@ -112,7 +112,7 @@ const Home = () => {
                     <Grid container spacing={3}>
                       <Grid item md={6} xs={12}>
                         <DatePicker
-                          label="Start Date"
+                          label="Submission Start Date"
                           format="MM/dd/yyyy"
                           value={state.start_date}
                           onChange={handleStartDateChange}
@@ -120,7 +120,7 @@ const Home = () => {
                       </Grid>
                       <Grid item md={6} xs={12}>
                         <DatePicker
-                          label="End Date"
+                          label="Submission End Date"
                           format="MM/dd/yyyy"
                           value={state.end_date}
                           onChange={handleEndDateChange}
