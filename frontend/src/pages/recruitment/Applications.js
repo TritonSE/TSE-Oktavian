@@ -42,7 +42,6 @@ const Applications = () => {
         const applications = data.applications.map((app) => ({
           ...app,
           role: app.role.name,
-          submission: new Date(app.created_at).getFullYear(),
         }));
         setState((prev_state) => ({
           ...prev_state,
@@ -83,7 +82,7 @@ const Applications = () => {
                 <Grid container spacing={3} className={classes.dates}>
                   <Grid item md={6} xs={12}>
                     <DatePicker
-                      label="Start Date"
+                      label="Submission Start Date"
                       format="MM/dd/yyyy"
                       value={state.start_date}
                       onChange={handleStartDateChange}
@@ -91,7 +90,7 @@ const Applications = () => {
                   </Grid>
                   <Grid item md={6} xs={12}>
                     <DatePicker
-                      label="End Date"
+                      label="Submission End Date"
                       format="MM/dd/yyyy"
                       value={state.end_date}
                       onChange={handleEndDateChange}
@@ -130,11 +129,6 @@ const Applications = () => {
                   {
                     title: "Graduating In",
                     field: "graduation",
-                    type: "numeric",
-                  },
-                  {
-                    title: "Submitted In",
-                    field: "submission",
                     type: "numeric",
                   },
                   { title: "Completed", field: "completed", type: "boolean" },
