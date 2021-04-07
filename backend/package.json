@@ -4,11 +4,11 @@
   "author": "Triton Software Engineering <tse@ucsd.edu>",
   "private": true,
   "scripts": {
-    "lint": "eslint --fix --cache --report-unused-disable-directives . && prettier --write .",
     "format": "prettier --write .",
     "start": "node ./bin/www",
     "lint-check": "eslint --cache --report-unused-disable-directives . && prettier --check .",
-    "prepare": "cd .. && husky install .husky"
+    "prepare": "cd .. && husky install .husky",
+    "lint-fix": "eslint --fix --cache --report-unused-disable-directives . ; prettier --write ."
   },
   "dependencies": {
     "bcrypt": "^5.0.0",

@@ -23,11 +23,11 @@
   "scripts": {
     "start": "node --max_old_space_size=4096 node_modules/.bin/react-scripts start",
     "build": "node --max_old_space_size=4096 node_modules/.bin/react-scripts build",
-    "lint": "eslint --fix --cache --report-unused-disable-directives . && prettier --write .",
     "format": "prettier --write .",
     "watch": "cra-build-watch -b ../backend/public",
     "lint-check": "eslint --cache --report-unused-disable-directives . && prettier --check .",
-    "prepare": "cd .. && husky install .husky"
+    "prepare": "cd .. && husky install .husky",
+    "lint-fix": "eslint --fix --cache --report-unused-disable-directives . ; prettier --write ."
   },
   "eslintConfig": {
     "extends": "react-app"
