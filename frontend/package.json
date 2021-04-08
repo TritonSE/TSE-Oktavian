@@ -53,5 +53,6 @@
     "eslint-plugin-react": "^7.23.1",
     "husky": "^6.0.0",
     "prettier": "^2.2.1"
-  }
+  },
+  "proxy": "http://localhost:8000"
 }
