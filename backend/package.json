@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "format": "prettier --write .",
-    "start": "node ./bin/www",
+    "start": "nodemon ./bin/www",
     "lint-check": "eslint --cache --report-unused-disable-directives . && prettier --check .",
     "prepare": "cd .. && husky install .husky",
     "lint-fix": "eslint --fix --cache --report-unused-disable-directives . ; prettier --write ."
@@ -38,6 +38,7 @@
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-import": "^2.22.1",
     "husky": "^6.0.0",
+    "nodemon": "^2.0.7",
     "prettier": "^2.2.1"
   }
 }
