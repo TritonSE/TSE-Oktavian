@@ -133,6 +133,7 @@ const Applications = () => {
                   },
                   { title: "Completed", field: "completed", type: "boolean" },
                   { title: "Accepted", field: "accepted", type: "boolean" },
+                  { title: "Last Reviewer", field: "last_reviewer" },
                 ]}
                 data={state.applications}
                 title="All Applications"
