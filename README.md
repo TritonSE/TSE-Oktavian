@@ -44,6 +44,12 @@ Finally, to start the server:
 npm start
 ```
 
+In a development environment, start the server with:
+
+```
+npm run start-dev
+```
+
 This will install any necessary modules, start the backend server at **localhost:8000** serving
 the API routes, and start the frontend server at **localhost:3000** with hot-reloading. Visit **localhost:3000**
 to see the app. The frontend server will also automatically proxy API requests to the backend server.
