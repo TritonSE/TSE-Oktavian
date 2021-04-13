@@ -55,8 +55,15 @@ async function resetPassword(data) {
   await PasswordReset.deleteOne({ _id: password_reset._id }).exec();
 }
 
+async function changePassword(data) {
+  const { user, password } = data;
+  user.password = password;
+  await user.save();
+}
+
 module.exports = {
   createUser,
   forgotPassword,
   resetPassword,
+  changePassword,
 };

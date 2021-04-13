@@ -2,19 +2,21 @@ const express = require("express");
 const { body } = require("express-validator");
 const jwt = require("jsonwebtoken");
 
-const { createUser, forgotPassword, resetPassword } = require("../services/users");
+const { createUser, forgotPassword, resetPassword, changePassword } = require("../services/users");
 const { authenticateUser, authorizeUser } = require("../middleware/auth");
 const { validateRequest } = require("../middleware/validation");
 const { JWT_SECRET } = require("../constants");
 
 const router = express.Router();
 
+const PASSWORD_VALIDATOR = body("password").isString().isLength({ min: 6 });
+
 router.post(
   "/register",
   [
     body("name").notEmpty().isString(),
     body("email").notEmpty().isEmail(),
-    body("password").notEmpty().isString().isLength({ min: 6 }),
+    PASSWORD_VALIDATOR,
     body("secret").notEmpty().isString(),
     validateRequest,
   ],
@@ -46,12 +48,7 @@ router.post(
 
 router.post(
   "/login",
-  [
-    body("email").isEmail(),
-    body("password").isString().isLength({ min: 6 }),
-    validateRequest,
-    authenticateUser,
-  ],
+  [body("email").isEmail(), PASSWORD_VALIDATOR, validateRequest, authenticateUser],
   (req, res) => {
     res.status(200).json({
       user: req.user,
@@ -85,10 +82,27 @@ router.post(
 
 router.post(
   "/reset-password",
-  [body("token").isUUID(4), body("password").isString().isLength({ min: 6 }), validateRequest],
+  [body("token").isUUID(4), PASSWORD_VALIDATOR, validateRequest],
   (req, res, next) => {
     resetPassword({
       token: req.body.token,
+      password: req.body.password,
+    })
+      .then(() => {
+        res.status(200).json({});
+      })
+      .catch((err) => {
+        next(err);
+      });
+  }
+);
+
+router.post(
+  "/change-password",
+  [PASSWORD_VALIDATOR, validateRequest, authorizeUser([])],
+  (req, res, next) => {
+    changePassword({
+      user: req.user,
       password: req.body.password,
     })
       .then(() => {
