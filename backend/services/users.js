@@ -55,8 +55,13 @@ async function resetPassword(data) {
   await PasswordReset.deleteOne({ _id: password_reset._id }).exec();
 }
 
+async function getAllUsers() {
+  return User.find();
+}
+
 module.exports = {
   createUser,
   forgotPassword,
   resetPassword,
+  getAllUsers,
 };
