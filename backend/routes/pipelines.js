@@ -12,6 +12,9 @@ const {
 
 const router = express.Router();
 
+/**
+ * Returns a list of all ApplicationPipeline objects
+ */
 router.get("/", [authorizeUser(["roster", "recruitment"])], (req, res, next) => {
   getAllPipelines()
     .then((pipelines) => {
@@ -22,6 +25,9 @@ router.get("/", [authorizeUser(["roster", "recruitment"])], (req, res, next) => 
     });
 });
 
+/**
+ * Attempts to create a new ApplicationPipeline object
+ */
 router.post(
   "/",
   [
@@ -41,6 +47,9 @@ router.post(
   }
 );
 
+/**
+ * Attempts to update an existing ApplicationPipeline object with the given role and reviewer values
+ */
 router.put(
   "/",
   [authorizeUser(["roster", "recruitment"]), body("id").notEmpty().isMongoId(), validateRequest],
@@ -55,6 +64,9 @@ router.put(
   }
 );
 
+/**
+ * Attempts to delete an existing ApplicationPipeline object
+ */
 router.delete(
   "/",
   [authorizeUser(["roster", "recruitment"]), body("id").notEmpty().isMongoId(), validateRequest],
