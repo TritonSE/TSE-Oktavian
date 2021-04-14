@@ -55,8 +55,16 @@ async function resetPassword(data) {
   await PasswordReset.deleteOne({ _id: password_reset._id }).exec();
 }
 
+/**
+ * Returns an array of all users in Oktavian
+ */
+async function getAllUsers() {
+  return User.find();
+}
+
 module.exports = {
   createUser,
   forgotPassword,
   resetPassword,
+  getAllUsers,
 };
