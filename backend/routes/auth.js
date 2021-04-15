@@ -11,17 +11,17 @@ const router = express.Router();
 
 const TOKEN_EXPIRE_SEC = 3600;
 
-const PASSWORD_VALIDATOR = body("password").isString().isLength({ min: 6 });
+const validators = {
+  name: body("name").notEmpty().isString(),
+  email: body("email").isEmail(),
+  password: body("password").isString().isLength({ min: 6 }),
+  secret: body("secret").notEmpty().isString(),
+  token: body("token").isUUID(4),
+};
 
 router.post(
   "/register",
-  [
-    body("name").notEmpty().isString(),
-    body("email").notEmpty().isEmail(),
-    PASSWORD_VALIDATOR,
-    body("secret").notEmpty().isString(),
-    validateRequest,
-  ],
+  [validators.name, validators.email, validators.password, validators.secret, validateRequest],
   (req, res, next) => {
     createUser({
       name: req.body.name,
@@ -50,7 +50,7 @@ router.post(
 
 router.post(
   "/login",
-  [body("email").isEmail(), PASSWORD_VALIDATOR, validateRequest, authenticateUser],
+  [validators.email, validators.password, validateRequest, authenticateUser],
   (req, res) => {
     res.status(200).json({
       user: req.user,
@@ -67,7 +67,7 @@ router.get("/me", [authorizeUser([])], (req, res) => {
 
 router.post(
   "/forgot-password",
-  [body("email").isEmail(), body("secret").notEmpty().isString(), validateRequest],
+  [validators.email, validators.secret, validateRequest],
   (req, res, next) => {
     forgotPassword({
       email: req.body.email,
@@ -84,7 +84,7 @@ router.post(
 
 router.post(
   "/reset-password",
-  [body("token").isUUID(4), PASSWORD_VALIDATOR, validateRequest],
+  [validators.token, validators.password, validateRequest],
   (req, res, next) => {
     resetPassword({
       token: req.body.token,
@@ -101,7 +101,7 @@ router.post(
 
 router.post(
   "/change-password",
-  [PASSWORD_VALIDATOR, validateRequest, authorizeUser([])],
+  [validators.password, validateRequest, authorizeUser([])],
   (req, res, next) => {
     changePassword({
       user: req.user,
