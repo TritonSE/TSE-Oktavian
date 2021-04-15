@@ -2,9 +2,11 @@ import React from "react";
 import { Helmet } from "react-helmet";
 import { TextField, Grid, Card, CardContent, Button, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import PageContainer from "../components/PageContainer";
 import { withAuthorization } from "../components/HOC";
+import { changePassword } from "../services/auth";
+import { openAlert } from "../actions";
 
 const useStyles = makeStyles((theme) => ({
   grid: {
@@ -34,15 +36,34 @@ const useStyles = makeStyles((theme) => ({
 const Settings = () => {
   const classes = useStyles();
   const [state, setState] = React.useState({
-    disabled: true,
+    disabled: false,
     old_password: "",
     new_password: "",
     confirm_password: "",
   });
+  const dispatch = useDispatch();
   const loginState = useSelector((lstate) => lstate.login);
 
   const handleChange = (prop) => (event) => {
     setState({ ...state, [prop]: event.target.value });
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    if (state.new_password !== state.confirm_password) {
+      dispatch(openAlert("Passwords do not match"));
+      return;
+    }
+
+    setState({ ...state, disabled: true });
+    const { ok, data } = await changePassword({ password: state.new_password });
+    if (ok) {
+      dispatch(openAlert("Your password has been changed"));
+    } else {
+      dispatch(openAlert(`Error: ${data.message}`));
+    }
+    setState({ ...state, disabled: false });
   };
 
   return (
@@ -84,10 +105,7 @@ const Settings = () => {
             <Card className={classes.card}>
               <CardContent>
                 <Typography variant="h5">Change Password</Typography>
-                <Typography className={classes.lightSpacing} color="textSecondary">
-                  The ability to change passwords will be enabled in a future update.
-                </Typography>
-                <form className={classes.form}>
+                <form className={classes.form} onSubmit={handleSubmit}>
                   <TextField
                     label="Old Password"
                     variant="outlined"

@@ -2,7 +2,7 @@ const express = require("express");
 const { body } = require("express-validator");
 const jwt = require("jsonwebtoken");
 
-const { createUser, forgotPassword, resetPassword } = require("../services/users");
+const { createUser, forgotPassword, resetPassword, changePassword } = require("../services/users");
 const { authenticateUser, authorizeUser } = require("../middleware/auth");
 const { validateRequest } = require("../middleware/validation");
 const { JWT_SECRET } = require("../constants");
@@ -11,15 +11,17 @@ const router = express.Router();
 
 const TOKEN_EXPIRE_SEC = 3600;
 
+const validators = {
+  name: body("name").notEmpty().isString(),
+  email: body("email").isEmail(),
+  password: body("password").isString().isLength({ min: 6 }),
+  secret: body("secret").notEmpty().isString(),
+  token: body("token").isUUID(4),
+};
+
 router.post(
   "/register",
-  [
-    body("name").notEmpty().isString(),
-    body("email").notEmpty().isEmail(),
-    body("password").notEmpty().isString().isLength({ min: 6 }),
-    body("secret").notEmpty().isString(),
-    validateRequest,
-  ],
+  [validators.name, validators.email, validators.password, validators.secret, validateRequest],
   (req, res, next) => {
     createUser({
       name: req.body.name,
@@ -48,12 +50,7 @@ router.post(
 
 router.post(
   "/login",
-  [
-    body("email").isEmail(),
-    body("password").isString().isLength({ min: 6 }),
-    validateRequest,
-    authenticateUser,
-  ],
+  [validators.email, validators.password, validateRequest, authenticateUser],
   (req, res) => {
     res.status(200).json({
       user: req.user,
@@ -70,7 +67,7 @@ router.get("/me", [authorizeUser([])], (req, res) => {
 
 router.post(
   "/forgot-password",
-  [body("email").isEmail(), body("secret").notEmpty().isString(), validateRequest],
+  [validators.email, validators.secret, validateRequest],
   (req, res, next) => {
     forgotPassword({
       email: req.body.email,
@@ -87,10 +84,27 @@ router.post(
 
 router.post(
   "/reset-password",
-  [body("token").isUUID(4), body("password").isString().isLength({ min: 6 }), validateRequest],
+  [validators.token, validators.password, validateRequest],
   (req, res, next) => {
     resetPassword({
       token: req.body.token,
+      password: req.body.password,
+    })
+      .then(() => {
+        res.status(200).json({});
+      })
+      .catch((err) => {
+        next(err);
+      });
+  }
+);
+
+router.post(
+  "/change-password",
+  [validators.password, validateRequest, authorizeUser([])],
+  (req, res, next) => {
+    changePassword({
+      user: req.user,
       password: req.body.password,
     })
       .then(() => {

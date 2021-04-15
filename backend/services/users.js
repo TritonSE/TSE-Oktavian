@@ -55,6 +55,12 @@ async function resetPassword(data) {
   await PasswordReset.deleteOne({ _id: password_reset._id }).exec();
 }
 
+async function changePassword(data) {
+  const { user, password } = data;
+  user.password = password;
+  await user.save();
+}
+
 /**
  * Returns an array of all users in Oktavian
  */
@@ -66,5 +72,6 @@ module.exports = {
   createUser,
   forgotPassword,
   resetPassword,
+  changePassword,
   getAllUsers,
 };
