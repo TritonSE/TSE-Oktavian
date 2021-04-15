@@ -61,9 +61,17 @@ async function changePassword(data) {
   await user.save();
 }
 
+/**
+ * Returns an array of all users in Oktavian
+ */
+async function getAllUsers() {
+  return User.find();
+}
+
 module.exports = {
   createUser,
   forgotPassword,
   resetPassword,
   changePassword,
+  getAllUsers,
 };

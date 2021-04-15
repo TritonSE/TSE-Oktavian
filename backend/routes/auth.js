@@ -9,6 +9,8 @@ const { JWT_SECRET } = require("../constants");
 
 const router = express.Router();
 
+const TOKEN_EXPIRE_SEC = 3600;
+
 const PASSWORD_VALIDATOR = body("password").isString().isLength({ min: 6 });
 
 router.post(
@@ -35,7 +37,7 @@ router.post(
           } else {
             res.status(200).json({
               user: req.user,
-              token: jwt.sign(req.user.toJSON(), JWT_SECRET),
+              token: jwt.sign(req.user.toJSON(), JWT_SECRET, { expiresIn: TOKEN_EXPIRE_SEC }),
             });
           }
         });
@@ -52,7 +54,7 @@ router.post(
   (req, res) => {
     res.status(200).json({
       user: req.user,
-      token: jwt.sign(req.user.toJSON(), JWT_SECRET),
+      token: jwt.sign(req.user.toJSON(), JWT_SECRET, { expiresIn: TOKEN_EXPIRE_SEC }),
     });
   }
 );

@@ -39,6 +39,9 @@ app.use("/api/auth", require("./routes/auth"));
 app.use("/api/applications", require("./routes/applications"));
 app.use("/api/reviews", require("./routes/reviews"));
 app.use("/api/stats", require("./routes/stats"));
+app.use("/api/users", require("./routes/users"));
+app.use("/api/roles", require("./routes/roles"));
+app.use("/api/pipelines", require("./routes/pipelines"));
 
 app.get(["/", "/*"], (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
