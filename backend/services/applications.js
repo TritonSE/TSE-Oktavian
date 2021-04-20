@@ -87,7 +87,6 @@ async function autoAssignApplication(application) {
  * imply a final acceptance or another review (with the stage advanced).
  */
 async function advanceApplication(application, review_accepted) {
-  /* eslint-disable no-param-reassign */
   const old_completed = application.completed;
   const old_accepted = application.accepted;
   const old_stage = application.current_stage;
@@ -130,7 +129,6 @@ async function advanceApplication(application, review_accepted) {
       throw err;
     }
   }
-  /* eslint-enable no-param-reassign */
 }
 
 /*

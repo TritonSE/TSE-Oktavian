@@ -1,15 +1,21 @@
 const express = require("express");
 const { body } = require("express-validator");
 const jwt = require("jsonwebtoken");
+const { v4: uuidv4 } = require("uuid");
 
 const { createUser, forgotPassword, resetPassword, changePassword } = require("../services/users");
 const { authenticateUser, authorizeUser } = require("../middleware/auth");
 const { validateRequest } = require("../middleware/validation");
 const { JWT_SECRET } = require("../constants");
+const { User } = require("../models");
 
 const router = express.Router();
 
 const TOKEN_EXPIRE_SEC = 3600;
+
+function makeAccessToken(user) {
+  return jwt.sign(user.toJSON(), JWT_SECRET, { expiresIn: TOKEN_EXPIRE_SEC });
+}
 
 const validators = {
   name: body("name").notEmpty().isString(),
@@ -28,6 +34,7 @@ router.post(
       email: req.body.email,
       password: req.body.password,
       secret: req.body.secret,
+      refreshToken: uuidv4(),
       active: true,
     })
       .then((user) => {
@@ -35,10 +42,13 @@ router.post(
           if (err) {
             next(err);
           } else {
-            res.status(200).json({
-              user: req.user,
-              token: jwt.sign(req.user.toJSON(), JWT_SECRET, { expiresIn: TOKEN_EXPIRE_SEC }),
-            });
+            res
+              .status(200)
+              .json({
+                user: req.user,
+                token: makeAccessToken(user),
+              })
+              .cookie("refreshToken", user.refreshToken, { httpOnly: true });
           }
         });
       })
@@ -48,13 +58,27 @@ router.post(
   }
 );
 
+async function ensureRefreshTokenExists(user) {
+  if (user.refreshToken === undefined) {
+    user.refreshToken = uuidv4();
+    await user.save();
+  }
+
+  return user;
+}
+
 router.post(
   "/login",
   [validators.email, validators.password, validateRequest, authenticateUser],
   (req, res) => {
-    res.status(200).json({
-      user: req.user,
-      token: jwt.sign(req.user.toJSON(), JWT_SECRET, { expiresIn: TOKEN_EXPIRE_SEC }),
+    ensureRefreshTokenExists(req.user).then((user) => {
+      res
+        .status(200)
+        .json({
+          user,
+          token: makeAccessToken(user),
+        })
+        .cookie("refreshToken", user.refreshToken, { httpOnly: true });
     });
   }
 );
@@ -115,5 +139,24 @@ router.post(
       });
   }
 );
+
+router.post("/refresh", [authorizeUser([])], (req, res) => {
+  const { refreshToken } = req.cookies;
+  User.findOne({ refreshToken })
+    .then((user) => {
+      if (req.user._id.equals(user._id)) {
+        res.status(200).json({
+          user: req.user,
+          token: makeAccessToken(user),
+        });
+      } else {
+        // User corresponding to access token doesn't match user corresponding to refresh token
+        throw new Error();
+      }
+    })
+    .catch((_err) => {
+      res.status(401).json({});
+    });
+});
 
 module.exports = router;
