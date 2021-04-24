@@ -23,6 +23,27 @@ const UserSchema = new Schema({
     type: String,
     required: true,
   },
+  phone: {
+    type: String,
+    required: true,
+  },
+  github_username: {
+    type: String,
+    required: true,
+  },
+  discord_username: {
+    type: String,
+    required: true,
+  },
+  linkedin_username: {
+    type: String,
+    required: true,
+  },
+  graduation: {
+    // Graduation year
+    type: Number,
+    required: true,
+  },
   role: {
     type: mongoose.Types.ObjectId,
     ref: "Role",
