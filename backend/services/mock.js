@@ -2,6 +2,36 @@ const { User, Role, ApplicationPipeline } = require("../models");
 
 async function createMockData() {
   // Roles
+  const alum_role = new Role({
+    name: "Alum",
+    permissions: {
+      roster: false,
+      recruitment: false,
+      admin: false,
+      final_approval: false,
+    },
+  });
+  await alum_role.save();
+  const unassigned_role = new Role({
+    name: "Unassigned",
+    permissions: {
+      roster: true,
+      recruitment: false,
+      admin: false,
+      final_approval: false,
+    },
+  });
+  await unassigned_role.save();
+  const designer_role = new Role({
+    name: "Designer",
+    permissions: {
+      roster: true,
+      recruitment: true,
+      admin: false,
+      final_approval: false,
+    },
+  });
+  await designer_role.save();
   const public_role = new Role({
     name: "Developer",
     permissions: {
@@ -22,6 +52,16 @@ async function createMockData() {
     },
   });
   await private_role.save();
+  const pvp_role = new Role({
+    name: "PVP",
+    permissions: {
+      roster: true,
+      recruitment: true,
+      admin: true,
+      final_approval: false,
+    },
+  });
+  await pvp_role.save();
   const admin_role = new Role({
     name: "President",
     permissions: {
