@@ -25,12 +25,14 @@ module.exports = mongoose.model(
     },
     phase: {
       type: String,
+      enum: ["Outreach", "Design", "Development", "Post Development"],
       required: true,
     },
     timeline: {
       start: {
         quarter: {
           type: String,
+          enum: ["Fall", "Winter", "Spring", "Summer"],
           required: true,
         },
         year: {
@@ -41,6 +43,7 @@ module.exports = mongoose.model(
       end: {
         quarter: {
           type: String,
+          enum: ["Fall", "Winter", "Spring", "Summer"],
           required: false,
         },
         year: {
