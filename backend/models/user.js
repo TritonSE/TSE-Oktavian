@@ -53,6 +53,13 @@ const UserSchema = new Schema({
     type: Boolean,
     required: true,
   },
+  projects: [
+    {
+      type: mongoose.Types.ObjectId,
+      ref: "Project",
+      required: false,
+    },
+  ],
 });
 
 UserSchema.pre("save", function preSave(next) {
