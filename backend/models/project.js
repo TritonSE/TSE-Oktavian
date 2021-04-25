@@ -66,14 +66,14 @@ module.exports = mongoose.model(
       {
         type: mongoose.Types.ObjectId,
         ref: "User",
-        required: true,
+        required: false,
       },
     ],
     developers: [
       {
         type: mongoose.Types.ObjectId,
         ref: "User",
-        required: true,
+        required: false,
       },
     ],
     files: [

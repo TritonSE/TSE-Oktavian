@@ -33,11 +33,11 @@ const UserSchema = new Schema({
   },
   discord_username: {
     type: String,
-    required: true,
+    required: false,
   },
   linkedin_username: {
     type: String,
-    required: true,
+    required: false,
   },
   graduation: {
     // Graduation year
