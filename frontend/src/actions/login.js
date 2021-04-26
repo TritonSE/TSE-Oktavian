@@ -4,7 +4,7 @@ import {
   me,
   refresh as refreshRequest,
 } from "../services/auth";
-import { clearJWT, hasJWT, setJWT } from "../util/jwt";
+import { clearJWT, hasJWT, setJWT, getJWT } from "../util/jwt";
 import { openAlert } from "./alert";
 
 export const ACTION_LOGIN = "login/login";
@@ -79,11 +79,11 @@ export function resolveLogin() {
         dispatch(setLogin(data.user));
       } else {
         console.log("[Login Resolution] User has an invalid access token");
-        const { refreshOk, refreshData } = await refreshRequest();
-        if (refreshOk) {
+        const { ok, data } = await refreshRequest();
+        if (ok) {
           console.log("[Login Resolution] Obtained a new access token using the refresh token");
-          setJWT(refreshData.token);
-          dispatch(setLogin(refreshData.user));
+          setJWT(data.token);
+          dispatch(setLogin(data.user));
         } else {
           console.log("[Login Resolution] Refresh token is missing or invalid");
           clearJWT();
