@@ -23,6 +23,27 @@ const UserSchema = new Schema({
     type: String,
     required: true,
   },
+  phone: {
+    type: String,
+    required: true,
+  },
+  github_username: {
+    type: String,
+    required: true,
+  },
+  discord_username: {
+    type: String,
+    required: false,
+  },
+  linkedin_username: {
+    type: String,
+    required: false,
+  },
+  graduation: {
+    // Graduation year
+    type: Number,
+    required: true,
+  },
   role: {
     type: mongoose.Types.ObjectId,
     ref: "Role",
@@ -32,6 +53,13 @@ const UserSchema = new Schema({
     type: Boolean,
     required: true,
   },
+  projects: [
+    {
+      type: mongoose.Types.ObjectId,
+      ref: "Project",
+      required: false,
+    },
+  ],
 });
 
 UserSchema.pre("save", function preSave(next) {
