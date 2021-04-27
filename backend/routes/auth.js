@@ -11,7 +11,7 @@ const { User } = require("../models");
 
 const router = express.Router();
 
-const TOKEN_EXPIRE_SEC = 10; // 3600;
+const TOKEN_EXPIRE_SEC = 3600;
 
 function makeAccessToken(user) {
   return jwt.sign(user.toJSON(), JWT_SECRET, { expiresIn: TOKEN_EXPIRE_SEC });
@@ -145,7 +145,6 @@ router.post("/refresh", (req, res) => {
   User.findOne({ refreshToken })
     .populate("role")
     .then((user) => {
-      console.log(`Access token is: ${req.body.token}`);
       const accessTokenUser = jwt.verify(req.body.token, JWT_SECRET, { ignoreExpiration: true });
       if (user._id.equals(accessTokenUser._id)) {
         res.status(200).json({
@@ -156,9 +155,8 @@ router.post("/refresh", (req, res) => {
         throw new Error("Access token does not match refresh token");
       }
     })
-    .catch((_err) => {
-      console.log(_err.message);
-      res.status(401).json({});
+    .catch((err) => {
+      res.status(401).json({ message: err.message });
     });
 });
 

@@ -105,7 +105,6 @@ export default function PageContainer({ window, children }) {
         },
       ],
       display:
-        console.log(loginState) === undefined &&
         loginState.authenticated &&
         loginState.user.role != null &&
         loginState.user.role.permissions.recruitment,

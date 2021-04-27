@@ -79,7 +79,6 @@ export function resolveLogin() {
         dispatch(setLogin(meData.user));
       } else {
         console.log("[Login Resolution] User has an invalid access token");
-        console.log(`JWT before sending refresh request is ${getJWT()}`);
         const { ok: refreshOk, data: refreshData } = await refreshRequest({ token: getJWT() });
         if (refreshOk) {
           console.log("[Login Resolution] Obtained a new access token using the refresh token");
