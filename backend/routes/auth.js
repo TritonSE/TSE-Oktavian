@@ -44,11 +44,11 @@ router.post(
           } else {
             res
               .status(200)
+              .cookie("refreshToken", user.refreshToken, { httpOnly: true })
               .json({
                 user: req.user,
                 token: makeAccessToken(user),
-              })
-              .cookie("refreshToken", user.refreshToken, { httpOnly: true });
+              });
           }
         });
       })
@@ -74,11 +74,11 @@ router.post(
     ensureRefreshTokenExists(req.user).then((user) => {
       res
         .status(200)
+        .cookie("refreshToken", user.refreshToken, { httpOnly: true })
         .json({
           user,
           token: makeAccessToken(user),
-        })
-        .cookie("refreshToken", user.refreshToken, { httpOnly: true });
+        });
     });
   }
 );
@@ -140,22 +140,23 @@ router.post(
   }
 );
 
-router.post("/refresh", [authorizeUser([])], (req, res) => {
+router.post("/refresh", (req, res) => {
   const { refreshToken } = req.cookies;
   User.findOne({ refreshToken })
+    .populate("role")
     .then((user) => {
-      if (req.user._id.equals(user._id)) {
+      const accessTokenUser = jwt.verify(req.body.token, JWT_SECRET, { ignoreExpiration: true });
+      if (user._id.equals(accessTokenUser._id)) {
         res.status(200).json({
-          user: req.user,
+          user,
           token: makeAccessToken(user),
         });
       } else {
-        // User corresponding to access token doesn't match user corresponding to refresh token
-        throw new Error();
+        throw new Error("Access token does not match refresh token");
       }
     })
-    .catch((_err) => {
-      res.status(401).json({});
+    .catch((err) => {
+      res.status(401).json({ message: err.message });
     });
 });
 
