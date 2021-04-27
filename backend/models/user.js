@@ -53,6 +53,10 @@ const UserSchema = new Schema({
     type: Boolean,
     required: true,
   },
+  refreshToken: {
+    type: String,
+    required: false, // Refresh tokens are created the first time they are used
+  },
   projects: [
     {
       type: mongoose.Types.ObjectId,
