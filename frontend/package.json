@@ -21,8 +21,8 @@
     "redux-thunk": "^2.3.0"
   },
   "scripts": {
-    "start": "node --max_old_space_size=4096 node_modules/.bin/react-scripts start",
-    "build": "node --max_old_space_size=4096 node_modules/.bin/react-scripts build",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
     "format": "prettier --write .",
     "watch": "cra-build-watch -b ../backend/public",
     "lint-check": "eslint --cache --report-unused-disable-directives . && prettier --check .",

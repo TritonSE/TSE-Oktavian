@@ -4,7 +4,9 @@ import { LinearProgress } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
 import { resolveLogin } from "../actions";
 
-// The withAuthorization HOC is performs authentication
+const REFRESH_INTERVAL = 30 * 60 * 1000;
+
+// The withAuthorization HOC performs authentication
 // checks on the component that it wraps. It will ensure
 // that the user visited `WrappedComponent` meets the
 // specified authentication `authenticated` criteria as
@@ -16,6 +18,13 @@ const withAuthorization = (WrappedComponent, authenticated, permissions = [], ig
 ) => {
   const loginState = useSelector((state) => state.login);
   const dispatch = useDispatch();
+
+  const intervalID = setInterval(() => {
+    dispatch(resolveLogin());
+  }, REFRESH_INTERVAL);
+  React.useEffect(() => () => {
+    clearInterval(intervalID);
+  });
 
   // The login state is only loading when Redux is first loaded
   React.useEffect(() => {
@@ -30,7 +39,7 @@ const withAuthorization = (WrappedComponent, authenticated, permissions = [], ig
   }
 
   if (!ignore) {
-    // User is authenticated when they are not suppose to be
+    // User is authenticated when they are not supposed to be
     if (
       (authenticated && !loginState.authenticated) ||
       (!authenticated && loginState.authenticated)
