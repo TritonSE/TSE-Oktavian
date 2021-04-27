@@ -73,22 +73,23 @@ export function resolveLogin() {
   return async (dispatch) => {
     console.log("[Login Resolution] Starting ...");
     if (hasJWT()) {
-      const { ok, data } = await me();
-      if (ok) {
+      const { ok: meOk, data: meData } = await me();
+      if (meOk) {
         console.log("[Login Resolution] User is logged in");
-        dispatch(setLogin(data.user));
+        dispatch(setLogin(meData.user));
       } else {
         console.log("[Login Resolution] User has an invalid access token");
-        const { ok, data } = await refreshRequest();
-        if (ok) {
+        console.log(`JWT before sending refresh request is ${getJWT()}`);
+        const { ok: refreshOk, data: refreshData } = await refreshRequest({ token: getJWT() });
+        if (refreshOk) {
           console.log("[Login Resolution] Obtained a new access token using the refresh token");
-          setJWT(data.token);
-          dispatch(setLogin(data.user));
+          setJWT(refreshData.token);
+          dispatch(setLogin(refreshData.user));
         } else {
           console.log("[Login Resolution] Refresh token is missing or invalid");
           clearJWT();
           dispatch(clearLogin());
-          dispatch(openAlert(`Error: ${data.message}`));
+          dispatch(openAlert(`Error: ${refreshData.message}`));
         }
       }
     } else {

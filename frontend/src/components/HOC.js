@@ -19,7 +19,10 @@ const withAuthorization = (WrappedComponent, authenticated, permissions = [], ig
   const loginState = useSelector((state) => state.login);
   const dispatch = useDispatch();
 
-  const intervalID = setInterval(() => { dispatch(resolveLogin()); console.log("resolveLogin called from setInterval"); }, REFRESH_INTERVAL);
+  const intervalID = setInterval(() => {
+    dispatch(resolveLogin());
+    console.log("resolveLogin called from setInterval");
+  }, REFRESH_INTERVAL);
   React.useEffect(() => () => {
     clearInterval(intervalID);
   });
