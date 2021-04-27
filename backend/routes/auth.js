@@ -14,7 +14,7 @@ const router = express.Router();
 const TOKEN_EXPIRE_SEC = 3600;
 
 function makeAccessToken(user) {
-  return jwt.sign(user.toJSON(), JWT_SECRET, { expiresIn: TOKEN_EXPIRE_SEC });
+  return jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: TOKEN_EXPIRE_SEC });
 }
 
 const validators = {
