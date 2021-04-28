@@ -15,6 +15,12 @@ const generalRules = {
   "dot-notation": "off",
 
   /**
+   * Reassigning parameters can be useful to avoid creating another variable,
+   * and to modify objects by reference.
+   */
+  "no-param-reassign": "off",
+
+  /**
    * Unused variables and arguments should be removed in most cases, but sometimes they are
    * unavoidable. Prefix variable names with an underscore to suppress the error.
    */
@@ -33,7 +39,12 @@ const generalRules = {
 const reactRules = {
   "react/jsx-filename-extension": "off",
   "react/prop-types": "off",
-  "react/jsx-props-no-spreading": [2, { custom: "ignore", explicitSpread: "ignore" }],
+
+  // Allow prop spreading, but require explicit spreading for HTML tags.
+  "react/jsx-props-no-spreading": [
+    2,
+    { html: "enforce", custom: "ignore", explicitSpread: "ignore" },
+  ],
   "react/destructuring-assignment": "off",
 
   "react/sort-comp": "warn",

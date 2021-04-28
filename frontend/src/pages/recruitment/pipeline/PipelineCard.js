@@ -63,7 +63,7 @@ const PipelineCard = ({ pipeline, roles, users }) => {
   });
 
   const roleIdToNameMap = roles.reduce((map, role) => {
-    map[role._id] = role.name; // eslint-disable-line no-param-reassign
+    map[role._id] = role.name;
     return map;
   }, {});
 
