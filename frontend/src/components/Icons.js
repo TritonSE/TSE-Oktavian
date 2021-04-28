@@ -17,7 +17,6 @@ import Search from "@material-ui/icons/Search";
 import ViewColumn from "@material-ui/icons/ViewColumn";
 
 // A set of common icons, forwarding their props and ref down to any children nodes
-/* eslint-disable react/jsx-props-no-spreading */
 const TableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
   Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
@@ -37,7 +36,6 @@ const TableIcons = {
   ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
   ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />),
 };
-/* eslint-enable react/jsx-props-no-spreading */
 
 // TableIcons.Add.displayName = "Add";
 // TableIcons.Check.displayName = "Check";
