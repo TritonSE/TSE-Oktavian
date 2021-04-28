@@ -33,6 +33,7 @@ const generalRules = {
 const reactRules = {
   "react/jsx-filename-extension": "off",
   "react/prop-types": "off",
+  "react/jsx-props-no-spreading": [2, { custom: "ignore", explicitSpread: "ignore" }],
   "react/destructuring-assignment": "off",
 
   "react/sort-comp": "warn",

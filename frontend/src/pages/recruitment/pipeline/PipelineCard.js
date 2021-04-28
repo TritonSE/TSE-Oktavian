@@ -178,7 +178,6 @@ const PipelineCard = ({ pipeline, roles, users }) => {
                 getOptionLabel={(user) => user.name}
                 value={users.filter((user) => initialReviewers.has(user._id))}
                 renderInput={(params) => (
-                  // eslint-disable-next-line react/jsx-props-no-spreading
                   <TextField {...params} variant="standard" placeholder="Reviewers" />
                 )}
                 onChange={(_, newValue) => {
