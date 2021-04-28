@@ -14,7 +14,16 @@ import {
   Snackbar,
   Typography,
 } from "@material-ui/core";
-import { Menu, ExitToApp, Face, Dashboard, Settings, Inbox, RateReview } from "@material-ui/icons";
+import {
+  Menu,
+  ExitToApp,
+  Face,
+  Dashboard,
+  Settings,
+  Inbox,
+  RateReview,
+  ListAlt,
+} from "@material-ui/icons";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -102,6 +111,11 @@ export default function PageContainer({ window, children }) {
           icon: <RateReview />,
           text: "Your Assignments",
           link: "/recruitment/assignments",
+        },
+        {
+          icon: <ListAlt />,
+          text: "Pipelines",
+          link: "/recruitment/pipelines",
         },
       ],
       display:
