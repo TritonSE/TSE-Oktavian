@@ -13,7 +13,7 @@ import {
   TextField,
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
-import { Autocomplete } from "@material-ui/lab";
+import { Autocomplete } from "@material-ui/lab/Autocomplete";
 import { useDispatch } from "react-redux";
 
 import { withAuthorization } from "../../../components/HOC";
