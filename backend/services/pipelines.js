@@ -6,7 +6,7 @@ const { ServiceError } = require("./errors");
  * Return a list of all ApplicationPipeline objects
  */
 async function getAllPipelines() {
-  return ApplicationPipeline.find();
+  return ApplicationPipeline.find().populate("role", "name").populate("reviewers", "name");
 }
 
 /**
@@ -23,7 +23,7 @@ async function createApplicationPipeline(role, reviewers) {
     (await ApplicationPipeline.findOne({ role }).exec()) ||
     (await Role.count(role).exec()) === 0
   ) {
-    throw ServiceError(400, `Role already has an ApplicationPipeline use or does not exist`);
+    throw ServiceError(400, `Role already has an ApplicationPipeline or does not exist`);
   }
 
   // Throw error if an invalid reviewer is found
@@ -55,7 +55,7 @@ async function updateApplicationPipeline(pipeline_id, role, reviewers) {
     // role does not exist
     const duplicatePipeline = await ApplicationPipeline.findOne({ role }).exec();
     if (
-      (duplicatePipeline && duplicatePipeline._id !== pipeline_id) ||
+      (duplicatePipeline && String(duplicatePipeline._id) !== pipeline_id) ||
       (await Role.count(role)) === 0
     ) {
       throw ServiceError(400, `Role already has an ApplicationPipeline use or does not exist`);
