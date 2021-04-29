@@ -10,6 +10,7 @@ import {
   TextField,
   Select,
   MenuItem,
+  Divider,
 } from "@material-ui/core";
 import { withAuthorization } from "./HOC";
 import { openAlert } from "../actions";
@@ -42,9 +43,14 @@ const useStyles = makeStyles((theme) => ({
   select: {
     width: "90%",
   },
+  button: {
+    maxWidth: 171,
+    color: "black",
+    textTransform: "none",
+  },
 }));
 
-const EditForm = ({ userData }) => {
+const UserEdit = ({ userData }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [state, setState] = useState({
@@ -88,7 +94,7 @@ const EditForm = ({ userData }) => {
                   User ID
                 </Typography>
                 <Typography className={classes.nonEdit}>{userData.user._id}</Typography>
-                <hr />
+                <Divider />
               </div>
               <TextField
                 label="Name"
@@ -153,10 +159,9 @@ const EditForm = ({ userData }) => {
                 Email
               </Typography>
               <Typography className={classes.nonEdit}>{userData.user.email}</Typography>
-              <hr />
+              <Divider />
             </div>
           )}
-
           <TextField
             label="Phone Number"
             variant="outlined"
@@ -181,7 +186,13 @@ const EditForm = ({ userData }) => {
             type="text"
             defaultValue={userData.user.linkedin_username}
           />
-          <Button variant="contained" color="secondary" type="submit">
+          <Button
+            disableElevation
+            variant="contained"
+            color="#DBDBDB"
+            type="submit"
+            className={classes.button}
+          >
             Save Changes
           </Button>
         </form>
@@ -190,4 +201,4 @@ const EditForm = ({ userData }) => {
   );
 };
 
-export default withAuthorization(EditForm, true);
+export default withAuthorization(UserEdit, true);

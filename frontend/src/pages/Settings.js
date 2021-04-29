@@ -7,7 +7,7 @@ import PageContainer from "../components/PageContainer";
 import { withAuthorization } from "../components/HOC";
 import { changePassword } from "../services/auth";
 import { openAlert } from "../actions";
-import EditForm from "../components/EditForm";
+import UserEdit from "../components/UserEdit";
 
 const useStyles = makeStyles((theme) => ({
   grid: {
@@ -30,6 +30,11 @@ const useStyles = makeStyles((theme) => ({
   card: {
     maxWidth: 440,
     // marginRight: theme.spacing(6),
+  },
+  button: {
+    maxWidth: 200,
+    color: "black",
+    textTransform: "none",
   },
 }));
 
@@ -74,13 +79,13 @@ const Settings = () => {
       <PageContainer>
         <Grid
           container
-          spacing={3}
+          spacing={4}
           alignItems="flex-start"
           justify="center"
           className={classes.grid}
         >
           <Grid item md={4} xs={6}>
-            <EditForm userData={loginState} />
+            <UserEdit userData={loginState} />
           </Grid>
           <Grid item md={4} xs={6}>
             <Card className={classes.card}>
@@ -107,9 +112,11 @@ const Settings = () => {
                   />
                   <div>
                     <Button
+                      disableElevation
                       variant="contained"
-                      color="secondary"
+                      color="#DBDBDB"
                       type="submit"
+                      className={classes.button}
                       disabled={state.disabled}
                     >
                       Change Password
