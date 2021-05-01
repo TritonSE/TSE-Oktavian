@@ -4,14 +4,20 @@ import { Helmet } from "react-helmet";
 import { Card, CardContent, Grid, LinearProgress, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import MaterialTable from "@material-table/core";
 import { useDispatch } from "react-redux";
+import { TableIcons } from "../../components/Icons";
 import LoadingContainer from "../../components/LoadingContainer";
 import PageContainer from "../../components/PageContainer";
 import { openAlert } from "../../actions";
-import { getApplicationStats } from "../../services/stats";
+import { getApplicationStats} from "../../services/stats";
 import { withAuthorization } from "../../components/HOC";
 
+
 const useStyles = makeStyles((theme) => ({
+  block: {
+    display: "block",
+  },
   centered: {
     textAlign: "center",
   },
@@ -29,6 +35,7 @@ const Home = () => {
     // Initial backend data
     loading: true,
     stats: null,
+    statsForReviewer: null,
     // User input
     start_date: new Date(new Date().getFullYear(), new Date().getMonth() - 9, new Date().getDate()),
     end_date: new Date(),
@@ -39,11 +46,14 @@ const Home = () => {
     const loadData = async () => {
       const { ok, data } = await getApplicationStats(state.start_date, state.end_date);
       if (ok) {
+        console.log(data);
         const stats = JSON.parse(JSON.stringify(data.stats));
+        const statsForReviewer = JSON.parse(JSON.stringify(data.statsForReviewer));
         setState((prev_state) => ({
           ...prev_state,
           loading: false,
           stats,
+          statsForReviewer,
         }));
       } else {
         dispatch(openAlert(`Error: ${data.message}`));
@@ -87,6 +97,51 @@ const Home = () => {
           </Card>
         </Grid>
       ))
+    );
+
+    const reviewer_stats =
+      state.statsForReviewer == null ? (
+        <></>
+      ) : (
+        // Object.entries(state.statsForReviewer).map(([role, stats]) => (
+        //   <Grid item xs={12} key={role}>
+        //     <Card className= {classes.left}>
+        //       <CardContent>
+        //         <Typography variant="h6" className= {`${classes.title} ${classes.inline}`}>
+        //           {role}
+        //         </Typography>
+        //         {Object.entries(stats).map(([stage, count]) => (
+        //           <div className={`${classes.counter} ${classes.inline}`} key={`${role}-${stage}`}>
+        //             <Typography variant="h3">{count}</Typography>
+        //             <Typography variant="caption">{stage}</Typography>
+        //           </div>
+        //         ))}
+        //       </CardContent>
+        //     </Card>
+        //   </Grid>
+        // ))
+
+        <MaterialTable
+          className = {classes.centered}
+          icons={TableIcons}
+          options={{
+            paging: true,
+            pageSize: 10,
+            emptyRowsWhenPaging: true,
+            pageSizeOptions: [10, 20, 50, 100],
+          }}
+          columns={[
+            { title: "Name", field: "name" },
+            { title: "Resume", field: "Resume" },
+            { title: "Phone", field: "Phone" },
+            { title: "Interview", field: "Interview" },
+            { title: "Final", field: "Final" },
+            { title: "Accepted", field: "Accepted"},
+            { title: "Rejected", field: "Rejected"},
+          ]}
+          data={Object.values(state.statsForReviewer)}
+          title=""
+        />
     );
 
   return (
@@ -133,6 +188,12 @@ const Home = () => {
                   </Typography>
                   <Grid container spacing={3}>
                     {position_stats}
+                  </Grid>
+                  <Typography variant="h5" className={classes.title}>
+                    Breakdown by Reviewer
+                  </Typography>
+                  <Grid container spacing={3} className= {classes.block}>
+                    {reviewer_stats}
                   </Grid>
                 </>
               )}
