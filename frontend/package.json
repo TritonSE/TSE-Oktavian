@@ -8,6 +8,7 @@
     "@material-table/core": "^2.3.26",
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.58",
     "@material-ui/pickers": "^3.3.10",
     "@material-ui/styles": "^4.11.3",
     "prop-types": "^15.7.2",
@@ -21,8 +22,8 @@
     "redux-thunk": "^2.3.0"
   },
   "scripts": {
-    "start": "node --max_old_space_size=4096 node_modules/.bin/react-scripts start",
-    "build": "npx react-scripts build",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
     "format": "prettier --write .",
     "watch": "cra-build-watch -b ../backend/public",
     "lint-check": "eslint --cache --report-unused-disable-directives . && prettier --check .",

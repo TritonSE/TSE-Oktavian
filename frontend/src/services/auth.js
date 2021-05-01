@@ -20,6 +20,10 @@ export async function changePassword(body) {
   return sendData("api/auth/change-password", true, "POST", JSON.stringify(body));
 }
 
+export async function refresh(body) {
+  return sendData("api/auth/refresh", false, "POST", JSON.stringify(body));
+}
+
 export async function me() {
   return getData("api/auth/me", true);
 }
