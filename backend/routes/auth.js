@@ -160,4 +160,11 @@ router.post("/refresh", (req, res) => {
     });
 });
 
+router.post("/logout", [authorizeUser([])], (req, res) => {
+  req.user.refreshToken = undefined;
+  req.user.save().then(() => {
+    res.status(200).clearCookie("refreshToken", { httpOnly: true }).json({});
+  });
+});
+
 module.exports = router;
