@@ -39,13 +39,11 @@ const Applications = () => {
     const loadData = async () => {
       const { ok, data } = await getApplications(state.start_date, state.end_date);
       if (ok) {
-        
         const applications = data.applications.map((app) => ({
           ...app,
           role: app.role.name,
         }));
 
-        console.log(applications);
         setState((prev_state) => ({
           ...prev_state,
           loading: false,

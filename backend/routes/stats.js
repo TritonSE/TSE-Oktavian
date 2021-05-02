@@ -18,14 +18,15 @@ router.get(
   (req, res, next) => {
     getApplicationStats(new Date(req.query.start_date), new Date(req.query.end_date))
       .then((stats) => {
-        getApplicationStatsForReviewers(new Date(req.query.start_date), new Date(req.query.end_date))
-          .then((statsForReviewer) => {
-            res.status(200).json({
-              stats,
-              statsForReviewer,
-            });
-          })
-        
+        getApplicationStatsForReviewers(
+          new Date(req.query.start_date),
+          new Date(req.query.end_date)
+        ).then((statsForReviewer) => {
+          res.status(200).json({
+            stats,
+            statsForReviewer,
+          });
+        });
       })
       .catch((err) => {
         next(err);

@@ -47,20 +47,22 @@ async function getApplicationStats(start_date, end_date) {
  * between two dates. The dates refer to when the application
  * was created, not necessarily updated.
  */
- async function getApplicationStatsForReviewers(start_date, end_date) {
+async function getApplicationStatsForReviewers(start_date, end_date) {
   const stats = {};
   // gets all the reviews whose application was created within the specified date
-  const reviews = await Review.find().populate("reviewer").populate({
-    path: "application", 
-    match: {
-      created_at:{
-        $gte: start_date,
-        $lte: end_date
-      }
-    }
-  }).exec();
+  const reviews = await Review.find()
+    .populate("reviewer")
+    .populate({
+      path: "application",
+      match: {
+        created_at: {
+          $gte: start_date,
+          $lte: end_date,
+        },
+      },
+    })
+    .exec();
 
-  
   // looks through all the reviews to categorize them by reviewer name
   for (const review of reviews) {
     // skips through the reviews outside of the specified dates
@@ -69,32 +71,32 @@ async function getApplicationStats(start_date, end_date) {
       // add this reviewer to the 'stats' dictionary if we haven't seen them yet
       if (!(reviewer in stats)) {
         // creates the object with all the stages (resume, phone, interview, final) for each reviewer
-        stats[reviewer] = STAGES.concat(["Accepted", "Rejected"]).reduce((accumulator, currValue) => {
-          accumulator[currValue] = 0;
-          return accumulator;
-        }, {});
+        stats[reviewer] = STAGES.concat(["Accepted", "Rejected"]).reduce(
+          (accumulator, currValue) => {
+            accumulator[currValue] = 0;
+            return accumulator;
+          },
+          {}
+        );
         stats[reviewer].name = reviewer;
       }
 
       // updates the number of reviews for this reviewer
-      console.log("THIS IS review", review);
-      const {stage, completed, accepted} = review;
+      const { stage, completed, accepted } = review;
       stats[reviewer][stage]++;
 
       // updates accepted/rejected if the review is completed
       if (completed) {
         if (accepted) {
           stats[reviewer]["Accepted"]++;
-        }
-        else {
+        } else {
           stats[reviewer]["Rejected"]++;
         }
       }
     }
-     
   }
 
-  return stats
+  return stats;
 }
 
 module.exports = {
