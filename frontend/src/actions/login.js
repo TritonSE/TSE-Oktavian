@@ -3,6 +3,7 @@ import {
   register as registerRequest,
   me,
   refresh as refreshRequest,
+  logout as logoutRequest,
 } from "../services/auth";
 import { clearJWT, hasJWT, setJWT, getJWT } from "../util/jwt";
 import { openAlert } from "./alert";
@@ -59,10 +60,15 @@ export function register(credentials, callback) {
 }
 
 export function logout() {
-  return (dispatch) => {
+  return async (dispatch) => {
     if (hasJWT()) {
-      clearJWT();
-      dispatch(clearLogin());
+      const { ok, data } = await logoutRequest();
+      if (ok) {
+        clearJWT();
+        dispatch(clearLogin());
+      } else {
+        dispatch(openAlert(`Error: ${data.message}`));
+      }
     } else {
       dispatch(openAlert("User is already logged out"));
     }
