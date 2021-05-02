@@ -27,3 +27,7 @@ export async function refresh(body) {
 export async function me() {
   return getData("api/auth/me", true);
 }
+
+export async function logout() {
+  return sendData("api/auth/logout", true, "POST", JSON.stringify({}));
+}

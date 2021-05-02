@@ -82,6 +82,7 @@ UserSchema.set("toJSON", {
   transform(doc, obj) {
     const ret = { ...obj };
     delete ret.password;
+    delete ret.refreshToken;
     return ret;
   },
 });
