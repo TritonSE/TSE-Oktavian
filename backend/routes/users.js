@@ -21,7 +21,7 @@ router.get("/", [authorizeUser(["roster"])], (req, res, next) => {
 /**
  * Edit user information
  */
-router.post("/", [authorizeUser([])], (req, res, next) => {
+router.put("/", [authorizeUser([])], (req, res, next) => {
   editUser(req.body, req.user)
     .then((user) => {
       res.status(200).json({ user });
