@@ -43,6 +43,7 @@ const Applications = () => {
           ...app,
           role: app.role.name,
         }));
+
         setState((prev_state) => ({
           ...prev_state,
           loading: false,
