@@ -3,7 +3,7 @@ const express = require("express");
 const { query } = require("express-validator");
 const { authorizeUser } = require("../middleware/auth");
 const { validateRequest } = require("../middleware/validation");
-const { getApplicationStats } = require("../services/stats");
+const { getApplicationStats, getApplicationStatsForReviewers } = require("../services/stats");
 
 const router = express.Router();
 
@@ -18,8 +18,14 @@ router.get(
   (req, res, next) => {
     getApplicationStats(new Date(req.query.start_date), new Date(req.query.end_date))
       .then((stats) => {
-        res.status(200).json({
-          stats,
+        getApplicationStatsForReviewers(
+          new Date(req.query.start_date),
+          new Date(req.query.end_date)
+        ).then((statsForReviewer) => {
+          res.status(200).json({
+            stats,
+            statsForReviewer,
+          });
         });
       })
       .catch((err) => {
