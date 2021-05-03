@@ -5,6 +5,15 @@ const { User, PasswordReset } = require("../models");
 const { ServiceError } = require("./errors");
 const { sendEmail } = require("./email");
 
+// User model fields that are editable by normal users (editing themselves) and admins (editing anyone)
+const USER_EDITABLE = new Set([
+  "phone",
+  "discord_username",
+  "github_username",
+  "linkedin_username",
+]);
+const ADMIN_EDITABLE = new Set([...USER_EDITABLE, "email", "name", "graduation", "role", "active"]);
+
 async function createUser(raw_user) {
   let user = await User.findOne({ email: raw_user.email }).exec();
   if (raw_user.secret !== REGISTER_SECRET) {
@@ -68,10 +77,38 @@ async function getAllUsers() {
   return User.find();
 }
 
+/**
+ * Edit a user object.
+ * @param rawUser The edited user object.
+ * @param editingUser The user who is doing the editing.
+ */
+async function editUser(rawUser, editingUser) {
+  let editableFields = USER_EDITABLE;
+  if (editingUser.role != null && editingUser.role.permissions.admin) {
+    editableFields = ADMIN_EDITABLE;
+  } else if (editingUser._id.toString() !== rawUser._id) {
+    throw ServiceError(403, "You do not have permission to edit other users");
+  }
+  const editedUser = await User.findOne({ _id: rawUser._id });
+  if (editedUser === null) {
+    throw ServiceError(404, "User does not exist");
+  }
+  for (const [field, newValue] of Object.entries(rawUser)) {
+    if (field === "_id" || newValue === editedUser[field]) continue;
+    if (editableFields.has(field)) {
+      editedUser[field] = newValue;
+    } else {
+      throw ServiceError(403, `You do not have permission to edit the '${field}' field`);
+    }
+  }
+  return editedUser.save();
+}
+
 module.exports = {
   createUser,
   forgotPassword,
   resetPassword,
   changePassword,
   getAllUsers,
+  editUser,
 };
