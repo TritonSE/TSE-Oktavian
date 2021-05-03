@@ -40,9 +40,9 @@ const Roster = () => {
     loading: true,
     developers: [],
     alumni: [],
+    selectedRow: null,
+    alumniTable: false,
   });
-  const [selectedRow, setSelectedRow] = React.useState(null);
-  const [alumniTable, setAlumniTable] = React.useState(false);
   const dispatch = useDispatch();
 
   React.useEffect(() => {
@@ -89,18 +89,24 @@ const Roster = () => {
         <LoadingContainer loading={state.loading}>
           <Button
             size="large"
-            style={alumniTable ? defaultButton : styleButton}
+            style={state.alumniTable ? defaultButton : styleButton}
             onClick={() => {
-              setAlumniTable(false);
+              setState((prev_state) => ({
+                ...prev_state,
+                alumniTable: false,
+              }));
             }}
           >
             Active Members
           </Button>
           <Button
             size="large"
-            style={!alumniTable ? defaultButton : styleButton}
+            style={!state.alumniTable ? defaultButton : styleButton}
             onClick={() => {
-              setAlumniTable(true);
+              setState((prev_state) => ({
+                ...prev_state,
+                alumniTable: true,
+              }));
             }}
           >
             Alumni
@@ -109,10 +115,15 @@ const Roster = () => {
             <Grid item xs={12}>
               <MaterialTable
                 icons={{ ...TableIcons, Filter: TableIcons.Search }}
-                onRowClick={(evt, currRow) => setSelectedRow(currRow.tableData.id)}
+                onRowClick={(evt, currRow) =>
+                  setState((prev_state) => ({
+                    ...prev_state,
+                    selectedRow: currRow.tableData.id,
+                  }))
+                }
                 options={{
                   rowStyle: (rowData) => ({
-                    backgroundColor: selectedRow === rowData.tableData.id ? "#EEE" : "#FFF",
+                    backgroundColor: state.selectedRow === rowData.tableData.id ? "#EEE" : "#FFF",
                   }),
                   filtering: true,
                   paging: true,
@@ -159,7 +170,7 @@ const Roster = () => {
                     },
                   },
                 ]}
-                data={alumniTable ? state.alumni : state.developers}
+                data={state.alumniTable ? state.alumni : state.developers}
                 title=""
               />
             </Grid>
