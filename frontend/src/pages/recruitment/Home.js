@@ -101,24 +101,6 @@ const Home = () => {
     state.statsForReviewer == null ? (
       <></>
     ) : (
-      // Object.entries(state.statsForReviewer).map(([role, stats]) => (
-      //   <Grid item xs={12} key={role}>
-      //     <Card className= {classes.left}>
-      //       <CardContent>
-      //         <Typography variant="h6" className= {`${classes.title} ${classes.inline}`}>
-      //           {role}
-      //         </Typography>
-      //         {Object.entries(stats).map(([stage, count]) => (
-      //           <div className={`${classes.counter} ${classes.inline}`} key={`${role}-${stage}`}>
-      //             <Typography variant="h3">{count}</Typography>
-      //             <Typography variant="caption">{stage}</Typography>
-      //           </div>
-      //         ))}
-      //       </CardContent>
-      //     </Card>
-      //   </Grid>
-      // ))
-
       <MaterialTable
         className={classes.centered}
         icons={TableIcons}
