@@ -74,7 +74,7 @@ async function changePassword(data) {
  * Returns an array of all users in Oktavian
  */
 async function getAllUsers() {
-  return User.find();
+  return User.find().populate("role").exec();
 }
 
 /**

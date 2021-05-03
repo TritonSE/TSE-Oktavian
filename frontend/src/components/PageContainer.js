@@ -15,6 +15,9 @@ import {
   Typography,
 } from "@material-ui/core";
 import {
+  Home,
+  GroupRounded,
+  Poll,
   Menu,
   ExitToApp,
   Face,
@@ -94,6 +97,27 @@ export default function PageContainer({ window, children }) {
   };
 
   const sections = [
+    {
+      name: "",
+      items: [
+        {
+          icon: <Home />,
+          text: "Home",
+          link: "/",
+        },
+        {
+          icon: <GroupRounded />,
+          text: "Roster",
+          link: "/roster",
+        },
+        {
+          icon: <Poll />,
+          text: "Projects",
+          link: "/projects",
+        },
+      ],
+      display: loginState.authenticated && loginState.user.role != null,
+    },
     {
       name: "Recruitment",
       items: [
