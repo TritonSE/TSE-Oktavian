@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(2),
   },
 }));
-
+const alumRole = "Alum";
 const styleButton = {
   color: "inherit",
   fontWeight: "900",
@@ -27,7 +27,7 @@ const styleButton = {
   textTransform: "none",
   background: "transparent",
 };
-const deafultButton = {
+const defaultButton = {
   color: "gray",
   fontWeight: "900",
   textTransform: "none",
@@ -42,7 +42,7 @@ const Roster = () => {
     alumni: [],
   });
   const [selectedRow, setSelectedRow] = React.useState(null);
-  const [alumni, setAlumni] = React.useState(false);
+  const [alumniTable, setAlumniTable] = React.useState(false);
   const dispatch = useDispatch();
 
   React.useEffect(() => {
@@ -50,22 +50,22 @@ const Roster = () => {
       const { ok, data } = await getUsers();
       if (ok) {
         const developers = data.users
-          .filter((user) => user.role.name !== "Alum")
+          .filter((user) => user.role.name !== alumRole)
           .map((user) => ({
             ...user,
             role: user.role.name,
           }));
-        const alums = data.users
-          .filter((user) => user.role.name === "Alum")
+        const alumni = data.users
+          .filter((user) => user.role.name === alumRole)
           .map((user) => ({
             ...user,
-            role: "Alum",
+            role: user.role.name,
           }));
         setState((prev_state) => ({
           ...prev_state,
           loading: false,
           developers,
-          alumni: alums,
+          alumni,
         }));
       } else {
         dispatch(openAlert(`Error: ${data.message}`));
@@ -89,18 +89,18 @@ const Roster = () => {
         <LoadingContainer loading={state.loading}>
           <Button
             size="large"
-            style={alumni ? deafultButton : styleButton}
+            style={alumniTable ? defaultButton : styleButton}
             onClick={() => {
-              setAlumni(false);
+              setAlumniTable(false);
             }}
           >
             Active Members
           </Button>
           <Button
             size="large"
-            style={!alumni ? deafultButton : styleButton}
+            style={!alumniTable ? defaultButton : styleButton}
             onClick={() => {
-              setAlumni(true);
+              setAlumniTable(true);
             }}
           >
             Alumni
@@ -159,7 +159,7 @@ const Roster = () => {
                     },
                   },
                 ]}
-                data={alumni ? state.alumni : state.developers}
+                data={alumniTable ? state.alumni : state.developers}
                 title=""
               />
             </Grid>
