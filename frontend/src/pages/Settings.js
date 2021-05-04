@@ -114,7 +114,7 @@ const Settings = () => {
                     <Button
                       disableElevation
                       variant="contained"
-                      color="#DBDBDB"
+                      color="secondary"
                       type="submit"
                       className={classes.button}
                       disabled={state.disabled}

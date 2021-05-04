@@ -15,6 +15,7 @@ import {
 import { withAuthorization } from "./HOC";
 import { openAlert } from "../actions";
 import { getRoles } from "../services/roles";
+import { editUser } from "../services/users";
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -57,11 +58,27 @@ const UserEdit = ({ userData }) => {
     roles: [],
     roleIdToNameMap: {},
     isAdmin: userData.user.role.permissions.admin,
+    user: {
+      _id: userData.user._id,
+      name: userData.user.name,
+      role: userData.user.role,
+      graduation: userData.user.graduation,
+      phone: userData.user.phone,
+      github_username: userData.user.github_username,
+      discord_username: userData.user.discord_username,
+      linkedin_username: userData.user.linkedin_username,
+    },
   });
 
-  // const handleSubmit = async(event) => {
-  //   event.preventDefault();
-  // }
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const { ok, data } = await editUser(state.user);
+    if (ok) {
+      dispatch(openAlert("User info successfully updated!"));
+    } else {
+      dispatch(openAlert(`Error: ${data.message}`));
+    }
+  };
 
   useEffect(() => {
     const loadRoles = async () => {
@@ -86,10 +103,10 @@ const UserEdit = ({ userData }) => {
     <Card className={classes.card}>
       <CardContent>
         <Typography variant="h5">Account Info</Typography>
-        <form className={classes.form}>
+        <form className={classes.form} onSubmit={handleSubmit}>
           {state.isAdmin ? (
             <>
-              <div container className={classes.textCont}>
+              <div className={classes.textCont}>
                 <Typography className={classes.nonEdit} variant="caption">
                   User ID
                 </Typography>
@@ -101,6 +118,15 @@ const UserEdit = ({ userData }) => {
                 variant="outlined"
                 type="text"
                 defaultValue={userData.user.name}
+                onChange={(event) => {
+                  setState({
+                    ...state,
+                    user: {
+                      ...state.user,
+                      name: event.target.value,
+                    },
+                  });
+                }}
               />
               <Select
                 variant="outlined"
@@ -115,6 +141,15 @@ const UserEdit = ({ userData }) => {
                   },
                   getContentAnchorEl: null,
                 }}
+                onChange={(event) => {
+                  setState({
+                    ...state,
+                    user: {
+                      ...state.user,
+                      role: event.target.value,
+                    },
+                  });
+                }}
               >
                 {state.roles.map((role) => (
                   <MenuItem key={role._id} value={role._id}>
@@ -127,12 +162,30 @@ const UserEdit = ({ userData }) => {
                 variant="outlined"
                 type="text"
                 defaultValue={userData.user.graduation}
+                onChange={(event) => {
+                  setState({
+                    ...state,
+                    user: {
+                      ...state.user,
+                      graduation: event.target.value,
+                    },
+                  });
+                }}
               />
               <TextField
                 label="Email"
                 variant="outlined"
                 type="email"
                 defaultValue={userData.user.email}
+                onChange={(event) => {
+                  setState({
+                    ...state,
+                    user: {
+                      ...state.user,
+                      email: event.target.value,
+                    },
+                  });
+                }}
               />
             </>
           ) : (
@@ -167,29 +220,65 @@ const UserEdit = ({ userData }) => {
             variant="outlined"
             type="text"
             defaultValue={userData.user.phone}
+            onChange={(event) => {
+              setState({
+                ...state,
+                user: {
+                  ...state.user,
+                  phone: event.target.value,
+                },
+              });
+            }}
           />
           <TextField
             label="Github User"
             variant="outlined"
             type="text"
             defaultValue={userData.user.github_username}
+            onChange={(event) => {
+              setState({
+                ...state,
+                user: {
+                  ...state.user,
+                  github_username: event.target.value,
+                },
+              });
+            }}
           />
           <TextField
             label="Discord User"
             variant="outlined"
             type="text"
             defaultValue={userData.user.discord_username}
+            onChange={(event) => {
+              setState({
+                ...state,
+                user: {
+                  ...state.user,
+                  discord_username: event.target.value,
+                },
+              });
+            }}
           />
           <TextField
             label="LinkedIn User"
             variant="outlined"
             type="text"
             defaultValue={userData.user.linkedin_username}
+            onChange={(event) => {
+              setState({
+                ...state,
+                user: {
+                  ...state.user,
+                  linkedin_username: event.target.value,
+                },
+              });
+            }}
           />
           <Button
             disableElevation
             variant="contained"
-            color="#DBDBDB"
+            color="secondary"
             type="submit"
             className={classes.button}
           >
