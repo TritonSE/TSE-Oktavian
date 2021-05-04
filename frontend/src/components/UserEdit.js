@@ -39,7 +39,6 @@ const useStyles = makeStyles((theme) => ({
   },
   card: {
     maxWidth: 440,
-    // marginLeft: theme.spacing(6),
   },
   select: {
     width: "90%",

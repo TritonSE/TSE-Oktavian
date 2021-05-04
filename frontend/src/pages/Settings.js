@@ -29,7 +29,6 @@ const useStyles = makeStyles((theme) => ({
   },
   card: {
     maxWidth: 440,
-    // marginRight: theme.spacing(6),
   },
   button: {
     maxWidth: 200,
