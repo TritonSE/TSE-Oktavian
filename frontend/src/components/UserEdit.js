@@ -61,7 +61,7 @@ const UserEdit = ({ userData }) => {
     user: {
       _id: userData.user._id,
       name: userData.user.name,
-      role: userData.user.role,
+      role: userData.user.role._id,
       graduation: userData.user.graduation,
       phone: userData.user.phone,
       github_username: userData.user.github_username,
