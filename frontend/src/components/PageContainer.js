@@ -14,7 +14,19 @@ import {
   Snackbar,
   Typography,
 } from "@material-ui/core";
-import { Menu, ExitToApp, Face, Dashboard, Settings, Inbox, RateReview } from "@material-ui/icons";
+import {
+  Home,
+  GroupRounded,
+  Poll,
+  Menu,
+  ExitToApp,
+  Face,
+  Dashboard,
+  Settings,
+  Inbox,
+  RateReview,
+  ListAlt,
+} from "@material-ui/icons";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -86,6 +98,27 @@ export default function PageContainer({ window, children }) {
 
   const sections = [
     {
+      name: "",
+      items: [
+        {
+          icon: <Home />,
+          text: "Home",
+          link: "/",
+        },
+        {
+          icon: <GroupRounded />,
+          text: "Roster",
+          link: "/roster",
+        },
+        {
+          icon: <Poll />,
+          text: "Projects",
+          link: "/projects",
+        },
+      ],
+      display: loginState.authenticated && loginState.user.role != null,
+    },
+    {
       name: "Recruitment",
       items: [
         {
@@ -102,6 +135,11 @@ export default function PageContainer({ window, children }) {
           icon: <RateReview />,
           text: "Your Assignments",
           link: "/recruitment/assignments",
+        },
+        {
+          icon: <ListAlt />,
+          text: "Pipelines",
+          link: "/recruitment/pipelines",
         },
       ],
       display:

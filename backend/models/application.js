@@ -67,6 +67,10 @@ module.exports = mongoose.model(
         required: true,
         default: false,
       },
+      last_reviewer: {
+        type: String,
+        default: "",
+      },
     },
     {
       timestamps: {

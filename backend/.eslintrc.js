@@ -4,6 +4,7 @@ const { readFileSync } = require("fs");
 
 const generalRules = {
   "no-plusplus": "off",
+  "no-continue": "off",
 
   // Allow leading underscores in identifiers (e.g. _id in MongoDB).
   "no-underscore-dangle": "off",
@@ -13,6 +14,8 @@ const generalRules = {
 
   // Depending on the context, using bracket notation might be clearer.
   "dot-notation": "off",
+
+  "no-param-reassign": "off",
 
   /**
    * Unused variables and arguments should be removed in most cases, but sometimes they are

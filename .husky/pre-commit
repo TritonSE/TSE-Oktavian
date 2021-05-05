@@ -27,7 +27,7 @@ stash_push() {
 	log "Stashing unstaged changes."
 
 	local stashes_before=$(num_stashes)
-	git stash push --include-untracked --keep-index --quiet
+	git stash push --include-untracked --keep-index &> /dev/null
 	local stashes_after=$(num_stashes)
 
 	case "$(( stashes_after - stashes_before ))" in
@@ -52,7 +52,7 @@ stash_push() {
 stash_pop() {
 	log "Restoring unstaged changes."
 
-	if git stash pop --quiet; then
+	if git stash pop &> /dev/null; then
 		log "Unstaged changes restored."
 		return 0
 	else
@@ -82,7 +82,13 @@ lint_check() {
 }
 
 main() {
-	stash_push && trap stash_pop EXIT
+	if [ -f '.git/MERGE_HEAD' ]; then
+		log "WARNING: unable to stash unstaged changes during merge." \
+			"If there are unstaged changes, they may result in an" \
+			"incorrect lint check result."
+	else
+		stash_push && trap stash_pop EXIT
+	fi
 
 	lint_check
 }
