@@ -8,6 +8,7 @@
     "@material-table/core": "^2.3.26",
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.58",
     "@material-ui/pickers": "^3.3.10",
     "@material-ui/styles": "^4.11.3",
     "bootstrap": "^5.0.0",
@@ -22,13 +23,13 @@
     "redux-thunk": "^2.3.0"
   },
   "scripts": {
-    "start": "node --max_old_space_size=4096 node_modules/.bin/react-scripts start",
-    "build": "node --max_old_space_size=4096 node_modules/.bin/react-scripts build",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
     "format": "prettier --write .",
     "watch": "cra-build-watch -b ../backend/public",
     "lint-check": "eslint --cache --report-unused-disable-directives . && prettier --check .",
     "prepare": "cd .. && husky install .husky",
-    "lint-fix": "eslint --fix --cache --report-unused-disable-directives . ; prettier --write ."
+    "lint-fix": "(eslint --fix --cache --report-unused-disable-directives . || true) && prettier --write ."
   },
   "eslintConfig": {
     "extends": "react-app"

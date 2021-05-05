@@ -4,6 +4,7 @@ const User = require("./user");
 const Role = require("./role");
 const ApplicationPipeline = require("./application_pipeline");
 const PasswordReset = require("./password_reset");
+const Project = require("./project");
 
 module.exports = {
   // General
@@ -14,4 +15,5 @@ module.exports = {
   Application,
   Review,
   ApplicationPipeline,
+  Project,
 };

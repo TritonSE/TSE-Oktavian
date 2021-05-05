@@ -49,6 +49,10 @@ async function updateReview(raw_review, submitter) {
   if (review.completed && review.comments === "") {
     throw ServiceError(400, "Comments cannot be empty; please justify your decision");
   }
+
+  // populates last_reviewer field of associated application
+  review.application.last_reviewer = submitter.name;
+
   await review.save();
   if (review.completed) {
     try {
