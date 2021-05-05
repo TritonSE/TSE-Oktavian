@@ -7,6 +7,7 @@ import PageContainer from "../components/PageContainer";
 import { withAuthorization } from "../components/HOC";
 import { changePassword } from "../services/auth";
 import { openAlert } from "../actions";
+import UserEdit from "../components/UserEdit";
 
 const useStyles = makeStyles((theme) => ({
   grid: {
@@ -17,9 +18,7 @@ const useStyles = makeStyles((theme) => ({
       margin: theme.spacing(1),
       width: "90%",
     },
-    "& .MuiButton-root": {
-      margin: theme.spacing(3),
-    },
+    "& .MuiButton-root": {},
     "& .MuiInputBase-root.Mui-disabled": {
       color: "rgba(0, 0, 0, 0.6)",
     },
@@ -29,7 +28,12 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
   },
   card: {
-    marginBottom: theme.spacing(5),
+    maxWidth: 440,
+  },
+  button: {
+    maxWidth: 200,
+    color: "black",
+    textTransform: "none",
   },
 }));
 
@@ -72,36 +76,17 @@ const Settings = () => {
         <title>Settings — TSE Oktavian</title>
       </Helmet>
       <PageContainer>
-        <Grid container spacing={0} alignItems="center" justify="center" className={classes.grid}>
-          <Grid item md={6} xs={12}>
-            <Card className={classes.card}>
-              <CardContent>
-                <Typography variant="h5">Account Information</Typography>
-                <form className={classes.form}>
-                  <TextField
-                    label="ID"
-                    variant="outlined"
-                    type="text"
-                    defaultValue={loginState.user._id}
-                    disabled
-                  />
-                  <TextField
-                    label="Name"
-                    variant="outlined"
-                    type="text"
-                    defaultValue={loginState.user.name}
-                    disabled
-                  />
-                  <TextField
-                    label="Email"
-                    variant="outlined"
-                    type="email"
-                    defaultValue={loginState.user.email}
-                    disabled
-                  />
-                </form>
-              </CardContent>
-            </Card>
+        <Grid
+          container
+          spacing={4}
+          alignItems="flex-start"
+          justify="center"
+          className={classes.grid}
+        >
+          <Grid item md={4} xs={6}>
+            <UserEdit userData={loginState} />
+          </Grid>
+          <Grid item md={4} xs={6}>
             <Card className={classes.card}>
               <CardContent>
                 <Typography variant="h5">Change Password</Typography>
@@ -126,12 +111,14 @@ const Settings = () => {
                   />
                   <div>
                     <Button
+                      disableElevation
                       variant="contained"
                       color="secondary"
                       type="submit"
+                      className={classes.button}
                       disabled={state.disabled}
                     >
-                      Submit
+                      Change Password
                     </Button>
                   </div>
                 </form>
