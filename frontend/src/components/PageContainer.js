@@ -26,6 +26,7 @@ import {
   Inbox,
   RateReview,
   ListAlt,
+  SupervisedUserCircle,
 } from "@material-ui/icons";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
@@ -146,6 +147,20 @@ export default function PageContainer({ window, children }) {
         loginState.authenticated &&
         loginState.user.role != null &&
         loginState.user.role.permissions.recruitment,
+    },
+    {
+      name: "Admin",
+      items: [
+        {
+          icon: <SupervisedUserCircle />,
+          text: "Role Settings",
+          link: "/admin/roles",
+        },
+      ],
+      display:
+        loginState.authenticated &&
+        loginState.user.role != null &&
+        loginState.user.role.permissions.admin,
     },
     {
       name: "Account",

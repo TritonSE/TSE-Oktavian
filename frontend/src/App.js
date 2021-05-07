@@ -15,6 +15,7 @@ import Application from "./pages/recruitment/Application";
 import NewApplication from "./pages/recruitment/NewApplication";
 import Pipelines from "./pages/recruitment/pipeline/Pipelines";
 import Roster from "./pages/Roster";
+import Roles from "./pages/admin/roles/Roles";
 
 const theme = createMuiTheme({
   palette: {
@@ -69,6 +70,9 @@ export default function App() {
           </Route>
           <Route exact path="/roster">
             <Roster />
+          </Route>
+          <Route exact path="/admin/roles">
+            <Roles />
           </Route>
           <Route exact path="/">
             <Home />
