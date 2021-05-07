@@ -277,7 +277,7 @@ const UserEdit = ({ userData }) => {
           <Button
             disableElevation
             variant="contained"
-            color="secondary"
+            color="text.secondary"
             type="submit"
             className={classes.button}
           >
