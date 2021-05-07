@@ -57,13 +57,6 @@ const UserSchema = new Schema({
     type: String,
     required: false, // Refresh tokens are created the first time they are used
   },
-  projects: [
-    {
-      type: mongoose.Types.ObjectId,
-      ref: "Project",
-      required: false,
-    },
-  ],
 });
 
 UserSchema.pre("save", function preSave(next) {
