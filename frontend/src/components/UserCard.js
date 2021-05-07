@@ -114,7 +114,9 @@ const UserCard = ({ userData, card }) => {
         });
       }
     };
-    loadCard();
+    if (state.loading) {
+      loadCard();
+    }
   }, []);
 
   return (
