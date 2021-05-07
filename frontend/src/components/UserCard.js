@@ -89,6 +89,7 @@ const UserCard = ({ userData, card }) => {
     const loadCard = async () => {
       const { ok, data } = await getUsers();
       if (ok) {
+        // displays the user's own card for Home and a selected user for Roster
         let cardId = userData.user._id;
         if (card.match !== undefined) {
           cardId = card.match.params.userid;
