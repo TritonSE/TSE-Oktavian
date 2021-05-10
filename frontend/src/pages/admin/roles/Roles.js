@@ -74,7 +74,7 @@ const Roles = () => {
               onClick={(event) => {
                 event.preventDefault();
 
-                // TODO - Redirect to new page to create a new role
+                history.push(`/admin/roles/create`);
               }}
             >
               + Create Role
@@ -103,9 +103,7 @@ const Roles = () => {
                         onClick={(event) => {
                           event.preventDefault();
 
-                          // TODO - Redirect to page to edit existing role
                           history.push(`/admin/roles/edit/${role._id}`);
-                          console.log(`TODO - edit role ${role.name} (${role._id})`);
                         }}
                       >
                         Edit

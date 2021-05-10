@@ -18,6 +18,7 @@ import Roster from "./pages/Roster";
 import RosterInfo from "./pages/RosterInfo";
 import Roles from "./pages/admin/roles/Roles";
 import EditRole from "./pages/admin/roles/EditRoles";
+import CreateRole from "./pages/admin/roles/CreateRole";
 
 const theme = createMuiTheme({
   palette: {
@@ -86,6 +87,9 @@ export default function App() {
             path="/admin/roles/edit/:roleId"
             component={({ match }) => <EditRole match={match} />}
           />
+          <Route exact path="/admin/roles/create">
+            <CreateRole />
+          </Route>
           <Route exact path="/">
             <Home />
           </Route>

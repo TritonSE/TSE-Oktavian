@@ -62,17 +62,44 @@ const RolePermissionCard = ({ role, mode }) => {
     role,
     permissions: {
       ...role.permissions,
-      edit_project: false,
-      create_project: false,
-      manage_role: false,
-      activate_accounts: false,
+      edit_project: role.permissions.admin,
+      create_project: role.permissions.admin,
+      manage_role: role.permissions.admin,
+      activate_accounts: role.permissions.admin,
     },
   });
+
+  const adminSubPermissions = [
+    "edit_project",
+    "create_project",
+    "manage_role",
+    "activate_accounts",
+  ];
 
   const handleChange = (event) => {
     const { permissions } = state;
     const field_name = event.target.name;
     permissions[field_name] = event.target.checked;
+    // unchecks admin box if any indented is unchecked
+    adminSubPermissions.forEach((subPermission) => {
+      if (!permissions[subPermission]) {
+        permissions["admin"] = false;
+      }
+    });
+
+    setState({ ...state, permissions });
+  };
+
+  const handleAdminChange = (event) => {
+    const { permissions } = state;
+    const field_name = event.target.name;
+    permissions[field_name] = event.target.checked;
+    // if admin set to true, check all indented permissions
+    if (event.target.checked) {
+      adminSubPermissions.forEach((subPermission) => {
+        permissions[subPermission] = true;
+      });
+    }
     setState({ ...state, permissions });
   };
 
@@ -133,7 +160,7 @@ const RolePermissionCard = ({ role, mode }) => {
                 control={
                   <Checkbox
                     checked={state.permissions.admin}
-                    onChange={handleChange}
+                    onChange={handleAdminChange}
                     name="admin"
                   />
                 }
@@ -141,7 +168,6 @@ const RolePermissionCard = ({ role, mode }) => {
               />
               <FormControlLabel
                 className={classes.indentedCheckbox}
-                disabled={!state.permissions.admin}
                 control={
                   <Checkbox
                     checked={state.permissions.edit_project}
@@ -153,7 +179,6 @@ const RolePermissionCard = ({ role, mode }) => {
               />
               <FormControlLabel
                 className={classes.indentedCheckbox}
-                disabled={!state.permissions.admin}
                 control={
                   <Checkbox
                     checked={state.permissions.create_project}
@@ -165,7 +190,6 @@ const RolePermissionCard = ({ role, mode }) => {
               />
               <FormControlLabel
                 className={classes.indentedCheckbox}
-                disabled={!state.permissions.admin}
                 control={
                   <Checkbox
                     checked={state.permissions.manage_role}
@@ -177,7 +201,6 @@ const RolePermissionCard = ({ role, mode }) => {
               />
               <FormControlLabel
                 className={classes.indentedCheckbox}
-                disabled={!state.permissions.admin}
                 control={
                   <Checkbox
                     checked={state.permissions.activate_accounts}
@@ -219,7 +242,7 @@ const RolePermissionCard = ({ role, mode }) => {
             // TODO - Implement save function
           }}
         >
-          Save Changes
+          {mode === "edit" ? "Save Changes" : "Create"}
         </Button>
       </Grid>
     </>
