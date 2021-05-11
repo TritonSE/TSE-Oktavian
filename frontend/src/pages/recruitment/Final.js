@@ -12,8 +12,6 @@ import { getApplications } from "../../services/applications";
 import { withAuthorization } from "../../components/HOC";
 import { getApplicationReviews } from "../../services/reviews";
 
-
-
 const Applications = () => {
   const [state, setState] = React.useState({
     // Initial backend data
@@ -27,7 +25,7 @@ const Applications = () => {
 
   React.useEffect(() => {
     const loadData = async () => {
-      const { ok, data } = await getApplications(state.start_date, state.end_date, false, "Final");
+      const { ok, data } = await getApplications(state.start_date, state.end_date, true);
       if (ok) {
         const applications = data.applications.map((app) => ({
           ...app,
@@ -53,19 +51,22 @@ const Applications = () => {
       const reviews = state.applications.map((x) => x);
       console.log(reviews.length);
       let i;
+      /* eslint-disable no-await-in-loop */
       for (i = 0; i < reviews.length; i++) {
         const curr = i;
         const review_list = await getApplicationReviews(reviews[curr]._id);
+        review_list.data.reviews.sort((a, b) => a.created_at - b.created_at);
         reviews[curr][
           "resume_rating"
         ] = `${review_list.data.reviews[0].reviewer.name}: ${review_list.data.reviews[0].rating}/5`;
         reviews[curr][
           "phone_rating"
-        ] = `${review_list.data.reviews[1].reviewer.name}: ${review_list.data.reviews[0].rating}/5`;
+        ] = `${review_list.data.reviews[1].reviewer.name}: ${review_list.data.reviews[1].rating}/5`;
         reviews[curr][
           "interview_rating"
-        ] = `${review_list.data.reviews[2].reviewer.name}: ${review_list.data.reviews[0].rating}/5`;
+        ] = `${review_list.data.reviews[2].reviewer.name}: ${review_list.data.reviews[2].rating}/5`;
       }
+
       setState((prev_state) => ({
         ...prev_state,
         loading: false,

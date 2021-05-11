@@ -14,6 +14,7 @@
     "start": "cd backend && node ./bin/www"
   },
   "dependencies": {
+    "@material-ui/lab": "^4.0.0-alpha.58",
     "bootstrap": "^4.6.0",
     "node-pre-gyp": "^0.17.0",
     "react-bootstrap": "^1.5.2",

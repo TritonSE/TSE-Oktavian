@@ -14,11 +14,8 @@ import Assignments from "./pages/recruitment/Assignments";
 import Application from "./pages/recruitment/Application";
 import NewApplication from "./pages/recruitment/NewApplication";
 import Final from "./pages/recruitment/Final";
-<<<<<<< HEAD
-=======
 import Pipelines from "./pages/recruitment/pipeline/Pipelines";
 import Roster from "./pages/Roster";
->>>>>>> main
 
 const theme = createMuiTheme({
   palette: {

@@ -178,8 +178,8 @@ async function createApplication(raw_application) {
  * Returns a list of JSON objects representing all applications in the system.
  * Can be filtered using options (e.g. to fetch only open applications, etc.)
  */
-async function getAllApplications(start_date, end_date, completed = null) {
-  if (completed != null) {
+async function getAllApplications(start_date, end_date, final = null) {
+  if (final != null) {
     return Application.find({
       completed: false,
       current_stage: "Final",
@@ -212,5 +212,4 @@ module.exports = {
   createApplication,
   getAllApplications,
   getApplication,
-  // getFinalApplications,
 };

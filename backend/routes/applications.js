@@ -37,7 +37,6 @@ router.get(
           next(err);
         });
     } else {
-      console.log(req.query.completed);
       getAllApplications(new Date(req.query.start_date), new Date(req.query.end_date))
         .then((applications) => {
           res.status(200).json({
