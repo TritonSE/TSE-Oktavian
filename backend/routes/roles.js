@@ -1,8 +1,8 @@
 const express = require("express");
-const { body } = require("express-validator");
+const { body, param } = require("express-validator");
 
 const { authorizeUser } = require("../middleware/auth");
-const { getAllRoles, editRole, createRole } = require("../services/roles");
+const { getAllRoles, editRole, createRole, deleteRole } = require("../services/roles");
 const { validateRequest } = require("../middleware/validation");
 
 const router = express.Router();
@@ -47,6 +47,23 @@ router.post(
     createRole(req.body)
       .then((role) => {
         res.status(200).json({ role });
+      })
+      .catch((err) => {
+        next(err);
+      });
+  }
+);
+
+/**
+ * Delete an existing role
+ */
+router.delete(
+  "/:id",
+  [param("id").notEmpty().isString(), validateRequest, authorizeUser(["role_management"])],
+  (req, res, next) => {
+    deleteRole(req.params.id)
+      .then(() => {
+        res.status(200).json({});
       })
       .catch((err) => {
         next(err);

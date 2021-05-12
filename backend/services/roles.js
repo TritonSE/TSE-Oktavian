@@ -1,4 +1,4 @@
-const { Role } = require("../models");
+const { Role, User } = require("../models");
 const { ServiceError } = require("./errors");
 
 /**
@@ -18,17 +18,6 @@ async function editRole(rawRole) {
   }
   role.set(rawRole);
   return role.save();
-
-  // for (const [key, value] of Object.entries(rawRole)) {
-  //   if (key == "_id") continue;
-  //   if (`permissions.${key}` in Role.schema.paths) {
-  //     role.permissions[key] = value;
-  //   } else {
-  //     throw ServiceError(400, `Unrecognized attribute ${key}`);
-  //   }
-  // }
-
-  // return role.save();
 }
 
 /**
@@ -42,8 +31,29 @@ async function createRole(rawRole) {
   return Role.create(rawRole);
 }
 
+/**
+ * Delete a role
+ */
+async function deleteRole(id) {
+  const role = await Role.findById(id);
+  if (role === null) {
+    throw ServiceError(404, "Role does not exist");
+  }
+
+  const usersWithRole = await User.find({ role }).exec();
+  await Promise.all(
+    usersWithRole.map((user) => async () => {
+      delete user.role;
+      return user.save();
+    })
+  );
+
+  return role.delete();
+}
+
 module.exports = {
   getAllRoles,
   editRole,
   createRole,
+  deleteRole,
 };
