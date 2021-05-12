@@ -21,12 +21,11 @@ router.get(
     validateRequest,
   ],
   (req, res, next) => {
-    if (req.query.completed != null) {
+    if (req.query.final) {
       getAllApplications(
         new Date(req.query.start_date),
         new Date(req.query.end_date),
-        req.query.completed,
-        req.query.current_stage
+        req.query.final
       )
         .then((applications) => {
           res.status(200).json({

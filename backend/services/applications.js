@@ -179,7 +179,7 @@ async function createApplication(raw_application) {
  * Can be filtered using options (e.g. to fetch only open applications, etc.)
  */
 async function getAllApplications(start_date, end_date, final = null) {
-  if (final != null) {
+  if (final) {
     return Application.find({
       completed: false,
       current_stage: "Final",

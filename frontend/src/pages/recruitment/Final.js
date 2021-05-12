@@ -49,7 +49,6 @@ const Applications = () => {
     }
     const loadReviews = async () => {
       const reviews = state.applications.map((x) => x);
-      console.log(reviews.length);
       let i;
       /* eslint-disable no-await-in-loop */
       for (i = 0; i < reviews.length; i++) {
