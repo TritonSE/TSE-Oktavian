@@ -107,7 +107,7 @@ const Applications = () => {
             columns={[
               { title: "Name", field: "name" },
               { title: "Email", field: "email" },
-              { title: "Position", field: "resume" },
+              { title: "Resume Link", field: "resume" },
               { title: "Position", field: "role" },
               { title: "Graduation", field: "graduation" },
               { title: "Resume", field: "resume_rating" },
