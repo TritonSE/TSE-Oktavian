@@ -7,16 +7,7 @@ const { Schema } = mongoose;
  * the position of a member in the organization. For example: Developer,
  * Designer, VP Operations, President.
  *
- * A role also carries certain permissions:
- *  1. roster = If true, users who belong to this role can view the organization
- *  roster. This grants them access to other users' profiles & the global roster list.
- *  2. recruitment = If true, users who belong to this role can be involved with the
- *  recruitment process. This grants them access to the recruitment dashboard.
- *  3. final_approval = If true, users who belong to this role can be involved with the
- *  final review decision making. This gives them the final say in any application.
- *  Note that they need the `recruitment` permission to be able to see application details.
- *  4. admin = If true, users who belong to this role can create/edit/delete roles,
- *  promote/demote/deactivate users, and have access to the administrative dashboard.
+ * A role also carries certain permissions, which are described below.
  *
  *  Almost all critical objects refer to a role. Users have a role that they belong to,
  *  and applications also refer to a role (the position they are applying for).
@@ -30,22 +21,68 @@ module.exports = mongoose.model(
       unique: true,
     },
     permissions: {
+      /**
+       * View the organization roster and other users' profiles.
+       */
       roster: {
         type: Boolean,
         required: true,
         default: false,
       },
+      /**
+       * Participate in the recruitment process. Grants access to the recruitment dashboard.
+       */
       recruitment: {
         type: Boolean,
         required: true,
         default: false,
       },
+      /**
+       * Final review decision making. Gives the user the final say in any application. Note that
+       * the user needs the `recruitment` permission to be able to see application details.
+       */
       final_approval: {
         type: Boolean,
         required: true,
         default: false,
       },
+      /**
+       * Edit other users' profiles and assign roles.
+       */
+      // TODO: rename to roster_edit
       admin: {
+        type: Boolean,
+        required: true,
+        default: false,
+      },
+      /**
+       * Edit existing projects.
+       */
+      project_edit: {
+        type: Boolean,
+        required: true,
+        default: false,
+      },
+      /**
+       * Create new projects.
+       */
+      project_create: {
+        type: Boolean,
+        required: true,
+        default: false,
+      },
+      /**
+       * Create, edit, and delete roles.
+       */
+      role_management: {
+        type: Boolean,
+        required: true,
+        default: false,
+      },
+      /**
+       * Activate and deactivate user accounts.
+       */
+      account_activation: {
         type: Boolean,
         required: true,
         default: false,

@@ -4,21 +4,13 @@ async function createMockData() {
   // Roles
   const alum_role = new Role({
     name: "Alum",
-    permissions: {
-      roster: false,
-      recruitment: false,
-      admin: false,
-      final_approval: false,
-    },
+    permissions: {},
   });
   await alum_role.save();
   const unassigned_role = new Role({
     name: "Unassigned",
     permissions: {
       roster: true,
-      recruitment: false,
-      admin: false,
-      final_approval: false,
     },
   });
   await unassigned_role.save();
@@ -27,8 +19,6 @@ async function createMockData() {
     permissions: {
       roster: true,
       recruitment: true,
-      admin: false,
-      final_approval: false,
     },
   });
   await designer_role.save();
@@ -37,8 +27,6 @@ async function createMockData() {
     permissions: {
       roster: true,
       recruitment: false,
-      admin: false,
-      final_approval: false,
     },
   });
   await developer_role.save();
@@ -47,8 +35,6 @@ async function createMockData() {
     permissions: {
       roster: true,
       recruitment: true,
-      admin: false,
-      final_approval: false,
     },
   });
   await project_manager_role.save();
@@ -58,7 +44,6 @@ async function createMockData() {
       roster: true,
       recruitment: true,
       admin: true,
-      final_approval: false,
     },
   });
   await pvp_role.save();
@@ -69,6 +54,7 @@ async function createMockData() {
       recruitment: true,
       admin: true,
       final_approval: true,
+      role_management: true,
     },
   });
   await president_role.save();
