@@ -1,4 +1,5 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 import MaterialTable from "@material-table/core";
 import { Helmet } from "react-helmet";
 import { Grid, Button } from "@material-ui/core";
@@ -35,6 +36,8 @@ const defaultButton = {
 
 const Roster = () => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const history = useHistory();
   const [state, setState] = React.useState({
     // Initial backend data
     loading: true,
@@ -43,7 +46,6 @@ const Roster = () => {
     selectedRow: null,
     alumniTable: false,
   });
-  const dispatch = useDispatch();
 
   React.useEffect(() => {
     const loadData = async () => {
@@ -83,7 +85,7 @@ const Roster = () => {
   return (
     <>
       <Helmet>
-        <title>TSE Roster</title>
+        <title>Roster — TSE Oktavian</title>
       </Helmet>
       <PageContainer>
         <LoadingContainer loading={state.loading}>
@@ -115,15 +117,16 @@ const Roster = () => {
             <Grid item xs={12}>
               <MaterialTable
                 icons={{ ...TableIcons, Filter: TableIcons.Search }}
-                onRowClick={(evt, currRow) =>
+                onRowClick={(evt, currRow) => {
                   setState((prev_state) => ({
                     ...prev_state,
                     selectedRow: currRow.tableData.id,
-                  }))
-                }
+                  }));
+                  history.push(`/roster/${currRow._id}`);
+                }}
                 options={{
                   rowStyle: (rowData) => ({
-                    backgroundColor: state.selectedRow === rowData.tableData.id ? "#EEE" : "#FFF",
+                    backgroundColor: state.selectedRow === rowData.tableData.id ? "#EEE" : "",
                   }),
                   filtering: true,
                   paging: true,
