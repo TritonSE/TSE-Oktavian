@@ -178,7 +178,7 @@ async function createApplication(raw_application) {
  * Returns a list of JSON objects representing all applications in the system.
  * Can be filtered using options (e.g. to fetch only open applications, etc.)
  */
-async function getAllApplications(start_date, end_date, final = null) {
+async function getAllApplications(start_date, end_date, final = false) {
   if (final) {
     return Application.find({
       completed: false,
