@@ -43,6 +43,7 @@ async function deleteRole(id) {
   const usersWithRole = await User.find({ role }).exec();
   await Promise.all(
     usersWithRole.map((user) => async () => {
+      // TODO: use Unassigned role instead of having no role. https://github.com/TritonSE/TSE-Oktavian/pull/48#discussion_r630687553
       delete user.role;
       return user.save();
     })
