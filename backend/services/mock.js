@@ -26,7 +26,6 @@ async function createMockData() {
     name: "Developer",
     permissions: {
       roster: true,
-      recruitment: false,
     },
   });
   await developer_role.save();
