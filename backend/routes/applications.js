@@ -21,15 +21,31 @@ router.get(
     validateRequest,
   ],
   (req, res, next) => {
-    getAllApplications(new Date(req.query.start_date), new Date(req.query.end_date))
-      .then((applications) => {
-        res.status(200).json({
-          applications,
+    if (req.query.final) {
+      getAllApplications(
+        new Date(req.query.start_date),
+        new Date(req.query.end_date),
+        req.query.final
+      )
+        .then((applications) => {
+          res.status(200).json({
+            applications,
+          });
+        })
+        .catch((err) => {
+          next(err);
         });
-      })
-      .catch((err) => {
-        next(err);
-      });
+    } else {
+      getAllApplications(new Date(req.query.start_date), new Date(req.query.end_date))
+        .then((applications) => {
+          res.status(200).json({
+            applications,
+          });
+        })
+        .catch((err) => {
+          next(err);
+        });
+    }
   }
 );
 
