@@ -1,7 +1,7 @@
 const { v4: uuidv4 } = require("uuid");
 
 const { REGISTER_SECRET } = require("../constants");
-const { User, PasswordReset } = require("../models");
+const { User, PasswordReset, Role } = require("../models");
 const { ServiceError } = require("./errors");
 const { sendEmail } = require("./email");
 
@@ -22,7 +22,16 @@ async function createUser(raw_user) {
   if (user) {
     throw ServiceError(409, "Email already taken");
   }
-  const raw_user_no_secret = { ...raw_user };
+
+  const pending_role = await Role.findOne({ name: "Pending" }).exec();
+  const raw_user_no_secret = {
+    ...raw_user,
+    phone: "(xxx)xxx-xxxx",
+    github_username: "github_user",
+    graduation: 0,
+    role: pending_role._id,
+  };
+
   delete raw_user_no_secret.secret;
   user = new User(raw_user_no_secret);
   await user.save();
