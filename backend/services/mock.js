@@ -1,24 +1,16 @@
-const { User, Role, ApplicationPipeline } = require("../models");
+const { User, Role, ApplicationPipeline, Project } = require("../models");
 
 async function createMockData() {
   // Roles
   const alum_role = new Role({
     name: "Alum",
-    permissions: {
-      roster: false,
-      recruitment: false,
-      admin: false,
-      final_approval: false,
-    },
+    permissions: {},
   });
   await alum_role.save();
   const unassigned_role = new Role({
     name: "Unassigned",
     permissions: {
       roster: true,
-      recruitment: false,
-      admin: false,
-      final_approval: false,
     },
   });
   await unassigned_role.save();
@@ -27,8 +19,6 @@ async function createMockData() {
     permissions: {
       roster: true,
       recruitment: true,
-      admin: false,
-      final_approval: false,
     },
   });
   await designer_role.save();
@@ -36,9 +26,6 @@ async function createMockData() {
     name: "Developer",
     permissions: {
       roster: true,
-      recruitment: false,
-      admin: false,
-      final_approval: false,
     },
   });
   await developer_role.save();
@@ -47,8 +34,6 @@ async function createMockData() {
     permissions: {
       roster: true,
       recruitment: true,
-      admin: false,
-      final_approval: false,
     },
   });
   await project_manager_role.save();
@@ -58,7 +43,6 @@ async function createMockData() {
       roster: true,
       recruitment: true,
       admin: true,
-      final_approval: false,
     },
   });
   await pvp_role.save();
@@ -69,6 +53,7 @@ async function createMockData() {
       recruitment: true,
       admin: true,
       final_approval: true,
+      role_management: true,
     },
   });
   await president_role.save();
@@ -113,6 +98,97 @@ async function createMockData() {
     active: true,
   });
   await president_user.save();
+
+  // Projects
+  const cool_project = new Project({
+    name: "Cool Project",
+    description: "This is a cool project.",
+    client: "TSE",
+    phase: "Development",
+    timeline: {
+      start: {
+        quarter: "Fall",
+        year: 2020,
+      },
+    },
+    project_manager: project_manager_user._id,
+    outreach: president_user._id,
+    designers: [president_user._id, project_manager_user._id],
+    developers: [developer_user._id],
+    files: [
+      {
+        link: "https://example.com",
+        name: "Cool File 1",
+      },
+      {
+        link: "https://example.com",
+        name: "Cool File 2",
+      },
+    ],
+  });
+  await cool_project.save();
+
+  const cooler_project = new Project({
+    name: "Cooler Project",
+    description: "This project is cooler than the other.",
+    client: "TSE",
+    phase: "Outreach",
+    timeline: {
+      start: {
+        quarter: "Spring",
+        year: 2021,
+      },
+    },
+    project_manager: project_manager_user._id,
+    outreach: president_user._id,
+    files: [
+      {
+        link: "https://example.com",
+        name: "Cool File 1",
+      },
+      {
+        link: "https://example.com",
+        name: "Cool File 2",
+      },
+    ],
+  });
+  await cooler_project.save();
+
+  const coolest_project = new Project({
+    name: "Coolest Project",
+    description: "This project is the coolest.",
+    client: "TSE",
+    phase: "Post Development",
+    timeline: {
+      start: {
+        quarter: "Fall",
+        year: 2010,
+      },
+      end: {
+        quarter: "Spring",
+        year: 2014,
+      },
+    },
+    project_manager: project_manager_user._id,
+    outreach: president_user._id,
+    designers: [president_user._id, project_manager_user._id],
+    developers: [developer_user._id, president_user._id],
+    files: [
+      {
+        link: "https://example.com",
+        name: "Cool File 1",
+      },
+      {
+        link: "https://example.com",
+        name: "Cool File 2",
+      },
+      {
+        link: "https://example.com",
+        name: "Cool File 3",
+      },
+    ],
+  });
+  await coolest_project.save();
 
   // Commitees
   const public_pipeline = new ApplicationPipeline({

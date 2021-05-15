@@ -13,6 +13,7 @@ import Applications from "./pages/recruitment/Applications";
 import Assignments from "./pages/recruitment/Assignments";
 import Application from "./pages/recruitment/Application";
 import NewApplication from "./pages/recruitment/NewApplication";
+import Final from "./pages/recruitment/Final";
 import Pipelines from "./pages/recruitment/pipeline/Pipelines";
 import Roster from "./pages/Roster";
 import RosterInfo from "./pages/RosterInfo";
@@ -57,6 +58,9 @@ export default function App() {
           </Route>
           <Route exact path="/recruitment/applications">
             <Applications />
+          </Route>
+          <Route exact path="/recruitment/final">
+            <Final />
           </Route>
           <Route
             path="/recruitment/application/:appid"

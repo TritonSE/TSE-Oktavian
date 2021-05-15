@@ -1,6 +1,12 @@
 import { getData, sendData } from "../util/data";
 
-export async function getApplications(start_date, end_date) {
+export async function getApplications(start_date, end_date, final) {
+  if (final) {
+    return getData(
+      `api/applications?start_date=${start_date.getTime()}&end_date=${end_date.getTime()}&final=true`,
+      true
+    );
+  }
   return getData(
     `api/applications?start_date=${start_date.getTime()}&end_date=${end_date.getTime()}`,
     true
