@@ -28,7 +28,7 @@ async function createUser(raw_user) {
     ...raw_user,
     phone: "(xxx)xxx-xxxx",
     github_username: "github_user",
-    graduation: 0,
+    graduation: new Date().getFullYear(),
     role: pending_role._id,
   };
 

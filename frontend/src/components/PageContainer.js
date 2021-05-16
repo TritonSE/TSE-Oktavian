@@ -117,10 +117,7 @@ export default function PageContainer({ window, children }) {
           link: "/projects",
         },
       ],
-      display:
-        loginState.authenticated &&
-        loginState.user.role !== null &&
-        loginState.user.role.name !== "Pending",
+      display: loginState.authenticated && loginState.user.role != null,
     },
     {
       name: "Recruitment",
