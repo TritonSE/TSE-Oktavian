@@ -74,7 +74,7 @@ const UserCard = ({ userData, card }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [state, setState] = useState({
     loading: true,
-    isAdmin: userData.user.role.permissions.admin,
+    isAdmin: userData.user.role.permissions.user_edit,
     name: "",
     role: "",
     graduation: 0,

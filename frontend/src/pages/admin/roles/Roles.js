@@ -119,4 +119,4 @@ const Roles = () => {
   );
 };
 
-export default withAuthorization(Roles, true, ["admin"]);
+export default withAuthorization(Roles, true, ["role_management"]);

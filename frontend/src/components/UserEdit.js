@@ -56,7 +56,7 @@ const UserEdit = ({ userData }) => {
   const [state, setState] = useState({
     roles: [],
     roleIdToNameMap: {},
-    isAdmin: userData.user.role.permissions.admin,
+    isAdmin: userData.user.role.permissions.user_edit,
     user: {
       _id: userData.user._id,
       name: userData.user.name,

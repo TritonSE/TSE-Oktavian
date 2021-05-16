@@ -42,7 +42,7 @@ async function createMockData() {
     permissions: {
       roster: true,
       recruitment: true,
-      admin: true,
+      user_edit: true,
     },
   });
   await pvp_role.save();
@@ -51,7 +51,7 @@ async function createMockData() {
     permissions: {
       roster: true,
       recruitment: true,
-      admin: true,
+      user_edit: true,
       final_approval: true,
       role_management: true,
     },
