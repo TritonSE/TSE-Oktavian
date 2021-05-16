@@ -56,7 +56,7 @@ const UserEdit = ({ userData }) => {
   const [state, setState] = useState({
     roles: [],
     roleIdToNameMap: {},
-    isAdmin: userData.user.role.permissions.user_edit,
+    canEdit: userData.user.role.permissions.user_edit,
     user: {
       _id: userData.user._id,
       name: userData.user.name,
@@ -103,7 +103,7 @@ const UserEdit = ({ userData }) => {
       <CardContent>
         <Typography variant="h5">Account Info</Typography>
         <form className={classes.form} onSubmit={handleSubmit}>
-          {state.isAdmin ? (
+          {state.canEdit ? (
             <>
               <div className={classes.textCont}>
                 <Typography className={classes.nonEdit} variant="caption">

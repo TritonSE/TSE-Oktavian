@@ -74,7 +74,7 @@ const UserCard = ({ userData, card }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [state, setState] = useState({
     loading: true,
-    isAdmin: userData.user.role.permissions.user_edit,
+    canEdit: userData.user.role.permissions.user_edit,
     name: "",
     role: "",
     graduation: 0,
@@ -124,7 +124,7 @@ const UserCard = ({ userData, card }) => {
     <LoadingContainer loading={state.loading}>
       <Card className={classes.card}>
         <CardContent>
-          {state.isAdmin ? (
+          {state.canEdit ? (
             <>
               <IconButton
                 className={classes.settings}
