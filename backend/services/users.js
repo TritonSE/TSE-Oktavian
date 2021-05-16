@@ -104,6 +104,23 @@ async function editUser(rawUser, editingUser) {
   return editedUser.save();
 }
 
+async function deleteUser(_id) {
+<<<<<<< Updated upstream
+  await User.deleteOne({ _id })
+    .then((res) => {
+      if (res.deletedCount === 0) {
+        throw ServiceError(404, "User not found or already deleted");
+      }
+    });
+=======
+  await User.deleteOne({ _id }).then((res) => {
+    if (res.deletedCount === 0) {
+      throw ServiceError(404, "User not found or already deleted");
+    }
+  });
+>>>>>>> Stashed changes
+}
+
 module.exports = {
   createUser,
   forgotPassword,
@@ -111,4 +128,5 @@ module.exports = {
   changePassword,
   getAllUsers,
   editUser,
+  deleteUser,
 };

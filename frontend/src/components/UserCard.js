@@ -10,6 +10,10 @@ import {
   Button,
   MenuItem,
   Menu,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
 } from "@material-ui/core";
 import { ThemeProvider } from "@material-ui/styles";
 import AccountCircleOutlinedIcon from "@material-ui/icons/AccountCircleOutlined";
@@ -21,7 +25,7 @@ import SportsEsportsIcon from "@material-ui/icons/SportsEsports";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import { withAuthorization } from "./HOC";
 import { openAlert } from "../actions";
-import { getUsers } from "../services/users";
+import { getUsers, deleteUser } from "../services/users";
 import LoadingContainer from "./LoadingContainer";
 
 const useStyles = makeStyles((theme) => ({
@@ -72,9 +76,11 @@ const UserCard = ({ userData, card }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
+  const [open, setOpen] = useState(false);
   const [state, setState] = useState({
     loading: true,
     isAdmin: userData.user.role.permissions.admin,
+    _id: undefined,
     name: "",
     role: "",
     graduation: 0,
@@ -84,6 +90,24 @@ const UserCard = ({ userData, card }) => {
     discord_username: "",
     linkedin_username: "",
   });
+
+  const handleDeactivateOpen = () => {
+    setOpen(true);
+  };
+
+  const handleDeactivateClose = () => {
+    setOpen(false);
+  };
+
+  const handleDeactivate = async () => {
+    const { ok, data } = await deleteUser(state._id);
+    if (ok) {
+      dispatch(openAlert("Account successfully deleted!"));
+    } else {
+      dispatch(openAlert(`Error: ${data.message}`));
+    }
+    setOpen(false);
+  };
 
   useEffect(() => {
     const loadCard = async () => {
@@ -98,6 +122,7 @@ const UserCard = ({ userData, card }) => {
         setState({
           ...state,
           loading: false,
+          _id: cardUser._id,
           name: cardUser.name,
           role: cardUser.role.name.toUpperCase(),
           graduation: cardUser.graduation,
@@ -152,7 +177,32 @@ const UserCard = ({ userData, card }) => {
                 }}
               >
                 <MenuItem>Edit</MenuItem>
-                <MenuItem>Deactivate</MenuItem>
+                <MenuItem onClick={handleDeactivateOpen}>Deactivate</MenuItem>
+                <Dialog
+                  open={open}
+                  onClose={handleDeactivateClose}
+                  aria-describedby="alert-dialog-description"
+                >
+                  <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                      Are you sure you want to deactivate this account?
+                    </DialogContentText>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={handleDeactivateClose} variant="outlined" color="primary">
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={handleDeactivate}
+                      variant="contained"
+                      color="primary"
+                      autoFocus
+                      disableElevation
+                    >
+                      Yes
+                    </Button>
+                  </DialogActions>
+                </Dialog>
               </Menu>
               <AccountCircleOutlinedIcon className={classes.adminIcon} />
             </>
