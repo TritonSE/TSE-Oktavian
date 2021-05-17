@@ -81,7 +81,8 @@ const UserCard = ({ userData, card }) => {
   const [open, setOpen] = useState(false);
   const [state, setState] = useState({
     loading: true,
-    isAdmin: userData.user.role.permissions.admin,
+    isAdmin: userData.user.role.permissions.admin, // roster edit permissions
+    canDelete: userData.user.role.permissions.account_activation, // delete permissions
     _id: null,
     name: "",
     role: "",
@@ -105,7 +106,13 @@ const UserCard = ({ userData, card }) => {
     const { ok, data } = await deleteUser(state._id);
     if (ok) {
       dispatch(openAlert("Account successfully deleted!"));
-      history.push(`/roster`);
+      // if user deactivated their own account, redirect to login
+      if (userData.user._id === state._id) {
+        userData.authenticated = false;
+        history.push("/login");
+      } else {
+        history.push("/roster");
+      }
     } else {
       dispatch(openAlert(`Error: ${data.message}`));
     }
@@ -152,7 +159,7 @@ const UserCard = ({ userData, card }) => {
     <LoadingContainer loading={state.loading}>
       <Card className={classes.card}>
         <CardContent>
-          {state.isAdmin ? (
+          {state.isAdmin || state.canDelete ? (
             <>
               <IconButton
                 className={classes.settings}
