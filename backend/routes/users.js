@@ -33,12 +33,8 @@ router.put("/", [authorizeUser([])], (req, res, next) => {
     });
 });
 
-<<<<<<< Updated upstream
-router.delete("/:id",
-=======
 router.delete(
   "/:id",
->>>>>>> Stashed changes
   [param("id").notEmpty().isString(), validateRequest, authorizeUser(["account_activation"])],
   (req, res, next) => {
     deleteUser(req.params.id)
@@ -48,11 +44,7 @@ router.delete(
       .catch((err) => {
         next(err);
       });
-<<<<<<< Updated upstream
-  });
-=======
   }
 );
->>>>>>> Stashed changes
 
 module.exports = router;

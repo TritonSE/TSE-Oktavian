@@ -1,4 +1,5 @@
 import { React, useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import { makeStyles, createMuiTheme } from "@material-ui/core/styles";
 import { useDispatch } from "react-redux";
 import {
@@ -75,12 +76,13 @@ const roleButton = createMuiTheme({
 const UserCard = ({ userData, card }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const history = useHistory();
   const [anchorEl, setAnchorEl] = useState(null);
   const [open, setOpen] = useState(false);
   const [state, setState] = useState({
     loading: true,
     isAdmin: userData.user.role.permissions.admin,
-    _id: undefined,
+    _id: null,
     name: "",
     role: "",
     graduation: 0,
@@ -103,6 +105,7 @@ const UserCard = ({ userData, card }) => {
     const { ok, data } = await deleteUser(state._id);
     if (ok) {
       dispatch(openAlert("Account successfully deleted!"));
+      history.push(`/roster`);
     } else {
       dispatch(openAlert(`Error: ${data.message}`));
     }

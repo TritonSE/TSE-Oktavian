@@ -105,20 +105,7 @@ async function editUser(rawUser, editingUser) {
 }
 
 async function deleteUser(_id) {
-<<<<<<< Updated upstream
-  await User.deleteOne({ _id })
-    .then((res) => {
-      if (res.deletedCount === 0) {
-        throw ServiceError(404, "User not found or already deleted");
-      }
-    });
-=======
-  await User.deleteOne({ _id }).then((res) => {
-    if (res.deletedCount === 0) {
-      throw ServiceError(404, "User not found or already deleted");
-    }
-  });
->>>>>>> Stashed changes
+  return User.deleteOne({ _id });
 }
 
 module.exports = {

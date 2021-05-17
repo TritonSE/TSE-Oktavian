@@ -1,4 +1,4 @@
-import { sendData, getData, deleteData } from "../util/data";
+import { sendData, getData } from "../util/data";
 
 export async function getUsers() {
   return getData("api/users", true);
