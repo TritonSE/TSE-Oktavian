@@ -166,7 +166,7 @@ export default function PageContainer({ window, children }) {
       display:
         loginState.authenticated &&
         loginState.user.role != null &&
-        loginState.user.role.permissions.admin,
+        loginState.user.role.permissions.role_management,
     },
     {
       name: "Account",

@@ -96,7 +96,7 @@ async function getUsers(filter) {
  */
 async function editUser(rawUser, editingUser) {
   let editableFields = USER_EDITABLE;
-  if (editingUser.role != null && editingUser.role.permissions.admin) {
+  if (editingUser.role != null && editingUser.role.permissions.user_edit) {
     editableFields = ADMIN_EDITABLE;
   } else if (editingUser._id.toString() !== rawUser._id) {
     throw ServiceError(403, "You do not have permission to edit other users");
