@@ -24,6 +24,7 @@ async function createUser(raw_user) {
   }
 
   const pending_role = await Role.findOne({ name: "Pending" }).exec();
+  // TODO - Enable users to input these fields on account creation or make these fields optional
   const raw_user_no_secret = {
     ...raw_user,
     phone: "(xxx)xxx-xxxx",
