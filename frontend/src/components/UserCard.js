@@ -187,7 +187,7 @@ const UserCard = ({ userData, card }) => {
                 }}
               >
                 <MenuItem>Edit</MenuItem>
-                <MenuItem onClick={handleDeactivateOpen}>Deactivate</MenuItem>
+                {state.canDelete && <MenuItem onClick={handleDeactivateOpen}>Deactivate</MenuItem>}
                 <Dialog
                   open={open}
                   onClose={handleDeactivateClose}
