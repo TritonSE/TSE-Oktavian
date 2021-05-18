@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import { withAuthorization } from "../components/HOC";
 import PageContainer from "../components/PageContainer";
 import UserCard from "../components/UserCard";
+import ProjectsCard from "../components/ProjectsCard";
 
 const useStyles = makeStyles((theme) => ({
   grid: {
@@ -30,12 +31,18 @@ const Home = () => {
         <title>Home — TSE Oktavian</title>
       </Helmet>
       <PageContainer>
-        <Grid container className={classes.grid} spacing={0} alignItems="center" justify="center">
-          <Grid item md={4} xs={6}>
+        <Grid
+          container
+          className={classes.grid}
+          spacing={4}
+          alignItems="flex-start"
+          justify="center"
+        >
+          <Grid item md={4} xs={12}>
             <UserCard userData={loginState} card={loginState} />
           </Grid>
-          <Grid item md={4} xs={6}>
-            {/* TODO: PROJECTS CARD */}
+          <Grid item md={4} xs={12}>
+            <ProjectsCard user={loginState.user._id} />
           </Grid>
         </Grid>
       </PageContainer>
