@@ -123,4 +123,4 @@ const PendingUsers = () => {
   );
 };
 
-export default withAuthorization(PendingUsers, true, ["admin"]);
+export default withAuthorization(PendingUsers, true, ["final_approval"]);
