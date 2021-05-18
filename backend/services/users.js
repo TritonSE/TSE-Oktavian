@@ -1,7 +1,7 @@
 const { v4: uuidv4 } = require("uuid");
 
 const { REGISTER_SECRET } = require("../constants");
-const { User, PasswordReset } = require("../models");
+const { User, PasswordReset, Role } = require("../models");
 const { ServiceError } = require("./errors");
 const { sendEmail } = require("./email");
 
@@ -22,10 +22,21 @@ async function createUser(raw_user) {
   if (user) {
     throw ServiceError(409, "Email already taken");
   }
-  const raw_user_no_secret = { ...raw_user };
+
+  const pending_role = await Role.findOne({ name: "Pending" }).exec();
+  // TODO - Enable users to input these fields on account creation or make these fields optional
+  const raw_user_no_secret = {
+    ...raw_user,
+    phone: "(xxx)xxx-xxxx",
+    github_username: "github_user",
+    graduation: new Date().getFullYear(),
+    role: pending_role._id,
+  };
+
   delete raw_user_no_secret.secret;
   user = new User(raw_user_no_secret);
   await user.save();
+  user.role = pending_role;
   return user;
 }
 
@@ -84,7 +95,7 @@ async function getAllUsers() {
  */
 async function editUser(rawUser, editingUser) {
   let editableFields = USER_EDITABLE;
-  if (editingUser.role != null && editingUser.role.permissions.admin) {
+  if (editingUser.role != null && editingUser.role.permissions.user_edit) {
     editableFields = ADMIN_EDITABLE;
   } else if (editingUser._id.toString() !== rawUser._id) {
     throw ServiceError(403, "You do not have permission to edit other users");
@@ -94,7 +105,13 @@ async function editUser(rawUser, editingUser) {
     throw ServiceError(404, "User does not exist");
   }
   for (const [field, newValue] of Object.entries(rawUser)) {
-    if (field === "_id" || newValue.toString() === editedUser[field].toString()) continue;
+    if (
+      field === "_id" ||
+      // eslint-disable-next-line eqeqeq
+      (editedUser[field] != undefined && newValue.toString() === editedUser[field].toString())
+    ) {
+      continue;
+    }
     if (editableFields.has(field)) {
       editedUser[field] = newValue;
     } else {
