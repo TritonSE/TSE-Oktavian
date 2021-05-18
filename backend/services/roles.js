@@ -2,10 +2,11 @@ const { Role, User } = require("../models");
 const { ServiceError } = require("./errors");
 
 /**
- * Returns an array of all roles in Oktavian
+ * Returns an array of all roles according to an optional filter parameter
+ * @param filter - JSON object specifying field and target value pairs
  */
-async function getAllRoles() {
-  return Role.find();
+async function getRoles(filter) {
+  return Role.find(filter);
 }
 
 /**
@@ -53,7 +54,7 @@ async function deleteRole(id) {
 }
 
 module.exports = {
-  getAllRoles,
+  getRoles,
   editRole,
   createRole,
   deleteRole,

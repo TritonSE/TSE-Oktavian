@@ -18,6 +18,7 @@ import Pipelines from "./pages/recruitment/pipeline/Pipelines";
 import Roster from "./pages/Roster";
 import RosterInfo from "./pages/RosterInfo";
 import Roles from "./pages/admin/roles/Roles";
+import PendingUsers from "./pages/admin/pending_users/PendingUsers";
 
 const theme = createMuiTheme({
   palette: {
@@ -83,6 +84,9 @@ export default function App() {
           />
           <Route exact path="/admin/roles">
             <Roles />
+          </Route>
+          <Route exact path="/admin/pending">
+            <PendingUsers />
           </Route>
           <Route exact path="/">
             <Home />

@@ -27,6 +27,7 @@ import {
   RateReview,
   ListAlt,
   SupervisedUserCircle,
+  QueueTwoTone,
 } from "@material-ui/icons";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
@@ -155,6 +156,11 @@ export default function PageContainer({ window, children }) {
           icon: <SupervisedUserCircle />,
           text: "Role Settings",
           link: "/admin/roles",
+        },
+        {
+          icon: <QueueTwoTone />,
+          text: "Pending Users",
+          link: "/admin/pending",
         },
       ],
       display:
