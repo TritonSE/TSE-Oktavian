@@ -81,8 +81,8 @@ const UserCard = ({ userData, card }) => {
   const [open, setOpen] = useState(false);
   const [state, setState] = useState({
     loading: true,
-    isAdmin: userData.user.role.permissions.admin, // roster edit permissions
-    canDelete: userData.user.role.permissions.account_activation, // delete permissions
+    canEdit: userData.user.role.permissions.user_edit,
+    canDelete: userData.user.role.permissions.account_activation,
     _id: null,
     name: "",
     role: "",
@@ -159,7 +159,7 @@ const UserCard = ({ userData, card }) => {
     <LoadingContainer loading={state.loading}>
       <Card className={classes.card}>
         <CardContent>
-          {state.isAdmin || state.canDelete ? (
+          {state.canEdit || state.canDelete ? (
             <>
               <IconButton
                 className={classes.settings}

@@ -34,6 +34,7 @@ async function createMockData() {
     permissions: {
       roster: true,
       recruitment: true,
+      project_edit: true,
     },
   });
   await project_manager_role.save();
@@ -42,7 +43,10 @@ async function createMockData() {
     permissions: {
       roster: true,
       recruitment: true,
-      admin: true,
+      user_edit: true,
+      project_edit: true,
+      project_create: true,
+      role_management: true,
     },
   });
   await pvp_role.save();
@@ -51,9 +55,12 @@ async function createMockData() {
     permissions: {
       roster: true,
       recruitment: true,
-      admin: true,
       final_approval: true,
+      user_edit: true,
+      project_edit: true,
+      project_create: true,
       role_management: true,
+      account_activation: true,
     },
   });
   await president_role.save();
