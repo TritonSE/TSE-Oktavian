@@ -191,10 +191,10 @@ const UserCard = ({ userData, card }) => {
                 <Dialog
                   open={open}
                   onClose={handleDeactivateClose}
-                  aria-describedby="alert-dialog-description"
+                  aria-describedby="deactivation-alert"
                 >
                   <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
+                    <DialogContentText id="deactivation-alert">
                       Are you sure you want to deactivate this account?
                     </DialogContentText>
                   </DialogContent>
