@@ -75,7 +75,7 @@ const RolePermissionCard = ({ role, mode }) => {
   });
 
   const adminSubPermissions = [
-    "roster_edit",
+    "user_edit",
     "project_edit",
     "project_create",
     "role_management",
@@ -119,8 +119,18 @@ const RolePermissionCard = ({ role, mode }) => {
     });
   };
 
+  const capitalize = (str) => {
+    const words = str.toLowerCase().split(" ");
+
+    for (let i = 0; i < words.length; i++) {
+      words[i] = words[i][0].toUpperCase() + words[i].substr(1);
+    }
+
+    return words.join(" ");
+  };
+
   const handleTextField = (event) => {
-    const text = event.target.value;
+    const text = capitalize(event.target.value);
     setState((prevState) => ({
       ...prevState,
       role: {
@@ -157,6 +167,10 @@ const RolePermissionCard = ({ role, mode }) => {
       adminSubPermissions.forEach((subPermission) => {
         permissions[subPermission] = true;
       });
+    } else {
+      adminSubPermissions.forEach((subPermission) => {
+        permissions[subPermission] = false;
+      });
     }
 
     setState((prevState) => ({
@@ -166,6 +180,17 @@ const RolePermissionCard = ({ role, mode }) => {
         permissions,
       },
     }));
+  };
+
+  // if all admin subpermissions are checked, return true
+  const checkAllSubPermissions = (permissions) => {
+    let result = true;
+    adminSubPermissions.forEach((subPermission) => {
+      if (!permissions[subPermission]) {
+        result = false;
+      }
+    });
+    return result;
   };
 
   return (
@@ -225,7 +250,7 @@ const RolePermissionCard = ({ role, mode }) => {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={state.role.permissions.admin || false}
+                    checked={checkAllSubPermissions(state.role.permissions) || false}
                     onChange={handleAdminChange}
                     name="admin"
                   />
@@ -236,12 +261,12 @@ const RolePermissionCard = ({ role, mode }) => {
                 className={classes.indentedCheckbox}
                 control={
                   <Checkbox
-                    checked={state.role.permissions.roster_edit || false}
+                    checked={state.role.permissions.user_edit || false}
                     onChange={handleChange}
-                    name="roster_edit"
+                    name="user_edit"
                   />
                 }
-                label="Edit Roster"
+                label="Edit Users"
               />
 
               <FormControlLabel
@@ -361,4 +386,4 @@ const RolePermissionCard = ({ role, mode }) => {
   );
 };
 
-export default withAuthorization(RolePermissionCard, true, ["admin"]);
+export default withAuthorization(RolePermissionCard, true, ["role_management"]);

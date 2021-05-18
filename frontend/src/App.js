@@ -83,9 +83,6 @@ export default function App() {
             path="/roster/:userid"
             component={({ match }) => <RosterInfo match={match} />}
           />
-          <Route exact path="/admin/roles">
-            <Roles />
-          </Route>
           <Route
             exact
             path="/admin/roles/edit/:roleId"
@@ -94,6 +91,10 @@ export default function App() {
           <Route exact path="/admin/roles/create">
             <CreateRole />
           </Route>
+          <Route exact path="/admin/roles">
+            <Roles />
+          </Route>
+
           <Route exact path="/">
             <Home />
           </Route>

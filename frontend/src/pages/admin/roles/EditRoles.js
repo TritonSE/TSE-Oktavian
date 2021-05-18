@@ -69,4 +69,4 @@ const EditRole = ({ match }) => {
   );
 };
 
-export default withAuthorization(EditRole, true, ["admin"]);
+export default withAuthorization(EditRole, true, ["role_management"]);
