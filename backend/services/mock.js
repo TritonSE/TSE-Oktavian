@@ -64,6 +64,11 @@ async function createMockData() {
     },
   });
   await president_role.save();
+  const pending_role = new Role({
+    name: "Pending",
+    permissions: {},
+  });
+  await pending_role.save();
 
   // Users
   const developer_user = new User({
