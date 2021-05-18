@@ -49,8 +49,7 @@ module.exports = mongoose.model(
       /**
        * Edit other users' profiles and assign roles.
        */
-      // TODO: rename to roster_edit
-      admin: {
+      user_edit: {
         type: Boolean,
         required: true,
         default: false,
