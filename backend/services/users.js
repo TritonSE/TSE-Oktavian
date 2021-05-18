@@ -105,7 +105,13 @@ async function editUser(rawUser, editingUser) {
     throw ServiceError(404, "User does not exist");
   }
   for (const [field, newValue] of Object.entries(rawUser)) {
-    if (field === "_id" || newValue.toString() === editedUser[field].toString()) continue;
+    if (
+      field === "_id" ||
+      // eslint-disable-next-line eqeqeq
+      (editedUser[field] != undefined && newValue.toString() === editedUser[field].toString())
+    ) {
+      continue;
+    }
     if (editableFields.has(field)) {
       editedUser[field] = newValue;
     } else {
