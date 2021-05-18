@@ -119,6 +119,7 @@ const RolePermissionCard = ({ role, mode }) => {
     });
   };
 
+  // capitalizes first letter of every word
   const capitalize = (str) => {
     const words = str.toLowerCase().split(" ");
 
@@ -145,7 +146,7 @@ const RolePermissionCard = ({ role, mode }) => {
     const field_name = event.target.name;
     permissions[field_name] = event.target.checked;
     // unchecks admin box if any indented checkboxes were unchecked
-    if (permissions[field_name] !== null) {
+    if (!permissions[field_name]) {
       permissions["admin"] = false;
     }
 

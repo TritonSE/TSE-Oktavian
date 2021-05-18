@@ -17,16 +17,6 @@ const EditRole = ({ match }) => {
   const [state, setState] = useState({
     loading: true,
     role: [],
-    permissions: {
-      view_roster: false,
-      recruitment: false,
-      final_review: false,
-      admin: false,
-      edit_project: false,
-      create_project: false,
-      manage_role: false,
-      activate_accounts: false,
-    },
   });
 
   useEffect(() => {
