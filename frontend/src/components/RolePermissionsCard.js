@@ -12,8 +12,17 @@ import {
   FormControlLabel,
   Checkbox,
   TextField,
+  Dialog,
+  DialogTitle,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
+import { useHistory } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { deleteRole, editRole, createRole } from "../services/roles";
+import { openAlert } from "../actions";
 
 import { withAuthorization } from "./HOC";
 
@@ -57,41 +66,90 @@ const useStyles = makeStyles((theme) => ({
 
 const RolePermissionCard = ({ role, mode }) => {
   const classes = useStyles();
+  const history = useHistory();
+  const dispatch = useDispatch();
   const [state, setState] = useState({
     loading: false,
     role,
-    permissions: {
-      ...role.permissions,
-      edit_project: role.permissions.admin,
-      create_project: role.permissions.admin,
-      manage_role: role.permissions.admin,
-      activate_accounts: role.permissions.admin,
-    },
+    modal: false,
   });
 
   const adminSubPermissions = [
-    "edit_project",
-    "create_project",
-    "manage_role",
-    "activate_accounts",
+    "roster_edit",
+    "project_edit",
+    "project_create",
+    "role_management",
+    "account_activation",
   ];
 
+  const handleModalOpen = () => {
+    setState({ ...state, modal: true });
+  };
+
+  const handleModalClose = () => {
+    setState({ ...state, modal: false });
+  };
+
+  const handleDelete = () => {
+    deleteRole(state.role._id).then((res) => {
+      if (!res.ok) {
+        // reports error if server responds with invalid status
+        dispatch(openAlert(`Error: ${res.data.message}`));
+        return;
+      }
+      history.push(`/admin/roles/`);
+    });
+  };
+
+  const handleSubmit = (fun) => {
+    // checks to make sure name field is not empty
+    if (state.role.name === null || state.role.name === "") {
+      dispatch(openAlert(`Error: name field cannot be empty.`));
+      return;
+    }
+
+    // calls the create/edit function depending on the page
+    fun(state.role).then((res) => {
+      if (!res.ok) {
+        // reports error if server responds with invalid status
+        dispatch(openAlert(`Error: ${res.data.message}`));
+        return;
+      }
+      history.push(`/admin/roles/`);
+    });
+  };
+
+  const handleTextField = (event) => {
+    const text = event.target.value;
+    setState((prevState) => ({
+      ...prevState,
+      role: {
+        ...prevState.role,
+        name: text,
+      },
+    }));
+  };
+
   const handleChange = (event) => {
-    const { permissions } = state;
+    const { permissions } = state.role;
     const field_name = event.target.name;
     permissions[field_name] = event.target.checked;
-    // unchecks admin box if any indented is unchecked
-    adminSubPermissions.forEach((subPermission) => {
-      if (!permissions[subPermission]) {
-        permissions["admin"] = false;
-      }
-    });
+    // unchecks admin box if any indented checkboxes were unchecked
+    if (permissions[field_name] !== null) {
+      permissions["admin"] = false;
+    }
 
-    setState({ ...state, permissions });
+    setState((prevState) => ({
+      ...prevState,
+      role: {
+        ...prevState.role,
+        permissions,
+      },
+    }));
   };
 
   const handleAdminChange = (event) => {
-    const { permissions } = state;
+    const { permissions } = state.role;
     const field_name = event.target.name;
     permissions[field_name] = event.target.checked;
     // if admin set to true, check all indented permissions
@@ -100,7 +158,14 @@ const RolePermissionCard = ({ role, mode }) => {
         permissions[subPermission] = true;
       });
     }
-    setState({ ...state, permissions });
+
+    setState((prevState) => ({
+      ...prevState,
+      role: {
+        ...prevState.role,
+        permissions,
+      },
+    }));
   };
 
   return (
@@ -119,6 +184,7 @@ const RolePermissionCard = ({ role, mode }) => {
               variant="outlined"
               palceholder="Role Name"
               required
+              onChange={handleTextField}
             />
           )}
 
@@ -129,7 +195,7 @@ const RolePermissionCard = ({ role, mode }) => {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={state.permissions.roster}
+                    checked={state.role.permissions.roster || false}
                     onChange={handleChange}
                     name="roster"
                   />
@@ -139,7 +205,7 @@ const RolePermissionCard = ({ role, mode }) => {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={state.permissions.recruitment}
+                    checked={state.role.permissions.recruitment || false}
                     onChange={handleChange}
                     name="recruitment"
                   />
@@ -149,7 +215,7 @@ const RolePermissionCard = ({ role, mode }) => {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={state.permissions.final_approval}
+                    checked={state.role.permissions.final_approval || false}
                     onChange={handleChange}
                     name="final_approval"
                   />
@@ -159,7 +225,7 @@ const RolePermissionCard = ({ role, mode }) => {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={state.permissions.admin}
+                    checked={state.role.permissions.admin || false}
                     onChange={handleAdminChange}
                     name="admin"
                   />
@@ -170,9 +236,21 @@ const RolePermissionCard = ({ role, mode }) => {
                 className={classes.indentedCheckbox}
                 control={
                   <Checkbox
-                    checked={state.permissions.edit_project}
+                    checked={state.role.permissions.roster_edit || false}
                     onChange={handleChange}
-                    name="edit_project"
+                    name="roster_edit"
+                  />
+                }
+                label="Edit Roster"
+              />
+
+              <FormControlLabel
+                className={classes.indentedCheckbox}
+                control={
+                  <Checkbox
+                    checked={state.role.permissions.project_edit || false}
+                    onChange={handleChange}
+                    name="project_edit"
                   />
                 }
                 label="Edit Existing Project"
@@ -181,20 +259,20 @@ const RolePermissionCard = ({ role, mode }) => {
                 className={classes.indentedCheckbox}
                 control={
                   <Checkbox
-                    checked={state.permissions.create_project}
+                    checked={state.role.permissions.project_create || false}
                     onChange={handleChange}
-                    name="create_project"
+                    name="project_create"
                   />
                 }
-                label="Create New Project"
+                label="Create/Delete Projects"
               />
               <FormControlLabel
                 className={classes.indentedCheckbox}
                 control={
                   <Checkbox
-                    checked={state.permissions.manage_role}
+                    checked={state.role.permissions.role_management || false}
                     onChange={handleChange}
-                    name="manage_role"
+                    name="role_management"
                   />
                 }
                 label="Manage Role"
@@ -203,9 +281,9 @@ const RolePermissionCard = ({ role, mode }) => {
                 className={classes.indentedCheckbox}
                 control={
                   <Checkbox
-                    checked={state.permissions.activate_accounts}
+                    checked={state.role.permissions.account_activation || false}
                     onChange={handleChange}
-                    name="activate_accounts"
+                    name="account_activation"
                   />
                 }
                 label="Activate/Deactivate Accounts"
@@ -220,8 +298,7 @@ const RolePermissionCard = ({ role, mode }) => {
               startIcon={<DeleteIcon />}
               onClick={(event) => {
                 event.preventDefault();
-
-                // TODO - Implement delete functionality
+                handleModalOpen();
               }}
             >
               Delete Role
@@ -232,14 +309,49 @@ const RolePermissionCard = ({ role, mode }) => {
         </CardContent>
       </Card>
 
+      {mode === "edit" ? (
+        <Dialog
+          open={state.modal}
+          onClose={handleModalClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            Are you sure you want to delete the {state.role.name} role
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Deleting a role from the database is permanent and you will not be able to undo this
+              action. Please make sure you understand what you are doing and that you mean to delete
+              this role.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleDelete} color="primary" autoFocus>
+              Confirm decision
+            </Button>
+            <Button onClick={handleModalClose} color="secondary">
+              Go back
+            </Button>
+          </DialogActions>
+        </Dialog>
+      ) : (
+        ""
+      )}
+
       <Grid container xs={12} alignItems="center" justify="center">
         <Button
+          type="submit"
           className={classes.saveButton}
           variant="contained"
           color="primary"
           onClick={(event) => {
             event.preventDefault();
-            // TODO - Implement save function
+            if (mode === "edit") {
+              handleSubmit(editRole);
+            } else {
+              handleSubmit(createRole);
+            }
           }}
         >
           {mode === "edit" ? "Save Changes" : "Create"}

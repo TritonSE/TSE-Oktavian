@@ -10,22 +10,19 @@ import RolePermissionCard from "../../../components/RolePermissionsCard";
 
 const CreateRole = () => {
   const defaultPermissions = {
-    view_roster: false,
+    roster: false,
     recruitment: false,
-    final_review: false,
-    admin: false,
+    final_approval: false,
+    roster_edit: false,
+    project_edit: false,
+    project_create: false,
+    role_management: false,
+    account_activation: false,
   };
 
   const state = {
     loading: false,
-    role: { permissions: defaultPermissions },
-    permissions: {
-      ...defaultPermissions,
-      edit_project: false,
-      create_project: false,
-      manage_role: false,
-      activate_accounts: false,
-    },
+    role: { name: "", permissions: defaultPermissions },
   };
 
   return (
