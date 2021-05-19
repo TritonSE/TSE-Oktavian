@@ -89,9 +89,9 @@ async function getAllUsers() {
 }
 
 /**
- * Edit a user object.
- * @param rawUser The edited user object.
- * @param editingUser The user who is doing the editing.
+ * Edit a user object
+ * @param rawUser The edited user object
+ * @param editingUser The user who is doing the editing
  */
 async function editUser(rawUser, editingUser) {
   let editableFields = USER_EDITABLE;
