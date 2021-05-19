@@ -2,7 +2,7 @@ const express = require("express");
 const { body, param } = require("express-validator");
 
 const { authorizeUser } = require("../middleware/auth");
-const { getAllRoles, editRole, createRole, deleteRole } = require("../services/roles");
+const { getAllRoles, getRole, editRole, createRole, deleteRole } = require("../services/roles");
 const { validateRequest } = require("../middleware/validation");
 
 const router = express.Router();
@@ -12,6 +12,19 @@ const router = express.Router();
  */
 router.get("/", [authorizeUser(["roster"])], (req, res, next) => {
   getAllRoles()
+    .then((roles) => {
+      res.status(200).json({ roles });
+    })
+    .catch((err) => {
+      next(err);
+    });
+});
+
+/**
+ * Reaturn a specific role that matches role_id
+ */
+router.get("/:role_id", [authorizeUser(["roster"])], (req, res, next) => {
+  getRole(req.params.role_id)
     .then((roles) => {
       res.status(200).json({ roles });
     })

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 
+import { useHistory } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
@@ -28,6 +29,7 @@ const useStyles = makeStyles((theme) => ({
 const Roles = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const [state, setState] = useState({
     loading: true,
@@ -72,7 +74,7 @@ const Roles = () => {
               onClick={(event) => {
                 event.preventDefault();
 
-                // TODO - Redirect to new page to create a new role
+                history.push(`/admin/roles/create`);
               }}
             >
               + Create Role
@@ -101,8 +103,7 @@ const Roles = () => {
                         onClick={(event) => {
                           event.preventDefault();
 
-                          // TODO - Redirect to page to edit existing role
-                          console.log(`TODO - edit role ${role.name} (${role._id})`);
+                          history.push(`/admin/roles/edit/${role._id}`);
                         }}
                       >
                         Edit
