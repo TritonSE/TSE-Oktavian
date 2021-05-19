@@ -146,7 +146,7 @@ const RolePermissionCard = ({ role, mode }) => {
     const field_name = event.target.name;
     permissions[field_name] = event.target.checked;
     // unchecks admin box if any indented checkboxes were unchecked
-    if (!permissions[field_name]) {
+    if (adminSubPermissions.includes(field_name) && !permissions[field_name]) {
       permissions["admin"] = false;
     }
 
