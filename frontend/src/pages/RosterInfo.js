@@ -1,11 +1,12 @@
 import React from "react";
 import { Helmet } from "react-helmet";
-import { Grid, Card, CardContent, Typography } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useSelector } from "react-redux";
 import PageContainer from "../components/PageContainer";
 import { withAuthorization } from "../components/HOC";
 import UserCard from "../components/UserCard";
+import ProjectsCard from "../components/ProjectsCard";
 
 const useStyles = makeStyles((theme) => ({
   grid: {
@@ -52,15 +53,11 @@ const RosterInfo = (card) => {
           justify="center"
           className={classes.grid}
         >
-          <Grid item md={4} xs={6}>
+          <Grid item md={4} xs={12}>
             <UserCard userData={loginState} card={card} />
           </Grid>
-          <Grid item md={4} xs={6}>
-            <Card className={classes.card}>
-              <CardContent>
-                <Typography variant="h5">Projects</Typography>
-              </CardContent>
-            </Card>
+          <Grid item md={4} xs={12}>
+            <ProjectsCard user={card.match.params.userid} />
           </Grid>
         </Grid>
       </PageContainer>

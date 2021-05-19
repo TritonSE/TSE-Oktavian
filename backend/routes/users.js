@@ -1,7 +1,9 @@
 const express = require("express");
+const { param } = require("express-validator");
 
 const { authorizeUser } = require("../middleware/auth");
-const { getAllUsers, editUser } = require("../services/users");
+const { validateRequest } = require("../middleware/validation");
+const { getAllUsers, editUser, deleteUser } = require("../services/users");
 
 const router = express.Router();
 
@@ -30,5 +32,19 @@ router.put("/", [authorizeUser([])], (req, res, next) => {
       next(err);
     });
 });
+
+router.delete(
+  "/:id",
+  [param("id").notEmpty().isString(), validateRequest, authorizeUser(["account_activation"])],
+  (req, res, next) => {
+    deleteUser(req.params.id)
+      .then(() => {
+        res.status(200).json({});
+      })
+      .catch((err) => {
+        next(err);
+      });
+  }
+);
 
 module.exports = router;
