@@ -10,6 +10,13 @@ async function getRoles(filter) {
 }
 
 /**
+ * Returns a single role matching the role id
+ */
+async function getRole(role_id) {
+  const result = Role.findOne({ _id: role_id });
+  return result;
+}
+/**
  * Edit an existing role
  */
 async function editRole(rawRole) {
@@ -55,6 +62,7 @@ async function deleteRole(id) {
 
 module.exports = {
   getRoles,
+  getRole,
   editRole,
   createRole,
   deleteRole,

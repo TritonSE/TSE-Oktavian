@@ -90,9 +90,9 @@ async function getUsers(filter) {
 }
 
 /**
- * Edit a user object.
- * @param rawUser The edited user object.
- * @param editingUser The user who is doing the editing.
+ * Edit a user object
+ * @param rawUser The edited user object
+ * @param editingUser The user who is doing the editing
  */
 async function editUser(rawUser, editingUser) {
   let editableFields = USER_EDITABLE;
@@ -122,6 +122,14 @@ async function editUser(rawUser, editingUser) {
   return editedUser.save();
 }
 
+/**
+ * Delete a user object
+ * @param _id The id of the user being deleted
+ */
+async function deleteUser(_id) {
+  return User.deleteOne({ _id });
+}
+
 module.exports = {
   createUser,
   forgotPassword,
@@ -129,4 +137,5 @@ module.exports = {
   changePassword,
   getUsers,
   editUser,
+  deleteUser,
 };

@@ -7,3 +7,7 @@ export async function getUsers(role_id = null) {
 export async function editUser(body) {
   return sendData("api/users", true, "PUT", JSON.stringify(body));
 }
+
+export async function deleteUser(id) {
+  return sendData(`api/users/${id}`, true, "DELETE", JSON.stringify());
+}

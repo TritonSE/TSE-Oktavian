@@ -1,4 +1,5 @@
 import { React, useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import { makeStyles, createMuiTheme } from "@material-ui/core/styles";
 import { useDispatch } from "react-redux";
 import {
@@ -10,6 +11,10 @@ import {
   Button,
   MenuItem,
   Menu,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
 } from "@material-ui/core";
 import { ThemeProvider } from "@material-ui/styles";
 import AccountCircleOutlinedIcon from "@material-ui/icons/AccountCircleOutlined";
@@ -21,7 +26,7 @@ import SportsEsportsIcon from "@material-ui/icons/SportsEsports";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import { withAuthorization } from "./HOC";
 import { openAlert } from "../actions";
-import { getUsers } from "../services/users";
+import { getUsers, deleteUser } from "../services/users";
 import LoadingContainer from "./LoadingContainer";
 
 const useStyles = makeStyles((theme) => ({
@@ -71,10 +76,14 @@ const roleButton = createMuiTheme({
 const UserCard = ({ userData, card }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const history = useHistory();
   const [anchorEl, setAnchorEl] = useState(null);
+  const [open, setOpen] = useState(false);
   const [state, setState] = useState({
     loading: true,
     canEdit: userData.user.role.permissions.user_edit,
+    canDelete: userData.user.role.permissions.account_activation,
+    _id: null,
     name: "",
     role: "",
     graduation: 0,
@@ -84,6 +93,31 @@ const UserCard = ({ userData, card }) => {
     discord_username: "",
     linkedin_username: "",
   });
+
+  const handleDeactivateOpen = () => {
+    setOpen(true);
+  };
+
+  const handleDeactivateClose = () => {
+    setOpen(false);
+  };
+
+  const handleDeactivate = async () => {
+    const { ok, data } = await deleteUser(state._id);
+    if (ok) {
+      dispatch(openAlert("Account successfully deleted!"));
+      // if user deactivated their own account, redirect to login
+      if (userData.user._id === state._id) {
+        userData.authenticated = false;
+        history.push("/login");
+      } else {
+        history.push("/roster");
+      }
+    } else {
+      dispatch(openAlert(`Error: ${data.message}`));
+    }
+    setOpen(false);
+  };
 
   useEffect(() => {
     const loadCard = async () => {
@@ -98,6 +132,7 @@ const UserCard = ({ userData, card }) => {
         setState({
           ...state,
           loading: false,
+          _id: cardUser._id,
           name: cardUser.name,
           role: cardUser.role.name.toUpperCase(),
           graduation: cardUser.graduation,
@@ -124,7 +159,7 @@ const UserCard = ({ userData, card }) => {
     <LoadingContainer loading={state.loading}>
       <Card className={classes.card}>
         <CardContent>
-          {state.canEdit ? (
+          {state.canEdit || state.canDelete ? (
             <>
               <IconButton
                 className={classes.settings}
@@ -152,7 +187,32 @@ const UserCard = ({ userData, card }) => {
                 }}
               >
                 <MenuItem>Edit</MenuItem>
-                <MenuItem>Deactivate</MenuItem>
+                {state.canDelete && <MenuItem onClick={handleDeactivateOpen}>Deactivate</MenuItem>}
+                <Dialog
+                  open={open}
+                  onClose={handleDeactivateClose}
+                  aria-describedby="deactivation-alert"
+                >
+                  <DialogContent>
+                    <DialogContentText id="deactivation-alert">
+                      Are you sure you want to deactivate this account?
+                    </DialogContentText>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={handleDeactivateClose} variant="outlined" color="primary">
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={handleDeactivate}
+                      variant="contained"
+                      color="primary"
+                      autoFocus
+                      disableElevation
+                    >
+                      Yes
+                    </Button>
+                  </DialogActions>
+                </Dialog>
               </Menu>
               <AccountCircleOutlinedIcon className={classes.adminIcon} />
             </>
