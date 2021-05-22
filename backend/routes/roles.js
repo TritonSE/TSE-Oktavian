@@ -9,7 +9,7 @@ const router = express.Router();
 
 /**
  * Return a list of all roles
- * Optional paramters to specify qury for specific roles
+ * Optional parameters to specify query for specific roles
  *
  */
 router.get("/", [authorizeUser(["roster"])], (req, res, next) => {
