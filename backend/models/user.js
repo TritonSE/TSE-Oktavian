@@ -39,6 +39,10 @@ const UserSchema = new Schema({
     type: String,
     required: false,
   },
+  grad_quarter: {
+    type: String,
+    required: true,
+  },
   graduation: {
     // Graduation year
     type: Number,
