@@ -42,7 +42,7 @@ const Register = () => {
     name: "",
     email: "",
     password: "",
-    quarter: quarters[0],
+    quarter: quarters[2],
     year: 0,
     secret: "",
   });
