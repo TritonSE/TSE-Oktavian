@@ -1,6 +1,6 @@
 import React from "react";
 import { Helmet } from "react-helmet";
-import { TextField, Button, Grid, FormHelperText, Typography } from "@material-ui/core";
+import { TextField, Button, Grid, FormHelperText, Typography, MenuItem } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useDispatch } from "react-redux";
 import PageContainer from "../components/PageContainer";
@@ -35,12 +35,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Register = () => {
+  const quarters = ["Fall", "Winter", "Spring"];
   const classes = useStyles();
   const [state, setState] = React.useState({
     disabled: false,
     name: "",
     email: "",
     password: "",
+    quarter: quarters[0],
+    year: 0,
     secret: "",
   });
   const dispatch = useDispatch();
@@ -56,6 +59,8 @@ const Register = () => {
       name: state.name,
       email: state.email,
       password: state.password,
+      grad_quarter: state.quarter,
+      graduation: state.year,
       secret: state.secret,
     };
     if (body.password.length < 6) {
@@ -105,6 +110,35 @@ const Register = () => {
                 variant="outlined"
                 type="password"
                 onChange={handleChange("password")}
+              />
+              <TextField
+                select
+                label="Graduation Quarter"
+                variant="outlined"
+                value={state.quarter}
+                className={classes.lightSpacing}
+                onChange={handleChange("quarter")}
+                SelectProps={{
+                  MenuProps: {
+                    anchorOrigin: {
+                      vertical: "bottom",
+                      horizontal: "left",
+                    },
+                    getContentAnchorEl: null,
+                  },
+                }}
+              >
+                {quarters.map((qtr) => (
+                  <MenuItem key={qtr} value={qtr}>
+                    {qtr}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <TextField
+                label="Graduation Year"
+                variant="outlined"
+                type="text"
+                onChange={handleChange("year")}
               />
               <TextField
                 label="Secret"
