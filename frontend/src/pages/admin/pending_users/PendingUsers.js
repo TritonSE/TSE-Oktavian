@@ -83,6 +83,7 @@ const PendingUsers = () => {
               pageSize: 15,
               emptyRowsWhenPaging: true,
               pageSizeOptions: [10, 20, 50, 100],
+              search: false,
             }}
             columns={[
               {
