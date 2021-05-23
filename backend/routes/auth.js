@@ -22,7 +22,7 @@ const validators = {
   email: body("email").isEmail(),
   password: body("password").isString().isLength({ min: 6 }),
   quarter: body("grad_quarter").notEmpty().isString(),
-  year: body("graduation").notEmpty().isString(),
+  year: body("graduation").isString().isLength({ min: 4 }),
   secret: body("secret").notEmpty().isString(),
   token: body("token").isUUID(4),
 };
