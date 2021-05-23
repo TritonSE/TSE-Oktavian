@@ -82,10 +82,11 @@ async function changePassword(data) {
 }
 
 /**
- * Returns an array of all users in Oktavian
+ * Returns an array of all users according to an optional filter parameter
+ * @param filter - JSON object specifying field and target value pairs
  */
-async function getAllUsers() {
-  return User.find().populate("role").exec();
+async function getUsers(filter) {
+  return User.find(filter).populate("role").exec();
 }
 
 /**
@@ -134,7 +135,7 @@ module.exports = {
   forgotPassword,
   resetPassword,
   changePassword,
-  getAllUsers,
+  getUsers,
   editUser,
   deleteUser,
 };

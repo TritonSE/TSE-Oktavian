@@ -2,16 +2,18 @@ const express = require("express");
 const { body, param } = require("express-validator");
 
 const { authorizeUser } = require("../middleware/auth");
-const { getAllRoles, getRole, editRole, createRole, deleteRole } = require("../services/roles");
+const { getRoles, getRole, editRole, createRole, deleteRole } = require("../services/roles");
 const { validateRequest } = require("../middleware/validation");
 
 const router = express.Router();
 
 /**
  * Return a list of all roles
+ * Optional parameters to specify query for specific roles
+ *
  */
 router.get("/", [authorizeUser(["roster"])], (req, res, next) => {
-  getAllRoles()
+  getRoles(req.query)
     .then((roles) => {
       res.status(200).json({ roles });
     })
