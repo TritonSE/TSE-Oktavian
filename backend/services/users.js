@@ -8,11 +8,13 @@ const { sendEmail } = require("./email");
 // User model fields that are editable by normal users (editing themselves) and admins (editing anyone)
 const USER_EDITABLE = new Set([
   "phone",
+  "grad_quarter",
+  "graduation",
   "discord_username",
   "github_username",
   "linkedin_username",
 ]);
-const ADMIN_EDITABLE = new Set([...USER_EDITABLE, "email", "name", "graduation", "role", "active"]);
+const ADMIN_EDITABLE = new Set([...USER_EDITABLE, "email", "name", "role", "active"]);
 
 async function createUser(raw_user) {
   let user = await User.findOne({ email: raw_user.email }).exec();

@@ -8,7 +8,6 @@ import {
   Typography,
   Button,
   TextField,
-  Select,
   MenuItem,
   Divider,
 } from "@material-ui/core";
@@ -51,6 +50,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const UserEdit = ({ userData }) => {
+  const quarters = ["Fall", "Winter", "Spring", "Summer"];
   const classes = useStyles();
   const dispatch = useDispatch();
   const [state, setState] = useState({
@@ -61,6 +61,7 @@ const UserEdit = ({ userData }) => {
       _id: userData.user._id,
       name: userData.user.name,
       role: userData.user.role._id,
+      grad_quarter: userData.user.grad_quarter,
       graduation: userData.user.graduation,
       phone: userData.user.phone,
       github_username: userData.user.github_username,
@@ -127,18 +128,22 @@ const UserEdit = ({ userData }) => {
                   });
                 }}
               />
-              <Select
+              <TextField
+                select
+                label="Role"
                 variant="outlined"
                 defaultValue={userData.user.role._id}
                 renderValue={(value) => state.roleIdToNameMap[value]}
                 className={classes.select}
                 align="left"
-                MenuProps={{
-                  anchorOrigin: {
-                    vertical: "bottom",
-                    horizontal: "left",
+                SelectProps={{
+                  MenuProps: {
+                    anchorOrigin: {
+                      vertical: "bottom",
+                      horizontal: "left",
+                    },
+                    getContentAnchorEl: null,
                   },
-                  getContentAnchorEl: null,
                 }}
                 onChange={(event) => {
                   setState({
@@ -155,22 +160,7 @@ const UserEdit = ({ userData }) => {
                     {role.name}
                   </MenuItem>
                 ))}
-              </Select>
-              <TextField
-                label="Year"
-                variant="outlined"
-                type="text"
-                defaultValue={userData.user.graduation}
-                onChange={(event) => {
-                  setState({
-                    ...state,
-                    user: {
-                      ...state.user,
-                      graduation: event.target.value,
-                    },
-                  });
-                }}
-              />
+              </TextField>
               <TextField
                 label="Email"
                 variant="outlined"
@@ -204,16 +194,58 @@ const UserEdit = ({ userData }) => {
                 {state.roleIdToNameMap[userData.user.role._id]}
               </Typography>
               <Typography className={classes.nonEdit} variant="caption">
-                Graduation Year
-              </Typography>
-              <Typography className={classes.nonEdit}>{userData.user.graduation}</Typography>
-              <Typography className={classes.nonEdit} variant="caption">
                 Email
               </Typography>
               <Typography className={classes.nonEdit}>{userData.user.email}</Typography>
               <Divider />
             </div>
           )}
+          <TextField
+            select
+            label="Graduation Quarter"
+            variant="outlined"
+            value={state.user.grad_quarter}
+            align="left"
+            onChange={(event) => {
+              setState({
+                ...state,
+                user: {
+                  ...state.user,
+                  grad_quarter: event.target.value,
+                },
+              });
+            }}
+            SelectProps={{
+              MenuProps: {
+                anchorOrigin: {
+                  vertical: "bottom",
+                  horizontal: "left",
+                },
+                getContentAnchorEl: null,
+              },
+            }}
+          >
+            {quarters.map((qtr) => (
+              <MenuItem key={qtr} value={qtr}>
+                {qtr}
+              </MenuItem>
+            ))}
+          </TextField>
+          <TextField
+            label="Graduation Year"
+            variant="outlined"
+            type="text"
+            defaultValue={userData.user.graduation}
+            onChange={(event) => {
+              setState({
+                ...state,
+                user: {
+                  ...state.user,
+                  graduation: event.target.value,
+                },
+              });
+            }}
+          />
           <TextField
             label="Phone Number"
             variant="outlined"
