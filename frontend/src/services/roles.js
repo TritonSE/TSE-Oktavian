@@ -1,7 +1,7 @@
 import { getData, sendData } from "../util/data";
 
-export async function getRoles() {
-  return getData("api/roles", true);
+export async function getRoles(role_name = null) {
+  return getData(`api/roles?${role_name ? `name=${role_name}` : ""}`, true);
 }
 
 export async function getRole(role_id) {

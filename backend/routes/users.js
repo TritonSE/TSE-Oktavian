@@ -3,15 +3,16 @@ const { param, body } = require("express-validator");
 
 const { authorizeUser } = require("../middleware/auth");
 const { validateRequest } = require("../middleware/validation");
-const { getAllUsers, editUser, deleteUser, activateUser } = require("../services/users");
+const { getUsers, editUser, deleteUser, activateUser } = require("../services/users");
 
 const router = express.Router();
 
 /**
  * Return a list of all users
+ * Optional parameters to specify query for specific users
  */
 router.get("/", [authorizeUser(["roster"])], (req, res, next) => {
-  getAllUsers()
+  getUsers(req.query)
     .then((users) => {
       res.status(200).json({ users });
     })
