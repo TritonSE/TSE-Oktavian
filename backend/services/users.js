@@ -144,7 +144,7 @@ async function deleteUser(_id) {
 async function activateUser(user_id, role_id) {
   const user = await User.findById(user_id).populate("role");
   if (!user) {
-    throw ServiceError(400, "User does not exist.");
+    throw ServiceError(404, "User does not exist.");
   }
   if (user.role.name !== "Pending") {
     throw ServiceError(403, "User is already activated.");
