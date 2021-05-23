@@ -83,10 +83,11 @@ async function changePassword(data) {
 }
 
 /**
- * Returns an array of all users in Oktavian
+ * Returns an array of all users according to an optional filter parameter
+ * @param filter - JSON object specifying field and target value pairs
  */
-async function getAllUsers() {
-  return User.find().populate("role").exec();
+async function getUsers(filter) {
+  return User.find(filter).populate("role").exec();
 }
 
 /**
@@ -101,7 +102,7 @@ async function editUser(rawUser, editingUser) {
   } else if (editingUser._id.toString() !== rawUser._id) {
     throw ServiceError(403, "You do not have permission to edit other users");
   }
-  const editedUser = await User.findOne({ _id: rawUser._id });
+  const editedUser = await User.findOne({ _id: rawUser._id }).populate("role");
   if (editedUser === null) {
     throw ServiceError(404, "User does not exist");
   }
@@ -114,6 +115,19 @@ async function editUser(rawUser, editingUser) {
       continue;
     }
     if (editableFields.has(field)) {
+      if (field === "role") {
+        if (editedUser.role.name === "Pending") {
+          throw ServiceError(403, "You cannot change the role of a Pending user.");
+        }
+        // eslint-disable-next-line no-await-in-loop
+        const new_role = await Role.findById(newValue);
+        if (!new_role) {
+          throw ServiceError(404, "Role does not exist.");
+        }
+        if (new_role.name === "Pending") {
+          throw ServiceError(403, "You cannot set a user's role to Pending");
+        }
+      }
       editedUser[field] = newValue;
     } else {
       throw ServiceError(403, `You do not have permission to edit the '${field}' field`);
@@ -130,12 +144,34 @@ async function deleteUser(_id) {
   return User.deleteOne({ _id });
 }
 
+/**
+ * Activate a user (ie. change a user role from pending to another role)
+ * @param user_id The id of the user to be activated
+ * @param role_id The id of the role to give to the user
+ */
+async function activateUser(user_id, role_id) {
+  const user = await User.findById(user_id).populate("role");
+  if (!user) {
+    throw ServiceError(404, "User does not exist.");
+  }
+  if (user.role.name !== "Pending") {
+    throw ServiceError(403, "User is already activated.");
+  }
+  const role = await Role.findById(role_id);
+  if (!role) {
+    throw ServiceError(404, "Role does not exist.");
+  }
+  user.role = role_id;
+  return user.save();
+}
+
 module.exports = {
   createUser,
   forgotPassword,
   resetPassword,
   changePassword,
-  getAllUsers,
+  getUsers,
   editUser,
   deleteUser,
+  activateUser,
 };
