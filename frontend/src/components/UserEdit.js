@@ -70,6 +70,16 @@ const UserEdit = ({ userData }) => {
     },
   });
 
+  const handleUserChange = (prop) => (event) => {
+    setState({
+      ...state,
+      user: {
+        ...state.user,
+        [prop]: event.target.value,
+      },
+    });
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const { ok, data } = await editUser(state.user);
@@ -118,15 +128,7 @@ const UserEdit = ({ userData }) => {
                 variant="outlined"
                 type="text"
                 defaultValue={userData.user.name}
-                onChange={(event) => {
-                  setState({
-                    ...state,
-                    user: {
-                      ...state.user,
-                      name: event.target.value,
-                    },
-                  });
-                }}
+                onChange={handleUserChange("name")}
               />
               <TextField
                 select
@@ -145,15 +147,7 @@ const UserEdit = ({ userData }) => {
                     getContentAnchorEl: null,
                   },
                 }}
-                onChange={(event) => {
-                  setState({
-                    ...state,
-                    user: {
-                      ...state.user,
-                      role: event.target.value,
-                    },
-                  });
-                }}
+                onChange={handleUserChange("role")}
               >
                 {state.roles.map((role) => (
                   <MenuItem key={role._id} value={role._id}>
@@ -166,15 +160,7 @@ const UserEdit = ({ userData }) => {
                 variant="outlined"
                 type="email"
                 defaultValue={userData.user.email}
-                onChange={(event) => {
-                  setState({
-                    ...state,
-                    user: {
-                      ...state.user,
-                      email: event.target.value,
-                    },
-                  });
-                }}
+                onChange={handleUserChange("email")}
               />
             </>
           ) : (
@@ -206,15 +192,7 @@ const UserEdit = ({ userData }) => {
             variant="outlined"
             value={state.user.grad_quarter}
             align="left"
-            onChange={(event) => {
-              setState({
-                ...state,
-                user: {
-                  ...state.user,
-                  grad_quarter: event.target.value,
-                },
-              });
-            }}
+            onChange={handleUserChange("grad_quarter")}
             SelectProps={{
               MenuProps: {
                 anchorOrigin: {
@@ -234,77 +212,37 @@ const UserEdit = ({ userData }) => {
           <TextField
             label="Graduation Year"
             variant="outlined"
-            type="text"
+            type="number"
             defaultValue={userData.user.graduation}
-            onChange={(event) => {
-              setState({
-                ...state,
-                user: {
-                  ...state.user,
-                  graduation: event.target.value,
-                },
-              });
-            }}
+            onChange={handleUserChange("graduation")}
           />
           <TextField
             label="Phone Number"
             variant="outlined"
             type="text"
             defaultValue={userData.user.phone}
-            onChange={(event) => {
-              setState({
-                ...state,
-                user: {
-                  ...state.user,
-                  phone: event.target.value,
-                },
-              });
-            }}
+            onChange={handleUserChange("phone")}
           />
           <TextField
             label="Github User"
             variant="outlined"
             type="text"
             defaultValue={userData.user.github_username}
-            onChange={(event) => {
-              setState({
-                ...state,
-                user: {
-                  ...state.user,
-                  github_username: event.target.value,
-                },
-              });
-            }}
+            onChange={handleUserChange("github_username")}
           />
           <TextField
             label="Discord User"
             variant="outlined"
             type="text"
             defaultValue={userData.user.discord_username}
-            onChange={(event) => {
-              setState({
-                ...state,
-                user: {
-                  ...state.user,
-                  discord_username: event.target.value,
-                },
-              });
-            }}
+            onChange={handleUserChange("discord_username")}
           />
           <TextField
             label="LinkedIn User"
             variant="outlined"
             type="text"
             defaultValue={userData.user.linkedin_username}
-            onChange={(event) => {
-              setState({
-                ...state,
-                user: {
-                  ...state.user,
-                  linkedin_username: event.target.value,
-                },
-              });
-            }}
+            onChange={handleUserChange("linkedin_username")}
           />
           <Button
             disableElevation
