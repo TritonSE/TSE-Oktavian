@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Register = () => {
-  const quarters = ["Fall", "Winter", "Spring"];
+  const quarters = ["Fall", "Winter", "Spring", "Summer"];
   const classes = useStyles();
   const [state, setState] = React.useState({
     disabled: false,
