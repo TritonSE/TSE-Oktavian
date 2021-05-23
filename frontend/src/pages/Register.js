@@ -137,7 +137,7 @@ const Register = () => {
               <TextField
                 label="Graduation Year"
                 variant="outlined"
-                type="text"
+                type="number"
                 onChange={handleChange("year")}
               />
               <TextField
