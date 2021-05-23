@@ -100,7 +100,8 @@ async function editUser(rawUser, editingUser) {
   } else if (editingUser._id.toString() !== rawUser._id) {
     throw ServiceError(403, "You do not have permission to edit other users");
   }
-  const editedUser = await User.findOne({ _id: rawUser._id });
+  const editedUser = await User.findOne({ _id: rawUser._id }).populate("role");
+  const pending_role = await Role.findOne({ name: "Pending" });
   if (editedUser === null) {
     throw ServiceError(404, "User does not exist");
   }
@@ -113,6 +114,12 @@ async function editUser(rawUser, editingUser) {
       continue;
     }
     if (editableFields.has(field)) {
+      if (field === "role" && editedUser.role.name === "Pending") {
+        throw ServiceError(403, "You cannot change the role of a Pending user.");
+      }
+      if (field === "role" && newValue === pending_role._id.toString()) {
+        throw ServiceError(403, "You cannot set a user's role to Pending");
+      }
       editedUser[field] = newValue;
     } else {
       throw ServiceError(403, `You do not have permission to edit the '${field}' field`);
@@ -129,6 +136,27 @@ async function deleteUser(_id) {
   return User.deleteOne({ _id });
 }
 
+/**
+ * Activate a user (ie. change a user role from pending to another role)
+ * @param user_id The id of the user to be activated
+ * @param role_id The id of the role to give to the user
+ */
+async function activateUser(user_id, role_id) {
+  const user = await User.findById(user_id).populate("role");
+  if (!user) {
+    throw ServiceError(400, "User does not exist.");
+  }
+  if (user.role.name !== "Pending") {
+    throw ServiceError(403, "User is already activated.");
+  }
+  const role = await Role.findById(role_id);
+  if (!role) {
+    throw ServiceError(400, "Role does not exist.");
+  }
+  user.role = role_id;
+  return user.save();
+}
+
 module.exports = {
   createUser,
   forgotPassword,
@@ -137,4 +165,5 @@ module.exports = {
   getAllUsers,
   editUser,
   deleteUser,
+  activateUser,
 };
