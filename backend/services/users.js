@@ -101,7 +101,6 @@ async function editUser(rawUser, editingUser) {
     throw ServiceError(403, "You do not have permission to edit other users");
   }
   const editedUser = await User.findOne({ _id: rawUser._id }).populate("role");
-  const pending_role = await Role.findOne({ name: "Pending" });
   if (editedUser === null) {
     throw ServiceError(404, "User does not exist");
   }
@@ -114,11 +113,18 @@ async function editUser(rawUser, editingUser) {
       continue;
     }
     if (editableFields.has(field)) {
-      if (field === "role" && editedUser.role.name === "Pending") {
-        throw ServiceError(403, "You cannot change the role of a Pending user.");
-      }
-      if (field === "role" && newValue === pending_role._id.toString()) {
-        throw ServiceError(403, "You cannot set a user's role to Pending");
+      if (field === "role") {
+        if (editedUser.role.name === "Pending") {
+          throw ServiceError(403, "You cannot change the role of a Pending user.");
+        }
+        // eslint-disable-next-line no-await-in-loop
+        const new_role = await Role.findById(newValue);
+        if (!new_role) {
+          throw ServiceError(404, "Role does not exist.");
+        }
+        if (new_role.name === "Pending") {
+          throw ServiceError(403, "You cannot set a user's role to Pending");
+        }
       }
       editedUser[field] = newValue;
     } else {
@@ -151,7 +157,7 @@ async function activateUser(user_id, role_id) {
   }
   const role = await Role.findById(role_id);
   if (!role) {
-    throw ServiceError(400, "Role does not exist.");
+    throw ServiceError(404, "Role does not exist.");
   }
   user.role = role_id;
   return user.save();
