@@ -21,19 +21,31 @@ const validators = {
   name: body("name").notEmpty().isString(),
   email: body("email").isEmail(),
   password: body("password").isString().isLength({ min: 6 }),
+  quarter: body("grad_quarter").notEmpty().isString(),
+  year: body("graduation").isString().isLength({ min: 4 }),
   secret: body("secret").notEmpty().isString(),
   token: body("token").isUUID(4),
 };
 
 router.post(
   "/register",
-  [validators.name, validators.email, validators.password, validators.secret, validateRequest],
+  [
+    validators.name,
+    validators.email,
+    validators.password,
+    validators.secret,
+    validators.quarter,
+    validators.year,
+    validateRequest,
+  ],
   (req, res, next) => {
     createUser({
       name: req.body.name,
       email: req.body.email,
       password: req.body.password,
       secret: req.body.secret,
+      grad_quarter: req.body.grad_quarter,
+      graduation: req.body.graduation,
       refreshToken: uuidv4(),
       active: true,
     })
