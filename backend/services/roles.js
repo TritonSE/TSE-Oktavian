@@ -98,7 +98,6 @@ async function ensureBuiltinRolesExist() {
   return Promise.all(
     rawRoles.map(async (rawRole) => {
       let role = await getRoleByName(rawRole.name);
-      console.log([rawRole, role]);
       if (role === null) {
         role = await new Role(rawRole).save();
         console.log(`Created builtin role '${rawRole.name}'`);
