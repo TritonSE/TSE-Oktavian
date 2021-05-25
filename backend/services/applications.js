@@ -1,7 +1,8 @@
 const { STAGES } = require("../constants");
-const { User, Role, Application, Review, ApplicationPipeline } = require("../models");
+const { User, Application, Review, ApplicationPipeline } = require("../models");
 const { ServiceError } = require("./errors");
 const { sendEmail } = require("./email");
+const { getRoleByName } = require("./roles");
 
 /**
  * Assigns the given reviewer to the application by creating a new review.
@@ -142,7 +143,7 @@ async function advanceApplication(application, review_accepted) {
  */
 async function createApplication(raw_application) {
   // Users can only apply to valid roles with a pipeline attached to them
-  const role = await Role.findOne({ name: raw_application.role }).exec();
+  const role = await getRoleByName(raw_application.role);
   if (role == null) {
     throw ServiceError(400, "Invalid application role");
   }

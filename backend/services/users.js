@@ -4,6 +4,7 @@ const { REGISTER_SECRET } = require("../constants");
 const { User, PasswordReset, Role } = require("../models");
 const { ServiceError } = require("./errors");
 const { sendEmail } = require("./email");
+const { getRoleByName } = require("./roles");
 
 // User model fields that are editable by normal users (editing themselves) and admins (editing anyone)
 const USER_EDITABLE = new Set([
@@ -17,7 +18,7 @@ const USER_EDITABLE = new Set([
 const ADMIN_EDITABLE = new Set([...USER_EDITABLE, "email", "name", "role", "active"]);
 
 async function createUser(raw_user) {
-  let user = await User.findOne({ email: raw_user.email }).exec();
+  const user = await User.findOne({ email: raw_user.email }).exec();
   if (raw_user.secret !== REGISTER_SECRET) {
     throw ServiceError(403, "Invalid secret value");
   }
@@ -25,7 +26,7 @@ async function createUser(raw_user) {
     throw ServiceError(409, "Email already taken");
   }
 
-  const pending_role = await Role.findOne({ name: "Pending" }).exec();
+  const pending_role = await getRoleByName("Pending");
   // TODO - Enable users to input these fields on account creation or make these fields optional
   const raw_user_no_secret = {
     ...raw_user,
@@ -35,10 +36,7 @@ async function createUser(raw_user) {
   };
 
   delete raw_user_no_secret.secret;
-  user = new User(raw_user_no_secret);
-  await user.save();
-  user.role = pending_role;
-  return user;
+  return new User(raw_user_no_secret).save();
 }
 
 async function forgotPassword(data) {

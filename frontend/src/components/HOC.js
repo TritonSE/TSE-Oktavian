@@ -50,7 +50,7 @@ const withAuthorization = (WrappedComponent, authenticated, permissions = [], ig
     // User does not meet certain permissions
     if (authenticated) {
       for (const permission of permissions) {
-        if (loginState.user.role == null || loginState.user.role.permissions[permission] !== true) {
+        if (!loginState.user.role.permissions[permission]) {
           return <Redirect to="/" />;
         }
       }
