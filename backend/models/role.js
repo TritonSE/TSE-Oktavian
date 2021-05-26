@@ -20,6 +20,12 @@ module.exports = mongoose.model(
       required: true,
       unique: true,
     },
+    // Builtin roles (like Pending and Unassigned) cannot be renamed or deleted.
+    builtin: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
     permissions: {
       /**
        * View the organization roster and other users' profiles.

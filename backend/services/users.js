@@ -4,18 +4,21 @@ const { REGISTER_SECRET } = require("../constants");
 const { User, PasswordReset, Role } = require("../models");
 const { ServiceError } = require("./errors");
 const { sendEmail } = require("./email");
+const { getRoleByName } = require("./roles");
 
 // User model fields that are editable by normal users (editing themselves) and admins (editing anyone)
 const USER_EDITABLE = new Set([
   "phone",
+  "grad_quarter",
+  "graduation",
   "discord_username",
   "github_username",
   "linkedin_username",
 ]);
-const ADMIN_EDITABLE = new Set([...USER_EDITABLE, "email", "name", "graduation", "role", "active"]);
+const ADMIN_EDITABLE = new Set([...USER_EDITABLE, "email", "name", "role", "active"]);
 
 async function createUser(raw_user) {
-  let user = await User.findOne({ email: raw_user.email }).exec();
+  const user = await User.findOne({ email: raw_user.email }).exec();
   if (raw_user.secret !== REGISTER_SECRET) {
     throw ServiceError(403, "Invalid secret value");
   }
@@ -23,21 +26,17 @@ async function createUser(raw_user) {
     throw ServiceError(409, "Email already taken");
   }
 
-  const pending_role = await Role.findOne({ name: "Pending" }).exec();
+  const pending_role = await getRoleByName("Pending");
   // TODO - Enable users to input these fields on account creation or make these fields optional
   const raw_user_no_secret = {
     ...raw_user,
     phone: "(xxx)xxx-xxxx",
     github_username: "github_user",
-    graduation: new Date().getFullYear(),
     role: pending_role._id,
   };
 
   delete raw_user_no_secret.secret;
-  user = new User(raw_user_no_secret);
-  await user.save();
-  user.role = pending_role;
-  return user;
+  return new User(raw_user_no_secret).save();
 }
 
 async function forgotPassword(data) {
@@ -101,7 +100,7 @@ async function editUser(rawUser, editingUser) {
   } else if (editingUser._id.toString() !== rawUser._id) {
     throw ServiceError(403, "You do not have permission to edit other users");
   }
-  const editedUser = await User.findOne({ _id: rawUser._id });
+  const editedUser = await User.findOne({ _id: rawUser._id }).populate("role");
   if (editedUser === null) {
     throw ServiceError(404, "User does not exist");
   }
@@ -114,6 +113,19 @@ async function editUser(rawUser, editingUser) {
       continue;
     }
     if (editableFields.has(field)) {
+      if (field === "role") {
+        if (editedUser.role.name === "Pending") {
+          throw ServiceError(403, "You cannot change the role of a Pending user.");
+        }
+        // eslint-disable-next-line no-await-in-loop
+        const new_role = await Role.findById(newValue);
+        if (!new_role) {
+          throw ServiceError(404, "Role does not exist.");
+        }
+        if (new_role.name === "Pending") {
+          throw ServiceError(403, "You cannot set a user's role to Pending");
+        }
+      }
       editedUser[field] = newValue;
     } else {
       throw ServiceError(403, `You do not have permission to edit the '${field}' field`);
@@ -130,6 +142,27 @@ async function deleteUser(_id) {
   return User.deleteOne({ _id });
 }
 
+/**
+ * Activate a user (ie. change a user role from pending to another role)
+ * @param user_id The id of the user to be activated
+ * @param role_id The id of the role to give to the user
+ */
+async function activateUser(user_id, role_id) {
+  const user = await User.findById(user_id).populate("role");
+  if (!user) {
+    throw ServiceError(404, "User does not exist.");
+  }
+  if (user.role.name !== "Pending") {
+    throw ServiceError(403, "User is already activated.");
+  }
+  const role = await Role.findById(role_id);
+  if (!role) {
+    throw ServiceError(404, "Role does not exist.");
+  }
+  user.role = role_id;
+  return user.save();
+}
+
 module.exports = {
   createUser,
   forgotPassword,
@@ -138,4 +171,5 @@ module.exports = {
   getUsers,
   editUser,
   deleteUser,
+  activateUser,
 };
