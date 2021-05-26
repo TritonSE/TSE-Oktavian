@@ -91,6 +91,14 @@ async function getUsers(filter) {
 }
 
 /**
+ * Returns a specific user according to provided user_id
+ * @param user_id - _id of user
+ */
+async function getUser(user_id) {
+  return User.findById(user_id).populate("role").exec();
+}
+
+/**
  * Edit a user object
  * @param rawUser The edited user object
  * @param editingUser The user who is doing the editing
@@ -171,6 +179,7 @@ module.exports = {
   resetPassword,
   changePassword,
   getUsers,
+  getUser,
   editUser,
   deleteUser,
   activateUser,
