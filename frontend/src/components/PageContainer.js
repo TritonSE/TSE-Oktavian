@@ -118,7 +118,7 @@ export default function PageContainer({ window, children }) {
           link: "/projects",
         },
       ],
-      display: loginState.authenticated && loginState.user.role != null,
+      display: loginState.authenticated,
     },
     {
       name: "Recruitment",
@@ -144,10 +144,7 @@ export default function PageContainer({ window, children }) {
           link: "/recruitment/pipelines",
         },
       ],
-      display:
-        loginState.authenticated &&
-        loginState.user.role != null &&
-        loginState.user.role.permissions.recruitment,
+      display: loginState.authenticated && loginState.user.role.permissions.recruitment,
     },
     {
       name: "Admin",
@@ -163,10 +160,7 @@ export default function PageContainer({ window, children }) {
           link: "/admin/pending",
         },
       ],
-      display:
-        loginState.authenticated &&
-        loginState.user.role != null &&
-        loginState.user.role.permissions.role_management,
+      display: loginState.authenticated && loginState.user.role.permissions.role_management,
     },
     {
       name: "Account",
