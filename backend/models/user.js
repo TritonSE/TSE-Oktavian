@@ -25,11 +25,11 @@ const UserSchema = new Schema({
   },
   phone: {
     type: String,
-    required: true,
+    required: false,
   },
   github_username: {
     type: String,
-    required: true,
+    required: false,
   },
   discord_username: {
     type: String,
