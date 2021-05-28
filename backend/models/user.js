@@ -52,7 +52,7 @@ const UserSchema = new Schema({
   role: {
     type: mongoose.Types.ObjectId,
     ref: "Role",
-    required: false, // New users by default are not assigned a role; they are promoted by an admin
+    required: true,
   },
   active: {
     type: Boolean,

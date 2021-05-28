@@ -21,6 +21,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 const alumRole = "Alum";
+const pendingRole = "Pending";
 const styleButton = {
   color: "inherit",
   fontWeight: "900",
@@ -52,7 +53,7 @@ const Roster = () => {
       const { ok, data } = await getUsers();
       if (ok) {
         const developers = data.users
-          .filter((user) => user.role.name !== alumRole)
+          .filter((user) => user.role.name !== alumRole && user.role.name !== pendingRole)
           .map((user) => ({
             ...user,
             role: user.role.name,
