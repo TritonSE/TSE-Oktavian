@@ -18,7 +18,7 @@ const USER_EDITABLE = new Set([
 const ADMIN_EDITABLE = new Set([...USER_EDITABLE, "email", "name", "role", "active"]);
 
 async function createUser(raw_user) {
-  const user = await User.findOne({ email: raw_user.email }).exec();
+  let user = await User.findOne({ email: raw_user.email }).exec();
   if (raw_user.secret !== REGISTER_SECRET) {
     throw ServiceError(403, "Invalid secret value");
   }
@@ -36,7 +36,10 @@ async function createUser(raw_user) {
   };
 
   delete raw_user_no_secret.secret;
-  return new User(raw_user_no_secret).save();
+  user = new User(raw_user_no_secret);
+  await user.save();
+  user.role = pending_role;
+  return user;
 }
 
 async function forgotPassword(data) {

@@ -86,7 +86,7 @@ const PendingUserInfo = ({ match }) => {
             ...state,
             loading: false,
             user: user_res.data.user,
-            roles: roles_res.data.roles,
+            roles: roles_res.data.roles.filter((role) => role.external_recruitment),
           });
         } else {
           dispatch(openAlert(`Error: ${roles_res.data.message}`));
