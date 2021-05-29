@@ -38,7 +38,7 @@ async function createUser(raw_user) {
   delete raw_user_no_secret.secret;
   user = new User(raw_user_no_secret);
   await user.save();
-  user.role = pending_role;     // Populate role field in returned user object
+  user.role = pending_role; // Populate role field in returned user object
   return user;
 }
 
