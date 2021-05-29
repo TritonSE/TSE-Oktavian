@@ -8,5 +8,6 @@ module.exports = {
   MONGO_URI: process.env.MONGO_URI || "mongodb://127.0.0.1:27017/tse-oktavian",
   EMAIL_USERNAME: process.env.EMAIL_USERNAME || "",
   EMAIL_PASSWORD: process.env.EMAIL_PASSWORD || "",
+  DEPLOYMENT_URL: process.env.DEPLOYMENT_URL || "http://localhost:3000",
   STAGES: ["Resume", "Phone", "Interview", "Final"],
 };
