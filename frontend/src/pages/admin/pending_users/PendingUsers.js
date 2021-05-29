@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { makeStyles } from "@material-ui/core/styles";
 import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
 import MaterialTable from "@material-table/core";
 import { Typography } from "@material-ui/core";
 
@@ -25,6 +26,7 @@ const useStyles = makeStyles(() => ({
 const PendingUsers = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const [state, setState] = useState({
     loading: true,
@@ -77,10 +79,13 @@ const PendingUsers = () => {
           <MaterialTable
             title="Pending Users"
             icons={{ ...TableIcons, Filter: TableIcons.Search }}
+            onRowClick={(evt, currRow) => {
+              history.push(`/admin/pending/${currRow._id}`);
+            }}
             options={{
               filtering: true,
               paging: true,
-              pageSize: 15,
+              pageSize: 10,
               emptyRowsWhenPaging: true,
               pageSizeOptions: [10, 20, 50, 100],
               search: false,

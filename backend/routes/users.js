@@ -3,7 +3,7 @@ const { param, body } = require("express-validator");
 
 const { authorizeUser } = require("../middleware/auth");
 const { validateRequest } = require("../middleware/validation");
-const { getUsers, editUser, deleteUser, activateUser } = require("../services/users");
+const { getUsers, getUser, editUser, deleteUser, activateUser } = require("../services/users");
 
 const router = express.Router();
 
@@ -15,6 +15,19 @@ router.get("/", [authorizeUser(["roster"])], (req, res, next) => {
   getUsers(req.query)
     .then((users) => {
       res.status(200).json({ users });
+    })
+    .catch((err) => {
+      next(err);
+    });
+});
+
+/**
+ * Returns a specific user that matches user_id
+ */
+router.get("/:user_id", [authorizeUser(["roster"])], (req, res, next) => {
+  getUser(req.params.user_id)
+    .then((user) => {
+      res.status(200).json({ user });
     })
     .catch((err) => {
       next(err);
