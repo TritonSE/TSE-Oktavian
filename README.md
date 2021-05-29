@@ -61,6 +61,7 @@ There are several environment variables that must be set for the backend to work
 - (optional, defaults to 'keyboard cat') JWT_SECRET = used to uniquely identifying tokens, must be changed in production
 - (optional, defaults to '') EMAIL_USERNAME = used for automated emailing, disabled if left empty
 - (optional, defaults to '') EMAIL_PASSWORD = used for automated emailing, disabled if left empty
+- (optional, defaults to 'http://localhost:3000') DEPLOYMENT_URL = URL to the Oktavian deployment, used to send links in emails
 
 The recommended way to specify this environment variables is by creating the
 file `backend/.env` and listing the variables there. The `.env` file is not
