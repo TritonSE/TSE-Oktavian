@@ -9,6 +9,7 @@ async function createMockData() {
   await alum_role.save();
   const designer_role = new Role({
     name: "Designer",
+    external_recruitment: true,
     permissions: {
       roster: true,
       recruitment: true,
@@ -17,6 +18,7 @@ async function createMockData() {
   await designer_role.save();
   const developer_role = new Role({
     name: "Developer",
+    external_recruitment: true,
     permissions: {
       roster: true,
     },

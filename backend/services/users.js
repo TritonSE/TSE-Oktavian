@@ -18,7 +18,7 @@ const USER_EDITABLE = new Set([
 const ADMIN_EDITABLE = new Set([...USER_EDITABLE, "email", "name", "role", "active"]);
 
 async function createUser(raw_user) {
-  const user = await User.findOne({ email: raw_user.email }).exec();
+  let user = await User.findOne({ email: raw_user.email }).exec();
   if (raw_user.secret !== REGISTER_SECRET) {
     throw ServiceError(403, "Invalid secret value");
   }
@@ -36,7 +36,10 @@ async function createUser(raw_user) {
   };
 
   delete raw_user_no_secret.secret;
-  return new User(raw_user_no_secret).save();
+  user = new User(raw_user_no_secret);
+  await user.save();
+  user.role = pending_role; // Populate role field in returned user object
+  return user;
 }
 
 async function forgotPassword(data) {
@@ -86,6 +89,14 @@ async function changePassword(data) {
  */
 async function getUsers(filter) {
   return User.find(filter).populate("role").exec();
+}
+
+/**
+ * Returns a specific user according to provided user_id
+ * @param user_id - _id of user
+ */
+async function getUser(user_id) {
+  return User.findById(user_id).populate("role").exec();
 }
 
 /**
@@ -169,6 +180,7 @@ module.exports = {
   resetPassword,
   changePassword,
   getUsers,
+  getUser,
   editUser,
   deleteUser,
   activateUser,

@@ -160,6 +160,13 @@ const PipelineCard = ({ pipeline, roles, users }) => {
                 });
               }}
               renderValue={(value) => roleIdToNameMap[value]}
+              MenuProps={{
+                anchorOrigin: {
+                  vertical: "bottom",
+                  horizontal: "left",
+                },
+                getContentAnchorEl: null,
+              }}
             >
               {roles.map((role) => (
                 <MenuItem key={role._id} value={role._id}>
