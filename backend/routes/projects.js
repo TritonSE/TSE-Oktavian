@@ -102,8 +102,8 @@ router.post(
       developers: req.body.developers,
       files: req.body.files,
     })
-      .then(() => {
-        res.status(200).json({ message: "Project succesfully created" });
+      .then((project) => {
+        res.status(200).json({ project });
       })
       .catch((err) => {
         next(err);
