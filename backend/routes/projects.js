@@ -1,9 +1,14 @@
 const express = require("express");
 
-const { authorizeUser } = require("../middleware/auth");
 const { body } = require("express-validator");
+const { authorizeUser } = require("../middleware/auth");
 const { validateRequest } = require("../middleware/validation");
-const { getAllProjects, getUserProjects, getOneProject, addProject } = require("../services/projects");
+const {
+  getAllProjects,
+  getUserProjects,
+  getOneProject,
+  addProject,
+} = require("../services/projects");
 
 const router = express.Router();
 
@@ -13,12 +18,13 @@ const validators = {
   client: body("client").notEmpty().isString(),
   phase: body("phase").isIn(["Outreach", "Design", "Development", "Post Development"]),
   timeline_quarter: body("timeline.*.quarter").isIn(["Fall", "Winter", "Spring", "Summer"]),
-  timeline_year: body("timeline.*.year").isInt({min:1000, max:9999}),
+  timeline_year: body("timeline.*.year").isInt({ min: 1000, max: 9999 }),
   project_manager: body("project_manager").notEmpty().isString(),
   outreach: body("outreach").notEmpty().isString(),
   designers: body("designers.*").notEmpty().isString(),
   developers: body("developers.*").notEmpty().isString(),
-  files: body("files.*").notEmpty().isString()
+  file_link: body("files.*.link").notEmpty().isString(),
+  file_name: body("files.*.name").notEmpty().isString(),
 };
 
 /**
@@ -46,50 +52,62 @@ router.get("/", [authorizeUser(["roster"])], (req, res, next) => {
       });
 });
 
+/**
+ * Returns a specific project given its id.
+ */
 router.get("/:project_id", [authorizeUser(["roster"])], (req, res, next) => {
-  try {
-    project = getOneProject(req.params.project_id);
-    if(project === null)
-      res.status(400).json({"message" : "Project with the given id doesn't exist"});
-    else
-      res.status(200).json({ project });
-  } catch(err) {
-    next(err);
-  }
+  getOneProject(req.params.project_id)
+    .then((project) => {
+      if (project === null)
+        res.status(400).json({ message: "Project with the given id doesn't exist" });
+      else res.status(200).json({ project });
+    })
+    .catch((err) => {
+      next(err);
+    });
 });
 
-router.post("/", 
-  [validators.name, 
-  validators.description, 
-  validators.client,
-  validators.phase, 
-  validators.timeline_quarter, 
-  validators.timeline_year, 
-  validators.project_manager, 
-  validators.outreach, 
-  validators.designers, 
-  validators.developers, 
-  validators.files,
-  validateRequest,
-  authorizeUser(["roster", "project_create"])], 
+/**
+ * Creates a new project given that the user has permissions to
+ * create projects.
+ */
+router.post(
+  "/",
+  [
+    validators.name,
+    validators.description,
+    validators.client,
+    validators.phase,
+    validators.timeline_quarter,
+    validators.timeline_year,
+    validators.project_manager,
+    validators.outreach,
+    validators.designers,
+    validators.developers,
+    validators.file_link,
+    validators.file_name,
+    validateRequest,
+    authorizeUser(["roster", "project_create"]),
+  ],
   (req, res, next) => {
-    try {
-      addProject({
-        name : req.body.name,
-        description : req.body.description,
-        client : req.body.client,
-        phase : req.body.phase,
-        timeline : req.body.timeline,
-        project_manager : req.body.project_manager,
-        outreach : req.body.outreach,
-        designers : req.body.designers,
-        developers : req.body.developers,
-        files : req.body.files
+    addProject({
+      name: req.body.name,
+      description: req.body.description,
+      client: req.body.client,
+      phase: req.body.phase,
+      timeline: req.body.timeline,
+      project_manager: req.body.project_manager,
+      outreach: req.body.outreach,
+      designers: req.body.designers,
+      developers: req.body.developers,
+      files: req.body.files,
+    })
+      .then(() => {
+        res.status(200).json({ message: "Project succesfully created" });
+      })
+      .catch((err) => {
+        next(err);
       });
-      res.status(200).json({"message" : "Project succesfully created"})
-    } catch (err) {
-      next(err);
-    }
   }
 );
 

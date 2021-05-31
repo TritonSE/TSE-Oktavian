@@ -1,7 +1,7 @@
 /**
- * Functions that are called by the backend routes to make 
+ * Functions that are called by the backend routes to make
  * various queries on the database
- * 
+ *
  * @summary Functions to interact with the Mongo Database
  */
 const { Project } = require("../models");
@@ -35,7 +35,7 @@ async function getUserProjects(user_id) {
 
 /**
  * Returns project object corresponding to given project id.
- * 
+ *
  * @param {ObjectId} project_id - Id of the project to return
  * @returns {JSON} - Project corresponding to the project id or null if no such project exists
  */
@@ -45,17 +45,17 @@ async function getOneProject(project_id) {
 
 /**
  * Stores the given project in the database.
- * 
+ *
  * @param {JSON} project - Project object to be added to the database
  * @returns {JSON} - The stored project
  */
 async function addProject(project) {
-  return (new Project(project)).save();
+  return new Project(project).save();
 }
 
 module.exports = {
   getAllProjects,
   getUserProjects,
   getOneProject,
-  addProject
+  addProject,
 };
