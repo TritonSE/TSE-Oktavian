@@ -322,6 +322,7 @@ const RolePermissionCard = ({ role, mode }) => {
               className={`${classes.deleteButton} ${classes.warning}`}
               variant="contained"
               startIcon={<DeleteIcon />}
+              disabled={state.role.builtin}
               onClick={(event) => {
                 event.preventDefault();
                 handleModalOpen();

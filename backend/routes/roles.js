@@ -23,7 +23,7 @@ router.get("/", [authorizeUser(["roster"])], (req, res, next) => {
 });
 
 /**
- * Reaturn a specific role that matches role_id
+ * Return a specific role that matches role_id
  */
 router.get("/:role_id", [authorizeUser(["roster"])], (req, res, next) => {
   getRole(req.params.role_id)

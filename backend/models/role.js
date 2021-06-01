@@ -20,6 +20,19 @@ module.exports = mongoose.model(
       required: true,
       unique: true,
     },
+    // Builtin roles (like Pending and Unassigned) cannot be renamed or deleted.
+    builtin: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+    // Pending users (externally recruited members) can only be assigned to external_recruitment roles
+    // Current external_recruitment roles: Developer and Designer
+    external_recruitment: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
     permissions: {
       /**
        * View the organization roster and other users' profiles.

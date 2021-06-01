@@ -19,6 +19,7 @@ import Roster from "./pages/Roster";
 import RosterInfo from "./pages/RosterInfo";
 import Roles from "./pages/admin/roles/Roles";
 import PendingUsers from "./pages/admin/pending_users/PendingUsers";
+import PendingUserInfo from "./pages/admin/pending_users/PendingUserInfo";
 import EditRole from "./pages/admin/roles/EditRoles";
 import CreateRole from "./pages/admin/roles/CreateRole";
 
@@ -98,6 +99,11 @@ export default function App() {
           <Route exact path="/admin/pending">
             <PendingUsers />
           </Route>
+          <Route
+            exact
+            path="/admin/pending/:userid"
+            component={({ match }) => <PendingUserInfo match={match} />}
+          />
           <Route exact path="/">
             <Home />
           </Route>
