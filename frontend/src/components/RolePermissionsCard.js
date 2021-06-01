@@ -216,11 +216,24 @@ const RolePermissionCard = ({ role, mode }) => {
             <TextField
               className={classes.inputField}
               variant="outlined"
-              palceholder="Role Name"
+              placeholder="Role Name"
               required
               onChange={handleTextField}
             />
           )}
+
+          <Typography variant="h5">Role Properties</Typography>
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={state.role.external_recruitment}
+                onChange={handleChange}
+                name="external_recruitment"
+              />
+            }
+            label="Can be assigned to pending users"
+          />
 
           <Typography variant="h5">Role Permissions</Typography>
 
@@ -321,16 +334,6 @@ const RolePermissionCard = ({ role, mode }) => {
                   />
                 }
                 label="Activate/Deactivate Accounts"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={state.role.external_recruitment}
-                    onChange={handleChange}
-                    name="external_recruitment"
-                  />
-                }
-                label="Can be assigned to pending users"
               />
             </FormGroup>
           </FormControl>
