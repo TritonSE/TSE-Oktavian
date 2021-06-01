@@ -27,7 +27,17 @@ async function getUserProjects(user_id) {
   ]);
 }
 
+async function updateProject(project_id, new_project){
+  return Project.findOneAndUpdate({_id: project_id}, new_project);
+}
+
+async function deleteProject(project_id){
+  return Project.deleteOne({_id: project_id});
+}
+
 module.exports = {
   getAllProjects,
   getUserProjects,
+  updateProject,
+  deleteProject
 };
