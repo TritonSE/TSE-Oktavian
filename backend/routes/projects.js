@@ -1,7 +1,12 @@
 const express = require("express");
 
 const { authorizeUser } = require("../middleware/auth");
-const { getAllProjects, getUserProjects, updateProject } = require("../services/projects");
+const {
+  getAllProjects,
+  getUserProjects,
+  updateProject,
+  deleteProject,
+} = require("../services/projects");
 
 const router = express.Router();
 
@@ -30,32 +35,38 @@ router.get("/", [authorizeUser(["roster"])], (req, res, next) => {
       });
 });
 
-router.put("/editProject/:project_id", (req, res, next) => {
-  if(req.query.project._id){
-    if(updateProject(req.params.project_id, req.body)){
-      res.status(200).json({projects});
-      next;
+/**
+ * updates a project with a given id
+ */
+router.put("/:project_id", [authorizeUser(["roster"])], (req, res, next) => {
+  try {
+    const projectExists = null; // getOneProject(req.params.project_id);
+    if (projectExists == null) {
+      res.status(400).json({ message: "Project with the given id doesn't exist" });
+    } else {
+      updateProject(req.params.project_id, req.body);
+      res.status(200).json({});
     }
-    else{
-      res.status(500).json({});
-      next;
-    }
+  } catch (err) {
+    next(err);
   }
-  req.status(400).json({});;
 });
 
-router.delete("/deleteProject", (req,res, next) =>{
-  if(req.query.project._id){
-    if(deleteProject(req.params.project._id)){
-      res.status(200).json({projects});
-      next;
+/**
+ * deletes a specific project given its id
+ */
+router.delete("/:project_id", [authorizeUser(["roster"])], (req, res, next) => {
+  try {
+    const projectExists = null; // getOneProject(req.params.project_id);
+    if (projectExists == null) {
+      res.status(400).json({ message: "Project with the given id doesn't exist" });
+    } else {
+      deleteProject(req.params.project_id);
+      res.status(200).json({});
     }
-    else{
-      res.status(500).json({});
-      next;
-    }
+  } catch (err) {
+    next(err);
   }
-  req.status(400).json({});
 });
 
 module.exports = router;
