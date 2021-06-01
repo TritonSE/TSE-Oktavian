@@ -40,7 +40,7 @@ router.get("/", [authorizeUser(["roster"])], (req, res, next) => {
  */
 router.put("/:project_id", [authorizeUser(["roster"])], (req, res, next) => {
   try {
-    const projectExists = null; // getOneProject(req.params.project_id);
+    const projectExists = getOneProject(req.params.project_id);
     if (projectExists == null) {
       res.status(400).json({ message: "Project with the given id doesn't exist" });
     } else {
@@ -57,7 +57,7 @@ router.put("/:project_id", [authorizeUser(["roster"])], (req, res, next) => {
  */
 router.delete("/:project_id", [authorizeUser(["roster"])], (req, res, next) => {
   try {
-    const projectExists = null; // getOneProject(req.params.project_id);
+    const projectExists = getOneProject(req.params.project_id);
     if (projectExists == null) {
       res.status(400).json({ message: "Project with the given id doesn't exist" });
     } else {
