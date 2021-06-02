@@ -119,7 +119,8 @@ async function editUser(rawUser, editingUser) {
     if (
       field === "_id" ||
       // eslint-disable-next-line eqeqeq
-      (editedUser[field] != undefined && newValue.toString() === editedUser[field].toString())
+      (editedUser[field] != undefined && newValue.toString() === editedUser[field].toString()) ||
+      newValue.toString() === editedUser.role._id.toString()
     ) {
       continue;
     }
