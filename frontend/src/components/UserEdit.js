@@ -84,6 +84,7 @@ const UserEdit = ({ userData }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+
     if (state.user.linkedin_username !== "") {
       // checks to make sure linkedin is a url containing "linkedin.com/in/"
       if (state.user.linkedin_username.indexOf(linkedinURL) === -1) {
@@ -101,6 +102,7 @@ const UserEdit = ({ userData }) => {
           },
         });
       }
+
     }
 
     const { ok, data } = await editUser(state.user);
