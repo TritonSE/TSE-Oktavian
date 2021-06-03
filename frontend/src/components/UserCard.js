@@ -96,6 +96,9 @@ const UserCard = ({ userData, card }) => {
   });
 
   const stripLinkedin = (url) => {
+    if (url === "") {
+      return "";
+    }
     const index = url.indexOf("/in/");
     return url.substring(index + 4, url.length - 1);
   };
@@ -263,19 +266,27 @@ const UserCard = ({ userData, card }) => {
               </Typography>
             </Link>
 
-            <Link target="_blank" rel="noopener" href="https://discord.com/channels/@me">
-              <Typography className={classes.text}>
-                <SportsEsportsIcon className={classes.smallIcon} />
-                {state.discord_username}
-              </Typography>
-            </Link>
+            {state.discord_username ? (
+              <Link target="_blank" rel="noopener" href="https://discord.com/channels/@me">
+                <Typography className={classes.text}>
+                  <SportsEsportsIcon className={classes.smallIcon} />
+                  {state.discord_username}
+                </Typography>
+              </Link>
+            ) : (
+              ""
+            )}
 
-            <Link target="_blank" rel="noopener" href={state.linkedin_username}>
-              <Typography className={classes.text}>
-                <LinkedInIcon className={classes.smallIcon} />
-                {stripLinkedin(state.linkedin_username)}
-              </Typography>
-            </Link>
+            {state.linkedin_username ? (
+              <Link target="_blank" rel="noopener" href={state.linkedin_username}>
+                <Typography className={classes.text}>
+                  <LinkedInIcon className={classes.smallIcon} />
+                  {stripLinkedin(state.linkedin_username)}
+                </Typography>
+              </Link>
+            ) : (
+              ""
+            )}
           </div>
         </CardContent>
       </Card>
