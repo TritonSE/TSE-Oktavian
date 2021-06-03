@@ -96,7 +96,6 @@ const UserCard = ({ userData, card }) => {
   });
 
   const stripLinkedin = (url) => {
-
     if (url === "") {
       return "";
     }
@@ -267,7 +266,6 @@ const UserCard = ({ userData, card }) => {
               </Typography>
             </Link>
 
-
             {state.discord_username ? (
               <Link target="_blank" rel="noopener" href="https://discord.com/channels/@me">
                 <Typography className={classes.text}>
@@ -289,7 +287,6 @@ const UserCard = ({ userData, card }) => {
             ) : (
               ""
             )}
-
           </div>
         </CardContent>
       </Card>
