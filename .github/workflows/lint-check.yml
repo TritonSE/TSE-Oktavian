@@ -1,4 +1,4 @@
-name: Lint checks
+name: Lint and style checks
 
 on:
   pull_request:
@@ -6,7 +6,8 @@ on:
       main
 
 jobs:
-  backend_lint_check:
+  backend:
+    name: Backend lint and style check
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -15,7 +16,8 @@ jobs:
       run: |
         npm ci
         npm run lint-check
-  frontend_lint_check:
+  frontend:
+    name: Frontend lint and style check
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
