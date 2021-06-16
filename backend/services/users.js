@@ -27,16 +27,10 @@ async function createUser(raw_user) {
   }
 
   const pending_role = await getRoleByName("Pending");
-  // TODO - Enable users to input these fields on account creation or make these fields optional
-  const raw_user_no_secret = {
-    ...raw_user,
-    phone: "(xxx)xxx-xxxx",
-    github_username: "github_user",
-    role: pending_role._id,
-  };
 
-  delete raw_user_no_secret.secret;
-  user = new User(raw_user_no_secret);
+  delete raw_user.secret;
+  raw_user.role = pending_role._id;
+  user = new User(raw_user);
   await user.save();
   user.role = pending_role; // Populate role field in returned user object
   return user;
