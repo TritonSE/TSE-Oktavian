@@ -15,6 +15,7 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
+  Link,
 } from "@material-ui/core";
 import { ThemeProvider } from "@material-ui/styles";
 import AccountCircleOutlinedIcon from "@material-ui/icons/AccountCircleOutlined";
@@ -93,6 +94,14 @@ const UserCard = ({ userData, card }) => {
     discord_username: "",
     linkedin_username: "",
   });
+
+  const stripLinkedin = (url) => {
+    if (url === "") {
+      return "";
+    }
+    const index = url.indexOf("/in/");
+    return url.substring(index + 4, url.length - 1);
+  };
 
   const handleDeactivateOpen = () => {
     setOpen(true);
@@ -232,26 +241,52 @@ const UserCard = ({ userData, card }) => {
           </ThemeProvider>
           <Divider className={classes.divider} />
           <div className={classes.leftText}>
-            <Typography className={classes.text}>
-              <MailOutlineIcon className={classes.smallIcon} />
-              {state.email}
-            </Typography>
-            <Typography className={classes.text}>
-              <LocalPhoneOutlinedIcon className={classes.smallIcon} />
-              {state.phone}
-            </Typography>
-            <Typography className={classes.text}>
-              <GitHubIcon className={classes.smallIcon} />
-              {state.github_username}
-            </Typography>
-            <Typography className={classes.text}>
-              <SportsEsportsIcon className={classes.smallIcon} />
-              {state.discord_username}
-            </Typography>
-            <Typography className={classes.text}>
-              <LinkedInIcon className={classes.smallIcon} />
-              {state.linkedin_username}
-            </Typography>
+            <Link href={`mailto:${state.email}`}>
+              <Typography className={classes.text}>
+                <MailOutlineIcon className={classes.smallIcon} />
+                {state.email}
+              </Typography>
+            </Link>
+
+            <Link href={`tel:${state.phone}`}>
+              <Typography className={classes.text}>
+                <LocalPhoneOutlinedIcon className={classes.smallIcon} />
+                {state.phone}
+              </Typography>
+            </Link>
+
+            <Link
+              target="_blank"
+              rel="noopener"
+              href={`https://github.com/${state.github_username}`}
+            >
+              <Typography className={classes.text}>
+                <GitHubIcon className={classes.smallIcon} />
+                {state.github_username}
+              </Typography>
+            </Link>
+
+            {state.discord_username ? (
+              <Link target="_blank" rel="noopener" href="https://discord.com/channels/@me">
+                <Typography className={classes.text}>
+                  <SportsEsportsIcon className={classes.smallIcon} />
+                  {state.discord_username}
+                </Typography>
+              </Link>
+            ) : (
+              ""
+            )}
+
+            {state.linkedin_username ? (
+              <Link target="_blank" rel="noopener" href={state.linkedin_username}>
+                <Typography className={classes.text}>
+                  <LinkedInIcon className={classes.smallIcon} />
+                  {stripLinkedin(state.linkedin_username)}
+                </Typography>
+              </Link>
+            ) : (
+              ""
+            )}
           </div>
         </CardContent>
       </Card>

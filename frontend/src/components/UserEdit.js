@@ -51,6 +51,7 @@ const useStyles = makeStyles((theme) => ({
 
 const UserEdit = ({ userData }) => {
   const quarters = ["Fall", "Winter", "Spring", "Summer"];
+  const linkedinURL = "linkedin.com/in/";
   const classes = useStyles();
   const dispatch = useDispatch();
   const [state, setState] = useState({
@@ -82,6 +83,26 @@ const UserEdit = ({ userData }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    if (state.user.linkedin_username !== "") {
+      // checks to make sure linkedin is a url containing "linkedin.com/in/"
+      if (state.user.linkedin_username.indexOf(linkedinURL) === -1) {
+        dispatch(openAlert("Make sure the linkedin field contains 'linkedin/in/'!"));
+        return;
+      }
+
+      // adds 'https://' if not already presesnt
+      if (state.user.linkedin_username.indexOf("https://www.") !== 0) {
+        setState({
+          ...state,
+          user: {
+            ...state.user,
+            linkedin_username: `https://www.${state.user.linkedin_username}`,
+          },
+        });
+      }
+    }
+
     const { ok, data } = await editUser(state.user);
     if (ok) {
       dispatch(openAlert("User info successfully updated!"));

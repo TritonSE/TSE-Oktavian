@@ -143,8 +143,15 @@ const RolePermissionCard = ({ role, mode }) => {
 
   const handleChange = (event) => {
     const { permissions } = state.role;
+    let { external_recruitment } = state.role;
     const field_name = event.target.name;
-    permissions[field_name] = event.target.checked;
+    if (field_name === "external_recruitment") {
+      // handle special case for external_recruitment field
+      external_recruitment = event.target.checked;
+    } else {
+      permissions[field_name] = event.target.checked;
+    }
+
     // unchecks admin box if any indented checkboxes were unchecked
     if (adminSubPermissions.includes(field_name) && !permissions[field_name]) {
       permissions["admin"] = false;
@@ -155,6 +162,7 @@ const RolePermissionCard = ({ role, mode }) => {
       role: {
         ...prevState.role,
         permissions,
+        external_recruitment,
       },
     }));
   };
@@ -208,11 +216,24 @@ const RolePermissionCard = ({ role, mode }) => {
             <TextField
               className={classes.inputField}
               variant="outlined"
-              palceholder="Role Name"
+              placeholder="Role Name"
               required
               onChange={handleTextField}
             />
           )}
+
+          <Typography variant="h5">Role Properties</Typography>
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={state.role.external_recruitment}
+                onChange={handleChange}
+                name="external_recruitment"
+              />
+            }
+            label="Can be assigned to pending users"
+          />
 
           <Typography variant="h5">Role Permissions</Typography>
 
@@ -322,6 +343,7 @@ const RolePermissionCard = ({ role, mode }) => {
               className={`${classes.deleteButton} ${classes.warning}`}
               variant="contained"
               startIcon={<DeleteIcon />}
+              disabled={state.role.builtin}
               onClick={(event) => {
                 event.preventDefault();
                 handleModalOpen();

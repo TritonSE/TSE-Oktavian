@@ -22,7 +22,7 @@ const CreateRole = () => {
 
   const state = {
     loading: false,
-    role: { name: "", permissions: defaultPermissions },
+    role: { name: "", permissions: defaultPermissions, external_recruitment: false },
   };
 
   return (
