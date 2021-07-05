@@ -5,6 +5,7 @@ const { readFileSync } = require("fs");
 const generalRules = {
   "no-plusplus": "off",
   "no-continue": "off",
+  "prefer-destructuring": "off",
 
   // Allow leading underscores in identifiers (e.g. _id in MongoDB).
   "no-underscore-dangle": "off",
@@ -15,6 +16,10 @@ const generalRules = {
   // Depending on the context, using bracket notation might be clearer.
   "dot-notation": "off",
 
+  /**
+   * Reassigning parameters can be useful to avoid creating another variable,
+   * and to modify objects by reference.
+   */
   "no-param-reassign": "off",
 
   /**
@@ -31,6 +36,9 @@ const generalRules = {
 
   // Not necessary for some APIs (consistency reasons)
   "import/prefer-default-export": "off",
+
+  // Stylistic rules.
+  "lines-between-class-members": "off",
 };
 
 const reactRules = {
@@ -38,34 +46,53 @@ const reactRules = {
   "react/prop-types": "off",
   "react/destructuring-assignment": "off",
 
-  "react/sort-comp": "warn",
+  // Allow prop spreading, but require explicit spreading for HTML tags.
+  "react/jsx-props-no-spreading": [
+    2,
+    { html: "enforce", custom: "ignore", explicitSpread: "ignore" },
+  ],
 
   // Use warnings instead of errors for issues that aren't deal-breakers.
+  "react/sort-comp": "warn",
   "react/prefer-stateless-function": "warn",
   "react/no-array-index-key": "warn",
 };
 
 /**
- * Return a rules object which produces warnings instead of errors for accessibility problems.
+ * Override rules from eslint-plugin-jsx-a11y, if present.
  */
-function getAccessibilityWarningRules() {
-  const oldRules = require("eslint-plugin-jsx-a11y").rules;
+function getAccessibilityOverrideRules() {
+  let a11yRules;
+  try {
+    a11yRules = require("eslint-plugin-jsx-a11y").rules;
+  } catch (e) {
+    return {};
+  }
 
   const newRules = {};
-  Object.entries(oldRules).forEach(([name, _rule]) => {
+
+  // Produce warnings instead of errors for accessibility problems.
+  Object.keys(a11yRules).forEach((name) => {
     newRules[`jsx-a11y/${name}`] = "warn";
   });
+
   return newRules;
 }
 
 /**
- * Return a rules object which allows for...of statements to be used, since this syntax produces
- * errors with the default airbnb config.
+ * Override rules from eslint-config-airbnb-base, if present.
  */
-function getAllowForOfRules() {
-  const airbnbStyleRules = require("eslint-config-airbnb-base/rules/style.js").rules;
+function getAirbnbOverrideRules() {
+  let airbnbRules;
+  try {
+    airbnbRules = require("eslint-config-airbnb-base/rules/style.js").rules;
+  } catch (e) {
+    return {};
+  }
+
   return {
-    "no-restricted-syntax": airbnbStyleRules["no-restricted-syntax"].filter(
+    // Allow the use of for...of statements.
+    "no-restricted-syntax": airbnbRules["no-restricted-syntax"].filter(
       (item) => item.selector !== "ForOfStatement"
     ),
   };
@@ -74,55 +101,63 @@ function getAllowForOfRules() {
 /**
  * Load the .eslintrc.json file, which contains frontend/backend-specific configuration.
  */
-function loadConfig() {
+function loadEslintrcJson() {
   const path = ".eslintrc.json";
+
+  let data;
   try {
-    return JSON.parse(readFileSync(path, "utf8"));
+    data = readFileSync(path, "utf8");
   } catch (e) {
     throw new Error(
-      `File '${path}' does not exist. Generate it by running 'npx eslint --init'. When prompted to choose the file format, select JSON.`
+      `File '${path}' does not exist. Follow the instructions in the documentation to create it.`
     );
   }
-}
 
-const jsonConfig = loadConfig();
-
-/**
- * Return whether this part of the project is using React.
- */
-function usingReact() {
-  return jsonConfig.plugins !== undefined && jsonConfig.plugins.includes("react");
+  try {
+    return JSON.parse(data);
+  } catch (e) {
+    throw new Error(`Syntax error in '${path}': ${e.message}`);
+  }
 }
 
 /**
  * Generate the complete rules object.
  */
-function generateRules() {
+function generateRules(usingReact) {
   const rules = { ...generalRules };
-  Object.assign(rules, getAllowForOfRules());
-  if (usingReact()) {
+  Object.assign(rules, getAirbnbOverrideRules());
+  if (usingReact) {
     Object.assign(rules, reactRules);
-    Object.assign(rules, getAccessibilityWarningRules());
+    Object.assign(rules, getAccessibilityOverrideRules());
   }
   return rules;
 }
 
-if (process.env.NODE_ENV === "production") {
-  // In production (e.g. on Heroku), sometimes dev-dependencies are not installed
-  // This results in errors with the rule generation process
-  // Since linting isn't necessary in production, we can just ignore it
-  module.exports = {};
-} else {
-  const rules = generateRules();
-  module.exports = {
+/**
+ * Generate the ESLint configuration.
+ */
+function generateConfig() {
+  const eslintrcJson = loadEslintrcJson();
+  const usingReact = eslintrcJson.plugins !== undefined && eslintrcJson.plugins.includes("react");
+
+  const config = {
     settings: {
       react: {
         version: "detect",
       },
     },
-    ...jsonConfig,
-    ...(usingReact() ? { parser: "babel-eslint" } : {}),
-    extends: ["eslint:recommended", usingReact() ? "airbnb" : "airbnb-base", "prettier"],
-    rules,
+    ...eslintrcJson,
+    extends: ["eslint:recommended", usingReact ? "airbnb" : "airbnb-base", "prettier"],
+    rules: generateRules(usingReact),
   };
+
+  if (usingReact) {
+    config.parser = "@babel/eslint-parser";
+    config.parserOptions.requireConfigFile = false;
+    config.parserOptions.babelOptions = { plugins: ["@babel/plugin-syntax-jsx"] };
+  }
+
+  return config;
 }
+
+module.exports = generateConfig();
