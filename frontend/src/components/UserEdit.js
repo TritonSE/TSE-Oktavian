@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Card,
   CardContent,
@@ -54,11 +54,11 @@ const UserEdit = ({ userData }) => {
   const linkedinURL = "linkedin.com/in/";
   const classes = useStyles();
   const dispatch = useDispatch();
-  console.log(userData);
+  const loginState = useSelector((state) => state.login);
   const [state, setState] = useState({
     roles: [],
     roleIdToNameMap: {},
-    canEdit: userData.user.role.permissions.user_edit,
+    canEdit: loginState.user.role.permissions.user_edit,
     user: {
       _id: userData.user._id,
       name: userData.user.name,
