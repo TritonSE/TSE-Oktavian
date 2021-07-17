@@ -164,7 +164,8 @@ async function createApplication(raw_application) {
   try {
     await autoAssignApplication(application);
   } catch (err) {
-    // Rollback application creation
+    // Rollback application and review creation
+    await Review.deleteMany({ application: application._id });
     await Application.findByIdAndDelete(application._id);
     throw err;
   }
