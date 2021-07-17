@@ -23,20 +23,15 @@ const mail = new Email({ transport: transporter });
  * @param params the template's parameters
  */
 async function sendEmail(template, target_email, params) {
-  try {
-    await mail.send({
-      template,
-      message: {
-        from: EMAIL_USERNAME,
-        to: target_email,
-      },
-      locals: { DEPLOYMENT_URL, ...params },
-    });
-    console.log(`Email ${template} has been sent to ${target_email}.`);
-  } catch (e) {
-    console.error(`Could not send email ${template} to ${target_email}.`);
-    console.error(e);
-  }
+  await mail.send({
+    template,
+    message: {
+      from: EMAIL_USERNAME,
+      to: target_email,
+    },
+    locals: { DEPLOYMENT_URL, ...params },
+  });
+  console.log(`Email ${template} has been sent to ${target_email}.`);
 }
 
 module.exports = { sendEmail };
