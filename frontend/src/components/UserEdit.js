@@ -54,6 +54,7 @@ const UserEdit = ({ userData }) => {
   const linkedinURL = "linkedin.com/in/";
   const classes = useStyles();
   const dispatch = useDispatch();
+  console.log(userData);
   const [state, setState] = useState({
     roles: [],
     roleIdToNameMap: {},
@@ -64,10 +65,10 @@ const UserEdit = ({ userData }) => {
       role: userData.user.role._id,
       grad_quarter: userData.user.grad_quarter,
       graduation: userData.user.graduation,
-      phone: userData.user.phone,
-      github_username: userData.user.github_username,
-      discord_username: userData.user.discord_username,
-      linkedin_username: userData.user.linkedin_username,
+      phone: userData.user.phone || "",
+      github_username: userData.user.github_username || "",
+      discord_username: userData.user.discord_username || "",
+      linkedin_username: userData.user.linkedin_username || "",
     },
   });
 

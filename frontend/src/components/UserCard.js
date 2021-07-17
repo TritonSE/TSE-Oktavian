@@ -1,5 +1,5 @@
 import { React, useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link as ReactRouterLink } from "react-router-dom";
 import { makeStyles, createMuiTheme } from "@material-ui/core/styles";
 import { useDispatch } from "react-redux";
 import {
@@ -195,7 +195,9 @@ const UserCard = ({ userData, card }) => {
                   setAnchorEl(null);
                 }}
               >
-                <MenuItem>Edit</MenuItem>
+                <MenuItem component={ReactRouterLink} to={`/roster/edit/${state._id}`}>
+                  Edit
+                </MenuItem>
                 {state.canDelete && <MenuItem onClick={handleDeactivateOpen}>Deactivate</MenuItem>}
                 <Dialog
                   open={open}
