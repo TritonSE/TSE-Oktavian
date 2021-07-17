@@ -17,6 +17,7 @@ import Final from "./pages/recruitment/Final";
 import Pipelines from "./pages/recruitment/pipeline/Pipelines";
 import Roster from "./pages/Roster";
 import RosterInfo from "./pages/RosterInfo";
+import RosterEdit from "./pages/RosterEdit";
 import Roles from "./pages/admin/roles/Roles";
 import PendingUsers from "./pages/admin/pending_users/PendingUsers";
 import PendingUserInfo from "./pages/admin/pending_users/PendingUserInfo";
@@ -84,6 +85,11 @@ export default function App() {
             exact
             path="/roster/:userid"
             component={({ match }) => <RosterInfo match={match} />}
+          />
+          <Route
+            exact
+            path="/roster/edit/:userid"
+            component={({ match }) => <RosterEdit match={match} />}
           />
           <Route
             exact
