@@ -100,8 +100,21 @@ const Assignments = () => {
                   { title: "Position", field: "role" },
                   { title: "Stage", field: "current_stage" },
                   {
-                    title: "Graduating In",
-                    field: "graduation",
+                    title: "Start Quarter",
+                    field: "start_quarter",
+                  },
+                  {
+                    title: "Start Year",
+                    field: "start_year",
+                    type: "numeric",
+                  },
+                  {
+                    title: "Graduation Quarter",
+                    field: "graduation_quarter",
+                  },
+                  {
+                    title: "Graduation Year",
+                    field: "graduation_year",
                     type: "numeric",
                   },
                 ]}

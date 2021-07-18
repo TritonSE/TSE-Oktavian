@@ -31,9 +31,22 @@ module.exports = mongoose.model(
         ref: "Role",
         required: true,
       },
-      graduation: {
-        // Graduation year
+      start_year: {
         type: Number,
+        required: true,
+      },
+      start_quarter: {
+        type: String,
+        enum: ["Fall", "Winter", "Spring", "Summer"],
+        required: true,
+      },
+      graduation_year: {
+        type: Number,
+        required: true,
+      },
+      graduation_quarter: {
+        type: String,
+        enum: ["Fall", "Winter", "Spring", "Summer"],
         required: true,
       },
       resume: {
