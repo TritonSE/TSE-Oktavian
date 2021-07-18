@@ -349,7 +349,7 @@ const Application = ({ match }) => {
                     {application_status}
                     <form className={classes.form}>
                       <Grid container spacing={3}>
-                        <Grid item xs={6}>
+                        <Grid item md={4} xs={12}>
                           <TextField
                             label="Name"
                             variant="outlined"
@@ -358,7 +358,7 @@ const Application = ({ match }) => {
                             disabled
                           />
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item md={4} xs={12}>
                           <TextField
                             label="Email"
                             variant="outlined"
@@ -367,7 +367,7 @@ const Application = ({ match }) => {
                             disabled
                           />
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item md={4} xs={12}>
                           <TextField
                             label="Role"
                             variant="outlined"
@@ -376,12 +376,39 @@ const Application = ({ match }) => {
                             disabled
                           />
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item md={3} xs={6}>
+                          <TextField
+                            label="Start Quarter"
+                            variant="outlined"
+                            type="text"
+                            defaultValue={state.application.start_quarter}
+                            disabled
+                          />
+                        </Grid>
+                        <Grid item md={3} xs={6}>
+                          <TextField
+                            label="Start Year"
+                            variant="outlined"
+                            type="text"
+                            defaultValue={state.application.start_year}
+                            disabled
+                          />
+                        </Grid>
+                        <Grid item md={3} xs={6}>
+                          <TextField
+                            label="Graduation Quarter"
+                            variant="outlined"
+                            type="text"
+                            defaultValue={state.application.graduation_quarter}
+                            disabled
+                          />
+                        </Grid>
+                        <Grid item md={3} xs={6}>
                           <TextField
                             label="Graduation Year"
                             variant="outlined"
                             type="text"
-                            defaultValue={state.application.graduation}
+                            defaultValue={state.application.graduation_year}
                             disabled
                           />
                         </Grid>
