@@ -9,5 +9,5 @@ module.exports = {
   EMAIL_USERNAME: process.env.EMAIL_USERNAME || "",
   EMAIL_PASSWORD: process.env.EMAIL_PASSWORD || "",
   DEPLOYMENT_URL: process.env.DEPLOYMENT_URL || "http://localhost:3000",
-  STAGES: ["Resume", "Phone", "Interview", "Final"],
+  STAGES: ["Resume 1", "Resume 2", "Phone", "Interview", "Final"],
 };
