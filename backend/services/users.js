@@ -120,9 +120,11 @@ async function editUser(rawUser, editingUser) {
     }
     if (editableFields.has(field)) {
       if (field === "role") {
+        /*
         if (editedUser.role.name === "Pending") {
           throw ServiceError(403, "You cannot change the role of a Pending user.");
         }
+        */
         // eslint-disable-next-line no-await-in-loop
         const new_role = await Role.findById(newValue);
         if (!new_role) {
