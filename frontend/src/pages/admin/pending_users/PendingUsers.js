@@ -129,4 +129,4 @@ const PendingUsers = () => {
   );
 };
 
-export default withAuthorization(PendingUsers, true, ["final_approval"]);
+export default withAuthorization(PendingUsers, true, ["account_activation"]);

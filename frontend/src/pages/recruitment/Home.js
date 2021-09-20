@@ -112,7 +112,8 @@ const Home = () => {
         }}
         columns={[
           { title: "Name", field: "name" },
-          { title: "Resume", field: "Resume" },
+          { title: "Resume 1", field: "Resume 1" },
+          { title: "Resume 2", field: "Resume 2" },
           { title: "Phone", field: "Phone" },
           { title: "Interview", field: "Interview" },
           { title: "Final", field: "Final" },
