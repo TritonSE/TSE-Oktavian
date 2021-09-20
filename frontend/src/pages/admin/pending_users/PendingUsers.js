@@ -80,7 +80,8 @@ const PendingUsers = () => {
             title="Pending Users"
             icons={{ ...TableIcons, Filter: TableIcons.Search }}
             onRowClick={(evt, currRow) => {
-              history.push(`/admin/pending/${currRow._id}`);
+              // history.push(`/admin/pending/${currRow._id}`);
+              history.push(`/roster/${currRow._id}`);
             }}
             options={{
               filtering: true,
