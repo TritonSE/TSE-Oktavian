@@ -42,7 +42,6 @@ const UserSchema = new Schema({
   grad_quarter: {
     type: String,
     enum: ["Fall", "Winter", "Spring", "Summer"],
-    required: true,
   },
   graduation: {
     // Graduation year
