@@ -113,12 +113,10 @@ async function advanceApplication(application, review_accepted) {
         name: application.name,
       });
     } else {
-      /*
       await sendEmail("applicant-rejection", application.email, {
         name: application.name,
         role: application.role,
       });
-      */
     }
   } else {
     try {
