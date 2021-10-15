@@ -5,14 +5,14 @@ orbs:
 workflows:
   lint-deploy:
     jobs:
-      - node/test:
-          name: Backend lint and style check
-          app-dir: backend
-          run-command: lint-check
-      - node/test:
-          name: Frontend lint and style check
-          app-dir: frontend
-          run-command: lint-check
+      #- node/test:
+      #    name: Backend lint and style check
+      #    app-dir: backend
+      #    run-command: lint-check
+      #- node/test:
+      #    name: Frontend lint and style check
+      #    app-dir: frontend
+      #    run-command: lint-check
       # Deployment only occurs for the main branch
       - heroku/deploy-via-git:
           requires:
