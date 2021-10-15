@@ -64,11 +64,6 @@ router.get("/:id", authorizeUser(["recruitment"]), (req, res, next) => {
 router.post(
   "/",
   [
-    rateLimit({
-      // One IP is only allowed 3 applications per minute
-      windowMs: 60 * 1000,
-      max: 3,
-    }),
     body("name").notEmpty().isString(),
     body("email").notEmpty().isEmail(),
     body("role").notEmpty().isString(),
