@@ -15,9 +15,9 @@ workflows:
       #    run-command: lint-check
       # Deployment only occurs for the main branch
       - heroku/deploy-via-git:
-          requires:
-            - Backend lint and style check
-            - Frontend lint and style check
+          #requires:
+          #  - Backend lint and style check
+          #  - Frontend lint and style check
           filters:
             branches:
               only: main
