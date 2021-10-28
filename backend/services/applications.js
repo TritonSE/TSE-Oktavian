@@ -14,12 +14,14 @@ async function assignApplication(application, reviewer) {
     stage: application.current_stage,
   });
   await review.save();
+  /*
   await sendEmail("reviewer-assignment", reviewer.email, {
     current_stage: application.current_stage,
     role: application.role,
     applicant: application.name,
     reviewer: reviewer.name,
   });
+  */
 }
 
 /**
